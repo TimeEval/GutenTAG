@@ -3,6 +3,8 @@ from typing import Optional, Any
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 
+from .cylinder_bell_funnel import generate_pattern_data
+
 
 def get_or_error(name: str, value: Optional[Any]) -> Any:
     if value is None:
@@ -16,7 +18,8 @@ class BaseOscillation(Enum):
     CylinderBellFunnel = "cylinder_bell_funnel"
     ECG = "ecg"
 
-    def generate(self, length: int, frequency: Optional[float] = None, amplitude: float = 1., channels: int = 1) -> np.ndarray:
+    def generate(self, length: int, frequency: float = 10., amplitude: float = 1., channels: int = 1,
+                 variance: float = 1, avg_pattern_length: int = 10, variance_pattern_length: int = 10) -> np.ndarray:
         if self == BaseOscillation.Sinus:
             frequency = get_or_error("frequency", frequency)
             end = 2 * np.pi * frequency
@@ -29,6 +32,7 @@ class BaseOscillation(Enum):
             ts = np.concatenate([origin, steps]).cumsum(0)
             return MinMaxScaler(feature_range=[-amplitude, amplitude]).fit_transform(ts / np.abs(ts).max())
         elif self == BaseOscillation.CylinderBellFunnel:
-            pass
+            return generate_pattern_data(length, avg_pattern_length, amplitude,
+                                         default_variance=variance, variance_pattern_length=variance_pattern_length)
         else: # self == BaseOscillation.ECG
             pass

@@ -27,6 +27,15 @@ def generate_args() -> argparse.Namespace:
     parser.add_argument('--base-amplitude', type=float, default=1.,
                         help="Amplitude for base oscillation")
 
+    parser.add_argument('--base-variance', type=float, default=1.,
+                        help="Variance for CBF base oscillation")
+
+    parser.add_argument('--base-avg-pattern-length', type=int, default=10,
+                        help="Average pattern length for CBF base oscillation")
+
+    parser.add_argument('--base-variance-pattern-length', type=int, default=10,
+                        help="Variance pattern length for CBF base oscillation")
+
     parser.add_argument('--plot', type=bool, default=False,
                         help="Whether the generated Timeseries should be plotted!")
 
@@ -48,7 +57,10 @@ class GutenTAG:
         self.timeseries = self.args.base_oscillation.generate(self.args.base_length,
                                                               self.args.base_frequency,
                                                               self.args.base_amplitude,
-                                                              self.args.base_channels)
+                                                              self.args.base_channels,
+                                                              self.args.base_variance,
+                                                              self.args.base_avg_pattern_length,
+                                                              self.args.base_variance_pattern_length)
 
     def _plot(self):
         if self.args.plot:
