@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from typing import Optional
 
-from variations.base_oscillations import BaseOscillation
+from gutenTAG.base_oscillations import BaseOscillation
 
 TITLE = "A good Timeseries Anomaly Generator."
 
@@ -12,8 +12,8 @@ TITLE = "A good Timeseries Anomaly Generator."
 def generate_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=TITLE)
 
-    parser.add_argument('--base-oscillation', type=BaseOscillation,
-                        help="Choices: [sinus, random_walk, cylinder_bell_funnel, ecg]")
+    parser.add_argument('--base-oscillation', type=BaseOscillation, default=BaseOscillation.Sinus,
+                        help="Choices: [sinus, random_walk, cylinder_bell_funnel, ecg, comut]")
 
     parser.add_argument('--base-length', type=int, default=10000,
                         help="Length of the Timeseries")
@@ -21,7 +21,7 @@ def generate_args() -> argparse.Namespace:
     parser.add_argument('--base-channels', type=int, default=1,
                         help="Number of Channels")
 
-    parser.add_argument('--base-frequency', type=float,
+    parser.add_argument('--base-frequency', type=float, default=20.,
                         help="Frequency for base oscillation")
 
     parser.add_argument('--base-amplitude', type=float, default=1.,
