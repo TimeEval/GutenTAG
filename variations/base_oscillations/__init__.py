@@ -2,6 +2,7 @@ from enum import Enum
 from typing import Optional, Any
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
+import neurokit2 as nk
 
 from .cylinder_bell_funnel import generate_pattern_data
 
@@ -19,9 +20,8 @@ class BaseOscillation(Enum):
     ECG = "ecg"
 
     def generate(self, length: int, frequency: float = 10., amplitude: float = 1., channels: int = 1,
-                 variance: float = 1, avg_pattern_length: int = 10, variance_pattern_length: int = 10) -> np.ndarray:
+                 variance: float = 1, avg_pattern_length: int = 10, variance_pattern_length: int = 10, heart_rate: int = 60) -> np.ndarray:
         if self == BaseOscillation.Sinus:
-            frequency = get_or_error("frequency", frequency)
             end = 2 * np.pi * frequency
             base_ts = np.arange(0, end, end / length).reshape(length, 1)
             base_ts = np.repeat(base_ts, repeats=channels, axis=1)
@@ -37,5 +37,13 @@ class BaseOscillation(Enum):
                 ts.append(generate_pattern_data(length, avg_pattern_length, amplitude,
                 default_variance=variance, variance_pattern_length=variance_pattern_length))
             return np.column_stack(ts)
-        else: # self == BaseOscillation.ECG
-            pass
+        elif self == BaseOscillation.ECG:
+            ts = []
+            for channel in range(channels):
+                ecg = nk.ecg_simulate(duration=int(frequency),
+                                      sampling_rate=length // int(frequency),
+                                      heart_rate=heart_rate)
+                ts.append(ecg)
+            return np.column_stack(ts)
+        else:
+            raise ValueError(f"The Base Oscillation '{self.name}' is not supported by GutenTAG! Guten Tag!")
