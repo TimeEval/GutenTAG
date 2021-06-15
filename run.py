@@ -1,12 +1,9 @@
 import argparse
 import sys
-import matplotlib.pyplot as plt
-import numpy as np
-from typing import Optional
-
+from gutenTAG.generator import GutenTAG
 from gutenTAG.base_oscillations import BaseOscillation
 
-TITLE = "A good Timeseries Anomaly Generator."
+TITLE = "A good Timeseries Anomaly Generator. Guten Tag!"
 
 
 def generate_args() -> argparse.Namespace:
@@ -42,34 +39,7 @@ def generate_args() -> argparse.Namespace:
     parser.add_argument('--plot', type=bool, default=False,
                         help="Whether the generated Timeseries should be plotted!")
 
-
     return parser.parse_args(sys.argv[1:])
-
-
-class GutenTAG:
-    def __init__(self, args: argparse.Namespace):
-        print(args)
-
-        self.timeseries: Optional[np.ndarray] = None
-        self.args = args
-
-        self._generate_base_oscillation()
-        self._plot()
-
-    def _generate_base_oscillation(self):
-        self.timeseries = self.args.base_oscillation.generate(self.args.base_length,
-                                                              self.args.base_frequency,
-                                                              self.args.base_amplitude,
-                                                              self.args.base_channels,
-                                                              self.args.base_variance,
-                                                              self.args.base_avg_pattern_length,
-                                                              self.args.base_variance_pattern_length,
-                                                              self.args.base_heart_rate)
-
-    def _plot(self):
-        if self.args.plot:
-            plt.plot(self.timeseries)
-            plt.show()
 
 
 if __name__ == '__main__':
