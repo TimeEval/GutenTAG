@@ -32,7 +32,10 @@ class BaseOscillation(Enum):
             ts = np.concatenate([origin, steps]).cumsum(0)
             return MinMaxScaler(feature_range=[-amplitude, amplitude]).fit_transform(ts / np.abs(ts).max())
         elif self == BaseOscillation.CylinderBellFunnel:
-            return generate_pattern_data(length, avg_pattern_length, amplitude,
-                                         default_variance=variance, variance_pattern_length=variance_pattern_length)
+            ts = []
+            for channel in range(channels):
+                ts.append(generate_pattern_data(length, avg_pattern_length, amplitude,
+                default_variance=variance, variance_pattern_length=variance_pattern_length))
+            return np.column_stack(ts)
         else: # self == BaseOscillation.ECG
             pass
