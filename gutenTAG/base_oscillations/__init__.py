@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Optional, Any
+from typing import Optional, Any, List
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 import neurokit2 as nk
@@ -24,10 +24,10 @@ class BaseOscillation(Enum):
 
     def __init__(self, *args, **kwargs):
         super().__init__(args, **kwargs)
-        self.anomaly: Optional[Anomaly] = None
+        self.anomalies: Optional[List[Anomaly]] = None
 
-    def inject_anomaly(self, anomaly: Anomaly):
-        self.anomaly = anomaly
+    def inject_anomaly(self, anomalies: List[Anomaly]):
+        self.anomalies = anomalies
 
     def generate(self, length: int, frequency: float = 10., amplitude: float = 1., channels: int = 1,
                  variance: float = 1, avg_pattern_length: int = 10, variance_pattern_length: int = 10, heart_rate: int = 60) -> np.ndarray:
@@ -67,4 +67,4 @@ class BaseOscillation(Enum):
             #)
             pass
         else:
-            raise ValueError(f"The Base Oscillation '{self.name}' is not supported by GutenTAG! Guten Tag!")
+            raise ValueError(f"The Base Oscillation '{self.name}' is not yet supported! Guten Tag!")
