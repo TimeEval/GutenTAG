@@ -9,7 +9,7 @@ TITLE = "A good Timeseries Anomaly Generator. Guten Tag!"
 def generate_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=TITLE)
 
-    parser.add_argument('--base-oscillation', type=BaseOscillation, default=BaseOscillation.Sinus,
+    parser.add_argument('--base-oscillation', type=str, default="sinus",
                         help="Choices: [sinus, random_walk, cylinder_bell_funnel, ecg, comut]")
 
     parser.add_argument('--base-length', type=int, default=10000,
@@ -44,4 +44,4 @@ def generate_args() -> argparse.Namespace:
 
 if __name__ == '__main__':
     args = generate_args()
-    GutenTAG(args)
+    GutenTAG(**vars(args))

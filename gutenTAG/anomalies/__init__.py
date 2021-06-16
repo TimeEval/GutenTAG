@@ -1,5 +1,18 @@
+from __future__ import annotations
 from enum import Enum
-from typing import List, Optional, Union, Any
+from typing import List, Optional, Union, Any, Tuple
+import math
+
+import numpy as np
+
+from .types import AnomalyProtocol
+from .types.extremum import AnomalyExtremum
+from .types.frequency import AnomalyFrequency
+from .types.mean import AnomalyMean
+from .types.pattern import AnomalyPattern
+from .types.pattern_shift import AnomalyPatternShift
+from .types.platform import AnomalyPlatform
+from .types.variance import AnomalyVariance
 
 
 def list_or_wrap(value: Union[Any, List[Any]]) -> List[Any]:
@@ -14,49 +27,8 @@ class Position(Enum):
     End = "end"
 
 
-class AnomalyExtremum:
-    def __init__(self, factor: float, local: bool = False, context_window: int = 5):
-        self.factor = factor
-        self.local = local
-        self.context_window = context_window
-
-    @staticmethod
-    def Global(factor: float) -> 'AnomalyExtremum':
-        return AnomalyExtremum(factor, local=False)
-
-    @staticmethod
-    def Local(factor: float, context_window: int = 5) -> 'AnomalyExtremum':
-        return AnomalyExtremum(factor, local=True, context_window=context_window)
-
-
-class AnomalyFrequency:
-    def __init__(self, factor: float):
-        self.factor = factor
-
-
-class AnomalyPlatform:
-    def __init__(self, value: float):
-        self.value = value
-
-
-class AnomalyPattern:
-    def __init__(self):
-        raise NotImplementedError()
-
-
-class AnomalyMean:
-    def __init__(self, offset: float):
-        self.offset = offset
-
-
-class AnomalyVariance:
-    def __init__(self, factor: float):
-        self.factor = factor
-
-
-class AnomalyPatternShift:
-    def __init__(self, shift_factor: float):
-        self.shift_factor = shift_factor
+def exist_together(list_optionals: List[Optional]) -> bool:
+    return all(list(map(lambda x: x is None, list_optionals)))
 
 
 class Anomaly:
@@ -65,9 +37,11 @@ class Anomaly:
 
     def __init__(self,
                  position: Position,
-                 anomaly_length: int):
+                 anomaly_length: int,
+                 channel: int = 0):
         self.position = position
-        self.anomaly_lengths = anomaly_length
+        self.anomaly_length = anomaly_length
+        self.channel = channel
 
         # kinds
         self.anomaly_extremum: Optional[AnomalyExtremum] = None
@@ -78,30 +52,69 @@ class Anomaly:
         self.anomaly_variance: Optional[AnomalyVariance] = None
         self.anomaly_pattern_shift: Optional[AnomalyPatternShift] = None
 
-    def set_extrema(self, anomaly_extremum: AnomalyExtremum) -> 'Anomaly':
+    def _validate(self):
+        if not exist_together([self.anomaly_platform, self.anomaly_extremum]) and \
+                not exist_together([self.anomaly_platform, self.anomaly_frequency]) and \
+                not exist_together([self.anomaly_platform, self.anomaly_pattern]) and \
+                not exist_together([self.anomaly_platform, self.anomaly_mean]) and \
+                not exist_together([self.anomaly_platform, self.anomaly_pattern_shift]):
+            return
+        raise ValueError("The combination of anomaly options for this anomaly is not supported. Guten Tag!")
+
+    def set_extrema(self, anomaly_extremum: AnomalyExtremum) -> Anomaly:
         self.anomaly_extremum = anomaly_extremum
         return self
 
-    def set_frequencies(self, anomaly_frequency: AnomalyFrequency) -> 'Anomaly':
+    def set_frequencies(self, anomaly_frequency: AnomalyFrequency) -> Anomaly:
         self.anomaly_frequency = anomaly_frequency
         return self
 
-    def set_platform(self, anomaly_platform: AnomalyPlatform) -> 'Anomaly':
+    def set_platform(self, anomaly_platform: AnomalyPlatform) -> Anomaly:
         self.anomaly_platform = anomaly_platform
         return self
 
-    def set_pattern(self, anomaly_pattern: AnomalyPattern) -> 'Anomaly':
+    def set_pattern(self, anomaly_pattern: AnomalyPattern) -> Anomaly:
         self.anomaly_pattern = anomaly_pattern
         return self
 
-    def set_mean(self, anomaly_mean: AnomalyMean) -> 'Anomaly':
+    def set_mean(self, anomaly_mean: AnomalyMean) -> Anomaly:
         self.anomaly_mean = anomaly_mean
         return self
 
-    def set_variance(self, anomaly_variance: AnomalyVariance) -> 'Anomaly':
+    def set_variance(self, anomaly_variance: AnomalyVariance) -> Anomaly:
         self.anomaly_variance = anomaly_variance
         return self
 
-    def set_pattern_shift(self, anomaly_pattern_shift: AnomalyPatternShift) -> 'Anomaly':
+    def set_pattern_shift(self, anomaly_pattern_shift: AnomalyPatternShift) -> Anomaly:
         self.anomaly_pattern_shift = anomaly_pattern_shift
         return self
+
+    def generate(self, timeseries: np.ndarray, timeseries_length: int, timeseries_periods: int, base_oscillation: str) -> AnomalyProtocol:
+        self._validate()
+        start, end = self.get_position_range(timeseries_length, timeseries_periods)
+        protocol = AnomalyProtocol(start, end, timeseries)
+
+        if self.anomaly_platform:
+            protocol = self.anomaly_platform.generate(protocol)
+
+        return protocol
+
+    def get_position_range(self, timeseries_length: int, timeseries_periods: int) -> Tuple[int, int]:
+        start_period = 0
+        period_size = timeseries_length / timeseries_periods
+        periods_per_section = timeseries_periods / 3
+        if periods_per_section > 1:
+            start_period = math.floor(periods_per_section / 2)
+
+        position = self.position
+        if position == Position.Beginning:
+            start = int(period_size) * start_period
+        elif position == Position.Middle:
+            start = int(period_size) * (int(periods_per_section) + start_period)
+        elif position == Position.End:
+            start = int(period_size) * (2 * int(periods_per_section) + start_period)
+        else:
+            raise ValueError(f"The position '{position}' is not yet supported! Guten Tag!")
+
+        end = start + self.anomaly_length
+        return start, end

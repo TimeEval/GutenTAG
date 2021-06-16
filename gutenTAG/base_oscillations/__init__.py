@@ -1,10 +1,13 @@
 from enum import Enum
-from typing import Optional, Any, List
+from typing import Optional, Any, List, Dict, Type
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
 import neurokit2 as nk
-from ..anomalies import Anomaly
+
+from .__base__ import BaseOscillationInterface
+from .sinus import Sinus
 from .comut import CorrelatedMultivarGenerator
+
 
 from .cylinder_bell_funnel import generate_pattern_data
 
@@ -15,27 +18,45 @@ def get_or_error(name: str, value: Optional[Any]) -> Any:
     return value
 
 
-class BaseOscillation(Enum):
-    Sinus = "sinus"
-    RandomWalk = "random_walk"
-    CylinderBellFunnel = "cylinder_bell_funnel"
-    ECG = "ecg"
-    CoMuT = "comut"
+class BaseOscillation:
+    key_mapping: Dict[str, Type[BaseOscillationInterface]] = {
+        "sinus": Sinus,
+        #"random_walk": RandomWalk,
+        #"cylinder_bell_funnel": CylinderBellFunnel,
+        #"ecg": ECG,
+        #"comut": CoMuT,
+    }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(args, **kwargs)
-        self.anomalies: Optional[List[Anomaly]] = None
+    @staticmethod
+    def Sinus(*args, **kwargs) -> Sinus:
+        return Sinus(*args, **kwargs)
+    """
+    @staticmethod
+    def RandomWalk(*args, **kwargs) -> RandomWalk:
+        return RandomWalk(*args, **kwargs)
 
-    def inject_anomaly(self, anomalies: List[Anomaly]):
-        self.anomalies = anomalies
+    @staticmethod
+    def CylinderBellFunnel(*args, **kwargs) -> CylinderBellFunnel:
+        return CylinderBellFunnel(*args, **kwargs)
 
+    @staticmethod
+    def ECG(*args, **kwargs) -> ECG:
+        return ECG(*args, **kwargs)
+
+    @staticmethod
+    def CoMuT(*args, **kwargs) -> CoMuT:
+        return CoMuT(*args, **kwargs)
+    """
+
+    @staticmethod
+    def from_key(key: str, *args, **kwargs) -> BaseOscillationInterface:
+        return BaseOscillation.key_mapping[key](*args, **kwargs)
+
+    """
     def generate(self, length: int, frequency: float = 10., amplitude: float = 1., channels: int = 1,
                  variance: float = 1, avg_pattern_length: int = 10, variance_pattern_length: int = 10, heart_rate: int = 60) -> np.ndarray:
         if self == BaseOscillation.Sinus:
-            end = 2 * np.pi * frequency
-            base_ts = np.arange(0, end, end / length).reshape(length, 1)
-            base_ts = np.repeat(base_ts, repeats=channels, axis=1)
-            return np.sin(base_ts) * amplitude
+
         elif self == BaseOscillation.RandomWalk:
             origin = np.zeros((1, channels))
             steps = np.random.choice([-1., 0., 1.], size=(length, channels))
@@ -68,3 +89,4 @@ class BaseOscillation(Enum):
             pass
         else:
             raise ValueError(f"The Base Oscillation '{self.name}' is not yet supported! Guten Tag!")
+    """
