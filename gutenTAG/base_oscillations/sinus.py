@@ -11,7 +11,7 @@ class Sinus(BaseOscillationInterface):
         self.timeseries = np.sin(base_ts) * self.amplitude
 
         for anomaly in self.anomalies:
-            protocol = anomaly.generate(self.timeseries, self.length, self.frequency)
+            protocol = anomaly.generate(self.timeseries, self.length, self.frequency, "sinus")
             self.timeseries[protocol.start:protocol.end, anomaly.channel] = protocol.subsequence
 
         return self.timeseries
