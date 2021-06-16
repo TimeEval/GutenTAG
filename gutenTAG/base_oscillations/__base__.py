@@ -9,14 +9,14 @@ from ..anomalies import Anomaly
 
 class BaseOscillationInterface(ABC):
     def __init__(self, *args, **kwargs):
-        self.length = kwargs["base_length"]
-        self.frequency = kwargs["base_frequency"]
-        self.amplitude = kwargs["base_amplitude"]
-        self.channels = kwargs["base_channels"]
-        self.variance = kwargs["base_variance"]
-        self.avg_pattern_length = kwargs["base_avg_pattern_length"]
-        self.variance_pattern_length = kwargs["base_variance_pattern_length"]
-        self.heart_rate = kwargs["base_heart_rate"]
+        self.length = kwargs["length"]
+        self.frequency = kwargs["frequency"]
+        self.amplitude = kwargs["amplitude"]
+        self.channels = kwargs["channels"]
+        self.variance = kwargs["variance"]
+        self.avg_pattern_length = kwargs["avg-pattern-length"]
+        self.variance_pattern_length = kwargs["variance-pattern-length"]
+        self.heart_rate = kwargs["heart-rate"]
 
         self.anomalies: List[Anomaly] = []
         self.timeseries: Optional[np.ndarray] = None
