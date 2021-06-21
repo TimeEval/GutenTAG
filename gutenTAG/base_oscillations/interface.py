@@ -32,6 +32,10 @@ class BaseOscillationInterface(ABC):
     def generate(self) -> np.ndarray:
         raise NotImplementedError()
 
+    @abstractmethod
+    def generate_only_base(self, *args, **kwargs) -> np.ndarray:
+        raise NotImplementedError()
+
     @classmethod
     def __subclasshook__(cls, C):
         if cls is BaseOscillationInterface:

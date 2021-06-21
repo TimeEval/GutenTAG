@@ -18,9 +18,21 @@
           "length": 200,
           "kinds": [
             {
+              "name": "frequency",
+              "parameters": {
+                "factor": 2.0
+              }
+            }
+          ]
+        },
+        {
+          "position": "end",
+          "length": 200,
+          "kinds": [
+            {
               "name": "platform",
               "parameters": {
-                "value": 0
+                "value": 0.0
               }
             }
           ]

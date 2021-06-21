@@ -1,15 +1,10 @@
-from enum import Enum
 from typing import Optional, Any, List, Dict, Type
-from sklearn.preprocessing import MinMaxScaler
-import numpy as np
-import neurokit2 as nk
 
-from .__base__ import BaseOscillationInterface
+from .interface import BaseOscillationInterface
 from .sinus import Sinus
+from .random_walk import RandomWalk
+from .cylinder_bell_funnel import CylinderBellFunnel
 from .comut import CorrelatedMultivarGenerator
-
-
-from .cylinder_bell_funnel import generate_pattern_data
 
 
 def get_or_error(name: str, value: Optional[Any]) -> Any:
@@ -21,8 +16,8 @@ def get_or_error(name: str, value: Optional[Any]) -> Any:
 class BaseOscillation:
     key_mapping: Dict[str, Type[BaseOscillationInterface]] = {
         "sinus": Sinus,
-        #"random_walk": RandomWalk,
-        #"cylinder_bell_funnel": CylinderBellFunnel,
+        "random_walk": RandomWalk,
+        "cylinder_bell_funnel": CylinderBellFunnel,
         #"ecg": ECG,
         #"comut": CoMuT,
     }
@@ -30,7 +25,7 @@ class BaseOscillation:
     @staticmethod
     def Sinus(*args, **kwargs) -> Sinus:
         return Sinus(*args, **kwargs)
-    """
+
     @staticmethod
     def RandomWalk(*args, **kwargs) -> RandomWalk:
         return RandomWalk(*args, **kwargs)
@@ -38,7 +33,7 @@ class BaseOscillation:
     @staticmethod
     def CylinderBellFunnel(*args, **kwargs) -> CylinderBellFunnel:
         return CylinderBellFunnel(*args, **kwargs)
-
+    """
     @staticmethod
     def ECG(*args, **kwargs) -> ECG:
         return ECG(*args, **kwargs)
@@ -58,10 +53,7 @@ class BaseOscillation:
         if self == BaseOscillation.Sinus:
 
         elif self == BaseOscillation.RandomWalk:
-            origin = np.zeros((1, channels))
-            steps = np.random.choice([-1., 0., 1.], size=(length, channels))
-            ts = np.concatenate([origin, steps]).cumsum(0)
-            return MinMaxScaler(feature_range=[-amplitude, amplitude]).fit_transform(ts / np.abs(ts).max())
+            
         elif self == BaseOscillation.CylinderBellFunnel:
             ts = []
             for channel in range(channels):
