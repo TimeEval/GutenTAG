@@ -1,4 +1,5 @@
 import numpy as np
+from typing import Optional
 
 from ..utils.types import BaseOscillationKind
 from .interface import BaseOscillationInterface
@@ -14,7 +15,12 @@ class Sinus(BaseOscillationInterface):
 
         return self.timeseries
 
-    def generate_only_base(self, length, frequency, amplitude, channels=1) -> np.ndarray:
+    def generate_only_base(self, length: Optional = None, frequency: Optional = None, amplitude: Optional = None, channels: Optional = 1) -> np.ndarray:
+        length = length or self.length
+        frequency = frequency or self.frequency
+        amplitude = amplitude or self.amplitude
+        channels = channels or self.channels
+
         end = 2 * np.pi * frequency
         base_ts = np.arange(0, end, end / length).reshape(length, 1)
         base_ts = np.repeat(base_ts, repeats=channels, axis=1)
