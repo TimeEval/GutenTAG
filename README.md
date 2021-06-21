@@ -61,3 +61,15 @@ anomalies = [
 # to generate a sinus oscillation with a platform anomaly
 BaseOscillation.Sinus(**options).inject_anomalies(anomalies).generate()
 ```
+
+## Status
+
+|   | Sinus | Random Walk | CBF | ECG | CoMuT |
+|---|-------|-------------|-----|-----|-------|
+|extremum ||||||
+|frequency|x|||||
+|mean||||||
+|pattern||||||
+|pattern_shift||||||
+|platform|x|x|x|x|x|
+|variance||||||
