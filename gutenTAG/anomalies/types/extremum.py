@@ -31,8 +31,9 @@ class AnomalyExtremum(BaseAnomaly):
         if anomaly_protocol.base_oscillation_kind == BaseOscillationKind.Sinus:
             sinus = anomaly_protocol.base_oscillation
             length = anomaly_protocol.end - anomaly_protocol.start
-            base: np.ndarray = sinus.generate_only_base()[:length]
+            base: np.ndarray = sinus.generate_only_base()
             if self.local:
+                base = base[anomaly_protocol.start:anomaly_protocol.end]
                 context = base[:self.context_window]
                 diff = context.max() - context.min()
                 extremum = np.random.rand() * diff
@@ -40,7 +41,8 @@ class AnomalyExtremum(BaseAnomaly):
                 base[min_pos] += extremum
             else:
                 diff = base.max() - base.min()
-                extremum = np.random.rand() * diff
+                extremum = (np.random.rand() + 0.5) * diff
+                base = base[anomaly_protocol.start:anomaly_protocol.end]
                 base[length // 2] += extremum
             anomaly_protocol.subsequence = base[:, 0]
         else:
