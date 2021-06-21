@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import json, os
 
 from gutenTAG.base_oscillations import BaseOscillation, BaseOscillationInterface
-from gutenTAG.anomalies import Anomaly, AnomalyPlatform, Position
+from gutenTAG.anomalies import Anomaly, AnomalyPlatform, Position, AnomalyFrequency
 
 
 class GutenTAG:
@@ -45,8 +45,11 @@ class GutenTAG:
 
                 for anomaly_kind in anomaly_config.get("kinds", []):
                     name = anomaly_kind.get("name", "platform")
+                    parameters = anomaly_kind.get("parameters", {})
                     if name == "platform":
-                        anomaly.set_platform(AnomalyPlatform(anomaly_kind.get("value", 0.0)))
+                        anomaly.set_platform(AnomalyPlatform(parameters.get("value", 0.0)))
+                    elif name == "frequency":
+                        anomaly.set_frequencies(AnomalyFrequency(parameters.get("factor", 0.0)))
                 anomalies.append(anomaly)
             result.append(GutenTAG(base_oscillation, anomalies, True))
         return result

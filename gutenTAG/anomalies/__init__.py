@@ -5,6 +5,7 @@ import math
 
 import numpy as np
 
+from ..utils.types import BaseOscillationKind
 from .types import AnomalyProtocol
 from .types.extremum import AnomalyExtremum
 from .types.frequency import AnomalyFrequency
@@ -28,7 +29,7 @@ class Position(Enum):
 
 
 def exist_together(list_optionals: List[Optional]) -> bool:
-    return all(list(map(lambda x: x is None, list_optionals)))
+    return all(list(map(lambda x: x is not None, list_optionals)))
 
 
 class Anomaly:
@@ -89,13 +90,15 @@ class Anomaly:
         self.anomaly_pattern_shift = anomaly_pattern_shift
         return self
 
-    def generate(self, timeseries: np.ndarray, timeseries_length: int, timeseries_periods: int, base_oscillation: str) -> AnomalyProtocol:
+    def generate(self, base_oscillation: 'BaseOscillationInterface', timeseries_periods: int, base_oscillation_kind: BaseOscillationKind) -> AnomalyProtocol:
         self._validate()
-        start, end = self.get_position_range(timeseries_length, timeseries_periods)
-        protocol = AnomalyProtocol(start, end, timeseries)
+        start, end = self.get_position_range(base_oscillation.length, timeseries_periods)
+        protocol = AnomalyProtocol(start, end, base_oscillation, base_oscillation_kind)
 
         if self.anomaly_platform:
             protocol = self.anomaly_platform.generate(protocol)
+        if self.anomaly_frequency:
+            protocol = self.anomaly_frequency.generate(protocol)
 
         return protocol
 

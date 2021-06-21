@@ -4,6 +4,34 @@ import numpy as np
 import random
 import math
 
+from .interface import BaseOscillationInterface
+from ..utils.types import BaseOscillationKind
+
+
+class CylinderBellFunnel(BaseOscillationInterface):
+    def generate(self) -> np.ndarray:
+        ts = []
+        for channel in range(self.channels):
+            ts.append(self.generate_only_base())
+        self.timeseries = np.column_stack(ts)
+
+        for anomaly in self.anomalies:
+            protocol = anomaly.generate(self.timeseries, self.length, self.frequency, BaseOscillationKind.RandomWalk)
+            self.timeseries[protocol.start:protocol.end, anomaly.channel] = protocol.subsequence
+
+        return self.timeseries
+
+    def generate_only_base(self, *args, **kwargs) -> np.ndarray:
+        return generate_pattern_data(
+            self.length,
+            self.avg_pattern_length,
+            self.amplitude,
+            default_variance=self.frequency,
+            variance_pattern_length=self.variance_pattern_length,
+            variance_amplitude=2
+        )
+
+
 
 # cylinder bell funnel based on "Learning comprehensible descriptions of multivariate time series"
 

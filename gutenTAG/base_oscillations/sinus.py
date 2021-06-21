@@ -1,17 +1,21 @@
 import numpy as np
 
-from .__base__ import BaseOscillationInterface
+from ..utils.types import BaseOscillationKind
+from .interface import BaseOscillationInterface
 
 
 class Sinus(BaseOscillationInterface):
     def generate(self) -> np.ndarray:
-        end = 2 * np.pi * self.frequency
-        base_ts = np.arange(0, end, end / self.length).reshape(self.length, 1)
-        base_ts = np.repeat(base_ts, repeats=self.channels, axis=1)
-        self.timeseries = np.sin(base_ts) * self.amplitude
+        self.timeseries = self.generate_only_base(self.length, self.frequency, self.amplitude, self.channels)
 
         for anomaly in self.anomalies:
-            protocol = anomaly.generate(self.timeseries, self.length, self.frequency, "sinus")
+            protocol = anomaly.generate(self, self.frequency, BaseOscillationKind.Sinus)
             self.timeseries[protocol.start:protocol.end, anomaly.channel] = protocol.subsequence
 
         return self.timeseries
+
+    def generate_only_base(self, length, frequency, amplitude, channels=1) -> np.ndarray:
+        end = 2 * np.pi * frequency
+        base_ts = np.arange(0, end, end / length).reshape(length, 1)
+        base_ts = np.repeat(base_ts, repeats=channels, axis=1)
+        return np.sin(base_ts) * amplitude

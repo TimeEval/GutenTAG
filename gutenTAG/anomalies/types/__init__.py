@@ -3,12 +3,15 @@ from dataclasses import dataclass
 import numpy as np
 from typing import Optional
 
+from ...utils.types import BaseOscillationKind
+
 
 @dataclass
 class AnomalyProtocol:
     start: int
     end: int
-    values: np.ndarray
+    base_oscillation: 'BaseOscillationInterface'
+    base_oscillation_kind: BaseOscillationKind
     subsequence: Optional[np.ndarray] = None
 
 
