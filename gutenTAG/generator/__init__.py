@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Optional, Dict, List, Union
 import numpy as np
 import matplotlib.pyplot as plt
-import json, os
+import json, os, yaml
 
 from gutenTAG.base_oscillations import BaseOscillation, BaseOscillationInterface
 from gutenTAG.anomalies import Anomaly, AnomalyPlatform, Position, AnomalyFrequency, AnomalyExtremum
@@ -33,6 +33,12 @@ class GutenTAG:
         return GutenTAG.from_dict(config)
 
     @staticmethod
+    def from_yaml(path: os.PathLike) -> List[GutenTAG]:
+        with open(path, "r") as f:
+            config = yaml.load(f, Loader=yaml.FullLoader)
+        return GutenTAG.from_dict(config)
+
+    @staticmethod
     def from_dict(config: Dict) -> List[GutenTAG]:
         result = []
         for ts in config.get("timeseries", []):
@@ -58,4 +64,4 @@ class GutenTAG:
 
 
 if __name__ == "__main__":
-    GutenTAG.from_json("./generation_config.json")
+    GutenTAG.from_yaml("./generation_config.yaml")
