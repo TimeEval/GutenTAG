@@ -99,6 +99,8 @@ class Anomaly:
             protocol = self.anomaly_platform.generate(protocol)
         if self.anomaly_frequency:
             protocol = self.anomaly_frequency.generate(protocol)
+        if self.anomaly_extremum:
+            protocol = self.anomaly_extremum.generate(protocol)
 
         return protocol
 

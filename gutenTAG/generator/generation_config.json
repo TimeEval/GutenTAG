@@ -27,12 +27,13 @@
         },
         {
           "position": "end",
-          "length": 200,
+          "length": 10,
           "kinds": [
             {
-              "name": "platform",
+              "name": "extremum",
               "parameters": {
-                "value": 0.0
+                "min": true,
+                "local": true
               }
             }
           ]
