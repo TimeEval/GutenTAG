@@ -1,3 +1,4 @@
 pandas==1.2.0
 scikit-learn
 neurokit2==0.1.2
+pyyaml==5.3.1
