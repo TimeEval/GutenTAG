@@ -27,14 +27,14 @@
         },
         {
           "position": "end",
-          "length": 100,
+          "length": 1,
           "kinds": [
             {
               "name": "extremum",
               "parameters": {
-                "factor": 1.0,
-                "local": true,
-                "context_window": 100
+                "min": false,
+                "local": false,
+                "context_window": 0
               }
             }
           ]

@@ -1,12 +1,25 @@
 from __future__ import annotations
-from . import BaseAnomaly, AnomalyProtocol
+
+from typing import Type
+from dataclasses import dataclass
+
+from . import BaseAnomaly, AnomalyProtocol, IsDataclass
 from ...utils.types import BaseOscillationKind
 from ...utils.logger import GutenTagLogger
 
 
+@dataclass
+class AnomalyFrequencyParameters:
+    factor: float = 1.0
+
+
 class AnomalyFrequency(BaseAnomaly):
-    def __init__(self, factor: float):
-        self.factor = factor
+    @staticmethod
+    def get_parameter_class() -> Type[AnomalyFrequencyParameters]:
+        return AnomalyFrequencyParameters
+
+    def __init__(self, parameters: AnomalyFrequencyParameters):
+        self.factor = parameters.factor
         self.logger = GutenTagLogger()
 
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
