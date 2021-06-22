@@ -2,8 +2,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import List, Optional, Union, Any, Tuple
 import math
-
-import numpy as np
+import random
 
 from ..utils.types import BaseOscillationKind
 from .types import AnomalyProtocol
@@ -106,18 +105,18 @@ class Anomaly:
 
     def get_position_range(self, timeseries_length: int, timeseries_periods: int) -> Tuple[int, int]:
         start_period = 0
-        period_size = timeseries_length / timeseries_periods
-        periods_per_section = timeseries_periods / 3
+        period_size = int(timeseries_length / timeseries_periods)
+        periods_per_section = int(timeseries_periods / 3)
         if periods_per_section > 1:
-            start_period = math.floor(periods_per_section / 2)
+            start_period = random.choice(list(range(periods_per_section)))
 
         position = self.position
         if position == Position.Beginning:
-            start = int(period_size) * start_period
+            start = period_size * start_period
         elif position == Position.Middle:
-            start = int(period_size) * (int(periods_per_section) + start_period)
+            start = period_size * (periods_per_section + start_period)
         elif position == Position.End:
-            start = int(period_size) * (2 * int(periods_per_section) + start_period)
+            start = period_size * (2 * periods_per_section + start_period)
         else:
             raise ValueError(f"The position '{position}' is not yet supported! Guten Tag!")
 
