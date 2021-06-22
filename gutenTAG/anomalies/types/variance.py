@@ -17,12 +17,9 @@ class AnomalyVariance(BaseAnomaly):
         self.value = parameters.value
 
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
-        if anomaly_protocol.base_oscillation_kind == BaseOscillationKind.Sinus:
-            sinus = anomaly_protocol.base_oscillation
-            length = anomaly_protocol.end - anomaly_protocol.start
-            sinus.noise[anomaly_protocol.start:anomaly_protocol.end] = sinus.generate_noise(self.value, length)
-        else:  # elif anomaly_protocol.base_oscillation_kind == BaseOscillationKind.RandomWalk:
-            self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind.name)
+        base = anomaly_protocol.base_oscillation
+        length = anomaly_protocol.end - anomaly_protocol.start
+        base.noise[anomaly_protocol.start:anomaly_protocol.end] = base.generate_noise(self.value, length)
         return anomaly_protocol
 
     @staticmethod

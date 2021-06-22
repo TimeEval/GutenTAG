@@ -81,4 +81,4 @@ BaseOscillation.Sinus(**options).inject_anomalies(anomalies).generate()
 |pattern||||||
 |pattern_shift||||||
 |platform|x|x|x|x|x|
-|variance||||||
+|variance|x|x|x|x|x|
