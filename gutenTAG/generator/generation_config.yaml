@@ -14,6 +14,7 @@ timeseries:
       - position: "middle"
         length: 200
         kinds:
-          - name: "pattern"
+          - name: "pattern-shift"
             parameters:
-              sinusoid_k: 10
+              shift_factor: 0.1
+              transition_window: 75

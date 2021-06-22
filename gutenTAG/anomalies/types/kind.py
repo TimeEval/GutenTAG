@@ -10,6 +10,7 @@ from .platform import AnomalyPlatform
 from .variance import AnomalyVariance
 from .mean import AnomalyMean
 from .pattern import AnomalyPattern
+from .pattern_shift import AnomalyPatternShift
 
 
 def exist_together(list_optionals: List[Optional]) -> bool:
@@ -42,6 +43,8 @@ class AnomalyKind(Enum):
             anomaly = AnomalyMean(AnomalyMean.get_parameter_class()(**self.parameters))
         elif self == AnomalyKind.Pattern:
             anomaly = AnomalyPattern(AnomalyPattern.get_parameter_class()(**self.parameters))
+        elif self == AnomalyKind.PatternShift:
+            anomaly = AnomalyPatternShift(AnomalyPatternShift.get_parameter_class()(**self.parameters))
         else:
             raise ValueError(f"AnomalyKind {self.value} is not supported, yet! Guten Tag!")
 
