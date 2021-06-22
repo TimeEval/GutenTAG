@@ -13,7 +13,9 @@ def parse_args() -> argparse.Namespace:
 
     parser.add_argument("--config-yaml", type=Path, required=True, help="Path to config YAML")
     parser.add_argument("--output-dir", type=Path, default=Path("./generated-timeseries/"), help="Path to output directory")
+    parser.add_argument("--plot", action="store_true", help="Plot every generated time series.")
     parser.add_argument("--no-save", action="store_true", help="Prevent GutenTAG from saving the generated time series.")
+    parser.add_argument("--seed", type=int, default=None, help="Random seed")
 
     return parser.parse_args(sys.argv[1:])
 
@@ -34,9 +36,17 @@ def save_timeseries(timeseries: List[GutenTAG], args: argparse.Namespace):
         np.savetxt(os.path.join(SAVE_DIR, "test.csv"), test, delimiter=",")
 
 
+def set_random_seed(args: argparse.Namespace):
+    import random
+    np.random.seed(args.seed)
+    random.seed(args.seed)
+
+
 if __name__ == "__main__":
     args = parse_args()
-    timeseries = GutenTAG.from_yaml(args.config_yaml)
+    if args.seed is not None:
+        set_random_seed(args)
+    timeseries = GutenTAG.from_yaml(args.config_yaml, args.plot)
     if args.no_save:
         exit(0)
     save_timeseries(timeseries, args)

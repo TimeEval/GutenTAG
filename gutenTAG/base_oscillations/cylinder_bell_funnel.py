@@ -17,7 +17,7 @@ class CylinderBellFunnel(BaseOscillationInterface):
 
         for anomaly in self.anomalies:
             protocol = anomaly.generate(self.timeseries, self.length, self.frequency, BaseOscillationKind.RandomWalk)
-            self.timeseries[protocol.start:protocol.end, anomaly.channel] = protocol.subsequence
+            self.timeseries[protocol.start:protocol.end, anomaly.channel] = protocol.subsequences
 
         return self.timeseries
 

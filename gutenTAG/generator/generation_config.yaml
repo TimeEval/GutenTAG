@@ -1,5 +1,3 @@
-plot: true
-with_train: true
 timeseries:
   - base-oscillation: &sinus-base
       kind: "sinus"
@@ -7,24 +5,19 @@ timeseries:
       channels: 1
       frequency: 20.0
       amplitude: 1.0
-      variance: 0.1
+      variance: 0.0
       avg-pattern-length: 10
       variance-pattern-length: 10
       heart-rate: 60
+      with-train: false
     anomalies:
-      - position: "beginning"
+      - position: "middle"
         length: 200
         kinds:
-          - name: "frequency"
+          - name: "platform"
             parameters:
-              factor: 2.0
-  - base-oscillation:
-      <<: *sinus-base
-    anomalies:
-      - position: "end"
-        length: 10
-        kinds:
-          - name: "extremum"
+              value: 0.0
+
+          - name: "variance"
             parameters:
-              min: true,
-              local: true
+              value: 0.0

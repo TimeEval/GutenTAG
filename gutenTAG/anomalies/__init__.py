@@ -1,11 +1,14 @@
 from __future__ import annotations
 from enum import Enum
-from typing import List, Optional, Union, Any, Tuple
+from typing import List, Optional, Union, Any, Tuple, Dict
 import math
 import random
 
+import numpy as np
+
 from ..utils.types import BaseOscillationKind
-from .types import AnomalyProtocol
+from .types import AnomalyProtocol, BaseAnomaly, LabelRange
+from .types.kind import AnomalyKind
 from .types.extremum import AnomalyExtremum
 from .types.frequency import AnomalyFrequency
 from .types.mean import AnomalyMean
@@ -27,10 +30,6 @@ class Position(Enum):
     End = "end"
 
 
-def exist_together(list_optionals: List[Optional]) -> bool:
-    return all(list(map(lambda x: x is not None, list_optionals)))
-
-
 class Anomaly:
     """This class acts like a generator graph, that collects all options in the beginning and,
     while being injected to a BaseOscillation, performs the changes."""
@@ -43,63 +42,21 @@ class Anomaly:
         self.anomaly_length = anomaly_length
         self.channel = channel
 
-        # kinds
-        self.anomaly_extremum: Optional[AnomalyExtremum] = None
-        self.anomaly_frequency: Optional[AnomalyFrequency] = None
-        self.anomaly_platform: Optional[AnomalyPlatform] = None
-        self.anomaly_pattern: Optional[AnomalyPattern] = None
-        self.anomaly_mean: Optional[AnomalyMean] = None
-        self.anomaly_variance: Optional[AnomalyVariance] = None
-        self.anomaly_pattern_shift: Optional[AnomalyPatternShift] = None
+        self.anomaly_kinds: List[AnomalyKind] = []
 
-    def _validate(self):
-        if not exist_together([self.anomaly_platform, self.anomaly_extremum]) and \
-                not exist_together([self.anomaly_platform, self.anomaly_frequency]) and \
-                not exist_together([self.anomaly_platform, self.anomaly_pattern]) and \
-                not exist_together([self.anomaly_platform, self.anomaly_mean]) and \
-                not exist_together([self.anomaly_platform, self.anomaly_pattern_shift]):
-            return
-        raise ValueError("The combination of anomaly options for this anomaly is not supported. Guten Tag!")
-
-    def set_extrema(self, anomaly_extremum: AnomalyExtremum) -> Anomaly:
-        self.anomaly_extremum = anomaly_extremum
-        return self
-
-    def set_frequencies(self, anomaly_frequency: AnomalyFrequency) -> Anomaly:
-        self.anomaly_frequency = anomaly_frequency
-        return self
-
-    def set_platform(self, anomaly_platform: AnomalyPlatform) -> Anomaly:
-        self.anomaly_platform = anomaly_platform
-        return self
-
-    def set_pattern(self, anomaly_pattern: AnomalyPattern) -> Anomaly:
-        self.anomaly_pattern = anomaly_pattern
-        return self
-
-    def set_mean(self, anomaly_mean: AnomalyMean) -> Anomaly:
-        self.anomaly_mean = anomaly_mean
-        return self
-
-    def set_variance(self, anomaly_variance: AnomalyVariance) -> Anomaly:
-        self.anomaly_variance = anomaly_variance
-        return self
-
-    def set_pattern_shift(self, anomaly_pattern_shift: AnomalyPatternShift) -> Anomaly:
-        self.anomaly_pattern_shift = anomaly_pattern_shift
+    def set_anomaly(self, anomaly_kind: AnomalyKind) -> Anomaly:
+        self.anomaly_kinds.append(anomaly_kind)
         return self
 
     def generate(self, base_oscillation: 'BaseOscillationInterface', timeseries_periods: int, base_oscillation_kind: BaseOscillationKind) -> AnomalyProtocol:
-        self._validate()
+        # AnomalyKind.validate(self.anomaly_kinds)
         start, end = self.get_position_range(base_oscillation.length, timeseries_periods)
-        protocol = AnomalyProtocol(start, end, base_oscillation, base_oscillation_kind)
+        length = end - start
+        label_range = LabelRange(start, length)
+        protocol = AnomalyProtocol(start, end, base_oscillation, base_oscillation_kind, label_range)
 
-        if self.anomaly_platform:
-            protocol = self.anomaly_platform.generate(protocol)
-        if self.anomaly_frequency:
-            protocol = self.anomaly_frequency.generate(protocol)
-        if self.anomaly_extremum:
-            protocol = self.anomaly_extremum.generate(protocol)
+        for anomaly in self.anomaly_kinds:
+            protocol = anomaly.generate(protocol)
 
         return protocol
 

@@ -11,7 +11,7 @@ class RandomWalk(BaseOscillationInterface):
 
         for anomaly in self.anomalies:
             protocol = anomaly.generate(self, self.frequency, BaseOscillationKind.RandomWalk)
-            self.timeseries[protocol.start:protocol.end, anomaly.channel] = protocol.subsequence
+            self.timeseries[protocol.start:protocol.end, anomaly.channel] = protocol.subsequences
 
         return self.timeseries
 

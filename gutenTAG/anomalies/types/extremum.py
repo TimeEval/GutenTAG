@@ -3,9 +3,8 @@ from dataclasses import dataclass
 from typing import Type
 import numpy as np
 
-from . import BaseAnomaly, IsDataclass, LabelRange
+from . import BaseAnomaly
 from .. import AnomalyProtocol
-from ...utils.logger import GutenTagLogger
 from ...utils.types import BaseOscillationKind
 
 
@@ -13,7 +12,7 @@ from ...utils.types import BaseOscillationKind
 class AnomalyExtremumParameters:
     min: bool = False
     local: bool = False
-    context_window: int = 5
+    context_window: int = 10
 
 
 class AnomalyExtremum(BaseAnomaly):
@@ -22,9 +21,10 @@ class AnomalyExtremum(BaseAnomaly):
         return AnomalyExtremumParameters
 
     def __init__(self, parameters: AnomalyExtremumParameters):
+        super().__init__()
         self.min = parameters.min
         self.local = parameters.local
-        self.logger = GutenTagLogger()
+        self.context_window = parameters.context_window
 
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
         if anomaly_protocol.base_oscillation_kind == BaseOscillationKind.Sinus:
@@ -32,14 +32,14 @@ class AnomalyExtremum(BaseAnomaly):
             length = anomaly_protocol.end - anomaly_protocol.start
             base: np.ndarray = sinus.generate_only_base()
             if self.local:
-                base = base[anomaly_protocol.start:anomaly_protocol.end]
+                base = base[anomaly_protocol.start - self.context_window:anomaly_protocol.end + self.context_window]
                 diff = base.max() - base.min()
                 extremum = np.random.rand() * diff
+                pos = self.context_window
                 if self.min:
-                    pos = base.argmax(axis=0)[0]
+                    print(base[pos],  base[pos] - extremum)
                     base[pos] -= extremum
                 else:
-                    pos = base.argmin(axis=0)[0]
                     base[pos] += extremum
             else:
                 diff = base.max() - base.min()
@@ -50,8 +50,7 @@ class AnomalyExtremum(BaseAnomaly):
                     base[pos] -= extremum
                 else:
                     base[pos] += extremum
-            anomaly_protocol.subsequence = base[:, 0]
-            anomaly_protocol.labels.append(LabelRange(start=anomaly_protocol.start + pos, length=1))
+            anomaly_protocol.subsequences.append(base[[pos], 0])
         else:
             self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind.name)
         return anomaly_protocol

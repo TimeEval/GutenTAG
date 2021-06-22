@@ -1,14 +1,10 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 import numpy as np
-from typing import Optional, Dict, Type, List
-from typing_extensions import Protocol
+from typing import Optional, List
 
+from ...utils.logger import GutenTagLogger
 from ...utils.types import BaseOscillationKind
-
-
-class IsDataclass(Protocol):
-    __dataclass_fields__: Dict
 
 
 @dataclass
@@ -23,14 +19,13 @@ class AnomalyProtocol:
     end: int
     base_oscillation: 'BaseOscillationInterface'
     base_oscillation_kind: BaseOscillationKind
-    subsequence: Optional[np.ndarray] = None
-    labels: List[LabelRange] = field(default_factory=lambda: [])
+    labels: LabelRange
+    subsequences: List[np.ndarray] = field(default_factory=lambda: [])
 
 
 class BaseAnomaly(ABC):
-    @abstractmethod
-    def __init__(self, parameters: IsDataclass):
-        raise NotImplementedError()
+    def __init__(self):
+        self.logger = GutenTagLogger()
 
     @abstractmethod
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
