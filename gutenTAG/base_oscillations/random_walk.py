@@ -10,7 +10,7 @@ class RandomWalk(BaseOscillationInterface):
         self.timeseries = self.generate_only_base()
 
         for anomaly in self.anomalies:
-            protocol = anomaly.generate(self.timeseries, self.length, self.frequency, BaseOscillationKind.RandomWalk)
+            protocol = anomaly.generate(self, self.frequency, BaseOscillationKind.RandomWalk)
             self.timeseries[protocol.start:protocol.end, anomaly.channel] = protocol.subsequence
 
         return self.timeseries
