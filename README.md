@@ -73,7 +73,7 @@ BaseOscillation.Sinus(**options).inject_anomalies(anomalies).generate()
 
 |   | Sinus | Random Walk | CBF | ECG | CoMuT |
 |---|-------|-------------|-----|-----|-------|
-|extremum |x|||||
+|extremum |x|x|x|x|x|
 |frequency|x|||||
 |mean|x|x|x|x|x|
 |pattern||||||

@@ -27,30 +27,27 @@ class AnomalyExtremum(BaseAnomaly):
         self.context_window = parameters.context_window
 
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
-        if anomaly_protocol.base_oscillation_kind == BaseOscillationKind.Sinus:
-            sinus = anomaly_protocol.base_oscillation
-            length = anomaly_protocol.end - anomaly_protocol.start
-            base: np.ndarray = sinus.generate_only_base()
-            if self.local:
-                base = base[anomaly_protocol.start - self.context_window:anomaly_protocol.end + self.context_window]
-                diff = base.max() - base.min()
-                extremum = np.random.rand() * diff
-                pos = self.context_window
-                if self.min:
-                    print(base[pos],  base[pos] - extremum)
-                    base[pos] -= extremum
-                else:
-                    base[pos] += extremum
+        bo = anomaly_protocol.base_oscillation
+        length = anomaly_protocol.end - anomaly_protocol.start
+        base: np.ndarray = bo.generate_only_base()
+        if self.local:
+            base = base[anomaly_protocol.start - self.context_window:anomaly_protocol.end + self.context_window]
+            diff = base.max() - base.min()
+            extremum = np.random.rand() * diff
+            pos = self.context_window
+            if self.min:
+                print(base[pos],  base[pos] - extremum)
+                base[pos] -= extremum
             else:
-                diff = base.max() - base.min()
-                extremum = (np.random.rand() + 0.5) * diff
-                base = base[anomaly_protocol.start:anomaly_protocol.end]
-                pos = length // 2
-                if self.min:
-                    base[pos] -= extremum
-                else:
-                    base[pos] += extremum
-            anomaly_protocol.subsequences.append(base[[pos], 0])
+                base[pos] += extremum
         else:
-            self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind.name)
+            diff = base.max() - base.min()
+            extremum = (np.random.rand() + 0.5) * diff
+            base = base[anomaly_protocol.start:anomaly_protocol.end]
+            pos = length // 2
+            if self.min:
+                base[pos] -= extremum
+            else:
+                base[pos] += extremum
+        anomaly_protocol.subsequences.append(base[[pos], 0])
         return anomaly_protocol
