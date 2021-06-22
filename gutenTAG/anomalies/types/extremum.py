@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import Type
 import numpy as np
 
-from . import BaseAnomaly, IsDataclass
+from . import BaseAnomaly, IsDataclass, LabelRange
 from .. import AnomalyProtocol
 from ...utils.logger import GutenTagLogger
 from ...utils.types import BaseOscillationKind
@@ -36,20 +36,22 @@ class AnomalyExtremum(BaseAnomaly):
                 diff = base.max() - base.min()
                 extremum = np.random.rand() * diff
                 if self.min:
-                    pos = base.argmax(axis=0)
+                    pos = base.argmax(axis=0)[0]
                     base[pos] -= extremum
                 else:
-                    pos = base.argmin(axis=0)
+                    pos = base.argmin(axis=0)[0]
                     base[pos] += extremum
             else:
                 diff = base.max() - base.min()
                 extremum = (np.random.rand() + 0.5) * diff
                 base = base[anomaly_protocol.start:anomaly_protocol.end]
+                pos = length // 2
                 if self.min:
-                    base[length // 2] -= extremum
+                    base[pos] -= extremum
                 else:
-                    base[length // 2] += extremum
+                    base[pos] += extremum
             anomaly_protocol.subsequence = base[:, 0]
+            anomaly_protocol.labels.append(LabelRange(start=anomaly_protocol.start + pos, length=1))
         else:
             self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind.name)
         return anomaly_protocol

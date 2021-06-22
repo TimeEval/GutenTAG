@@ -1,25 +1,30 @@
-"timeseries":
-  - "base-oscillation":
-      "kind": "sinus"
-      "length": 1000
-      "channels": 1
-      "frequency": 20.0
-      "amplitude": 1.0
-      "variance": 1.0
-      "avg-pattern-length": 10
-      "variance-pattern-length": 10
-      "heart-rate": 60
-    "anomalies":
-      - "position": "beginning"
-        "length": 200
-        "kinds":
-          - "name": "frequency"
-            "parameters":
-              "factor": 2.0
-      - "position": "end"
-        "length": 10
-        "kinds":
-          - "name": "extremum"
-            "parameters":
-              "min": true,
-              "local": true
+plot: true
+with_train: true
+timeseries:
+  - base-oscillation: &sinus-base
+      kind: "sinus"
+      length: 1000
+      channels: 1
+      frequency: 20.0
+      amplitude: 1.0
+      variance: 1.0
+      avg-pattern-length: 10
+      variance-pattern-length: 10
+      heart-rate: 60
+    anomalies:
+      - position: "beginning"
+        length: 200
+        kinds:
+          - name: "frequency"
+            parameters:
+              factor: 2.0
+  - base-oscillation:
+      <<: *sinus-base
+    anomalies:
+      - position: "end"
+        length: 10
+        kinds:
+          - name: "extremum"
+            parameters:
+              min: true,
+              local: true

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import List, Optional, Type
+from typing import List, Optional, Tuple
 import numpy as np
 
 from ..anomalies import Anomaly
@@ -20,8 +20,9 @@ class BaseOscillationInterface(ABC):
 
         self.anomalies: List[Anomaly] = []
         self.timeseries: Optional[np.ndarray] = None
+        self.labels: Optional[np.ndarray] = None
 
-    def inject_anomalies(self, anomalies: List[Anomaly]) -> Type[BaseOscillationInterface]:
+    def inject_anomalies(self, anomalies: List[Anomaly]) -> BaseOscillationInterface:
         self.anomalies.extend(anomalies)
         if issubclass(self.__class__, BaseOscillationInterface):
             return self
@@ -29,7 +30,7 @@ class BaseOscillationInterface(ABC):
                                   "This method is implemented for its subclasses. Guten Tag!")
 
     @abstractmethod
-    def generate(self) -> np.ndarray:
+    def generate(self) -> Tuple[np.ndarray, Optional[np.ndarray]]:
         raise NotImplementedError()
 
     @abstractmethod

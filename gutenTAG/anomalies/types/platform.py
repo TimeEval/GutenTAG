@@ -2,7 +2,7 @@ import numpy as np
 from dataclasses import dataclass
 from typing import Type
 
-from . import BaseAnomaly, AnomalyProtocol
+from . import BaseAnomaly, AnomalyProtocol, LabelRange
 
 
 @dataclass
@@ -19,6 +19,8 @@ class AnomalyPlatform(BaseAnomaly):
         self.value = parameters.value
 
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
-        values = np.zeros(anomaly_protocol.end - anomaly_protocol.start) + self.value
+        length = anomaly_protocol.end - anomaly_protocol.start
+        values = np.zeros(length) + self.value
         anomaly_protocol.subsequence = values
+        anomaly_protocol.labels.append(LabelRange(start=anomaly_protocol.start, length=length))
         return anomaly_protocol

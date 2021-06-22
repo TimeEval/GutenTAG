@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Type
 from dataclasses import dataclass
 
-from . import BaseAnomaly, AnomalyProtocol, IsDataclass
+from . import BaseAnomaly, AnomalyProtocol, IsDataclass, LabelRange
 from ...utils.types import BaseOscillationKind
 from ...utils.logger import GutenTagLogger
 
@@ -28,6 +28,7 @@ class AnomalyFrequency(BaseAnomaly):
             length = anomaly_protocol.end - anomaly_protocol.start
             subsequence = sinus.generate_only_base(length, sinus.frequency * self.factor * (length / sinus.length)).reshape(-1)
             anomaly_protocol.subsequence = subsequence
+            anomaly_protocol.labels.append(LabelRange(start=anomaly_protocol.start, length=length))
         else: #elif anomaly_protocol.base_oscillation_kind == BaseOscillationKind.RandomWalk:
             self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind.name)
         return anomaly_protocol

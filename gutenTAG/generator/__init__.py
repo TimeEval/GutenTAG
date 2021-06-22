@@ -10,17 +10,23 @@ from gutenTAG.anomalies import Anomaly, AnomalyPlatform, Position, AnomalyFreque
 
 
 class GutenTAG:
-    def __init__(self, base_oscillation: BaseOscillationInterface, anomalies: List[Anomaly], plot: bool = False):
+    def __init__(self, base_oscillation: BaseOscillationInterface, anomalies: List[Anomaly], plot: bool = False, with_train: bool = False):
         self.base_oscillation = base_oscillation
         self.anomalies = anomalies
-        self.timeseries: Optional[np.ndarray] = None
+        self.normal_timeseries: Optional[np.ndarray] = None
+        self.anomaly_timeseries: Optional[np.ndarray] = None
+        self.labels: Optional[np.ndarray] = None
 
         self._generate_base_oscillation()
+
+        if with_train:
+            self.normal_timeseries = self.base_oscillation.generate_only_base()
+
         if plot:
             self._plot()
 
     def _generate_base_oscillation(self):
-        self.timeseries = self.base_oscillation.inject_anomalies(self.anomalies).generate()
+        self.timeseries, self.labels = self.base_oscillation.inject_anomalies(self.anomalies).generate()
 
     def _plot(self):
         plt.plot(self.timeseries)
@@ -41,6 +47,8 @@ class GutenTAG:
     @staticmethod
     def from_dict(config: Dict) -> List[GutenTAG]:
         result = []
+        plot = config.get("plot", False)
+        with_train = config.get("with_train", False)
         for ts in config.get("timeseries", []):
             base_oscillation_configs = ts.get("base-oscillation", {})
             key = base_oscillation_configs.get("kind", "sinus")
@@ -59,9 +67,10 @@ class GutenTAG:
                     elif name == "extremum":
                         anomaly.set_extrema(AnomalyExtremum(AnomalyExtremum.get_parameter_class()(**parameters)))
                 anomalies.append(anomaly)
-            result.append(GutenTAG(base_oscillation, anomalies, True))
+            result.append(GutenTAG(base_oscillation, anomalies, plot, with_train))
         return result
 
 
 if __name__ == "__main__":
-    GutenTAG.from_yaml("./generation_config.yaml")
+    OUTPUT_DIR = "../../generated-timeseries/"
+    timeseries = GutenTAG.from_yaml("./generation_config.yaml")
