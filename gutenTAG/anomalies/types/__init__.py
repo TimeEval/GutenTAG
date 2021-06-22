@@ -17,6 +17,7 @@ class LabelRange:
 class AnomalyProtocol:
     start: int
     end: int
+    channel: int
     base_oscillation: 'BaseOscillationInterface'
     base_oscillation_kind: BaseOscillationKind
     labels: LabelRange

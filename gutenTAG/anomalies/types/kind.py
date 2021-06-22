@@ -8,6 +8,7 @@ from .extremum import AnomalyExtremum
 from .frequency import AnomalyFrequency
 from .platform import AnomalyPlatform
 from .variance import AnomalyVariance
+from .mean import AnomalyMean
 
 
 def exist_together(list_optionals: List[Optional]) -> bool:
@@ -36,6 +37,8 @@ class AnomalyKind(Enum):
             anomaly = AnomalyExtremum(AnomalyExtremum.get_parameter_class()(**self.parameters))
         elif self == AnomalyKind.Variance:
             anomaly = AnomalyVariance(AnomalyVariance.get_parameter_class()(**self.parameters))
+        elif self == AnomalyKind.Mean:
+            anomaly = AnomalyMean(AnomalyMean.get_parameter_class()(**self.parameters))
         else:
             raise ValueError(f"AnomalyKind {self.value} is not supported, yet! Guten Tag!")
 

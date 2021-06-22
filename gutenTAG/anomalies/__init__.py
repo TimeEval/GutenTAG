@@ -53,7 +53,7 @@ class Anomaly:
         start, end = self.get_position_range(base_oscillation.length, timeseries_periods)
         length = end - start
         label_range = LabelRange(start, length)
-        protocol = AnomalyProtocol(start, end, base_oscillation, base_oscillation_kind, label_range)
+        protocol = AnomalyProtocol(start, end, self.channel, base_oscillation, base_oscillation_kind, label_range)
 
         for anomaly in self.anomaly_kinds:
             protocol = anomaly.generate(protocol)

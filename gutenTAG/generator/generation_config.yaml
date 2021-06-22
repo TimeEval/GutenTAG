@@ -14,10 +14,6 @@ timeseries:
       - position: "middle"
         length: 200
         kinds:
-          - name: "platform"
+          - name: "mean"
             parameters:
-              value: 0.0
-
-          - name: "variance"
-            parameters:
-              value: 0.0
+              offset: 1.0
