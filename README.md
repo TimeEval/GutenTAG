@@ -64,11 +64,9 @@ BaseOscillation.Sinus(**options).inject_anomalies(anomalies).generate()
 
 ## Adding a new Anomaly Type
 
-- create a new anomaly type class under [gutenTAG/anomalies/types](gutenTAG/anomalies/types)
-    - the new class should inherit from [`gutenTAG.anomalies.BaseAnomaly`](gutenTAG/anomalies/types/__init__.py)
-- add a new setter function in [`gutenTAG.anomalies.Anomaly`](gutenTAG/anomalies/__init__.py) that sets the new anomaly type
-- add a new `if` condition to the `Anomaly.set_kind` function in 
-- add a new `if` condition to the `Anomaly.generate` function in [gutenTag/anomalies/__init\__.py](gutenTAG/anomalies/__init__.py) to add the anomaly to the generator
+1. create a new Enum type for [`AnomalyKind`](gutenTAG/anomalies/types/kind.py) and adapt the `generate` method
+2. [RECOMMENDED] create a new anomaly type class under [gutenTAG/anomalies/types](gutenTAG/anomalies/types)
+    2. the new class should inherit from [`gutenTAG.anomalies.BaseAnomaly`](gutenTAG/anomalies/types/__init__.py)
 
 
 ## Status
