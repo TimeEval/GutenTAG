@@ -14,6 +14,6 @@ timeseries:
       - position: "middle"
         length: 200
         kinds:
-          - name: "mean"
+          - name: "pattern"
             parameters:
-              offset: 1.0
+              sinusoid_k: 10
