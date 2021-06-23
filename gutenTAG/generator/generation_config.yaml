@@ -1,8 +1,8 @@
 timeseries:
   - base-oscillation: &base
-      kind: "ecg"
+      kind: "cylinder_bell_funnel"
       length: 1000
-      channels: 1
+      channels: 2
       with-train: false
       frequency: 10.0
       amplitude: 1.0
@@ -10,14 +10,6 @@ timeseries:
       avg-pattern-length: 0
       variance-pattern-length: 10
       heart-rate: 60
-    anomalies:
-      - position: "middle"
-        length: 200
-        kinds:
-          - name: "pattern-shift"
-            parameters:
-              shift_factor: 0.3
-              transition_window: 75
   #- base-oscillation: &sinus-base
   #    kind: "sinus"
   #    length: 1000
