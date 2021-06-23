@@ -19,7 +19,7 @@ class AnomalyVariance(BaseAnomaly):
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
         base = anomaly_protocol.base_oscillation
         length = anomaly_protocol.end - anomaly_protocol.start
-        base.noise[anomaly_protocol.start:anomaly_protocol.end] = base.generate_noise(self.value, length)
+        base.noise[anomaly_protocol.start:anomaly_protocol.end, anomaly_protocol.channel] = base.generate_noise(self.value * base.amplitude, length, channels=1).reshape(-1)
         return anomaly_protocol
 
     @staticmethod

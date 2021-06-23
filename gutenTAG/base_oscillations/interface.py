@@ -22,7 +22,7 @@ class BaseOscillationInterface(ABC):
         self.anomalies: List[Anomaly] = []
         self.timeseries: Optional[np.ndarray] = None
         self.labels: np.ndarray = np.zeros(self.length, dtype=np.int)
-        self.noise = self.generate_noise(self.variance * self.amplitude, self.length)
+        self.noise = self.generate_noise(self.variance * self.amplitude, self.length, self.channels)
 
     def inject_anomalies(self, anomalies: List[Anomaly]) -> BaseOscillationInterface:
         self.anomalies.extend(anomalies)
@@ -31,8 +31,8 @@ class BaseOscillationInterface(ABC):
         raise NotImplementedError("Base class BaseOscillationInterface should not call 'inject_anomaly'. "
                                   "This method is implemented for its subclasses. Guten Tag!")
 
-    def generate_noise(self, variance: float, length: int) -> np.ndarray:
-        return np.random.normal(0, variance, length).reshape(length, 1)
+    def generate_noise(self, variance: float, length: int, channels: int) -> np.ndarray:
+        return np.random.normal(0, variance, (length, channels))
 
     def _generate_anomalies(self):
         label_ranges: List[LabelRange] = []

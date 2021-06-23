@@ -1,22 +1,23 @@
 timeseries:
   - base-oscillation: &base
-      kind: "ecg"
+      kind: "sinus"
       length: 1000
-      channels: 1 # TODO: noise per channel
+      channels: 2
       with-train: false
       frequency: 10.0
       amplitude: 1.0
-      variance: 0.0
+      variance: 0.5
       avg-pattern-length: 0
       variance-pattern-length: 10
       heart-rate: 60
     anomalies:
       - position: "middle"
         length: 200
+        channel: 1
         kinds:
-          - name: "pattern"
-            parameters: {}
-  - base-oscillation: *base
+          - name: "variance"
+            parameters:
+              value: 0.1
   #- base-oscillation: &sinus-base
   #    kind: "sinus"
   #    length: 1000

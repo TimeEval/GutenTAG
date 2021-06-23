@@ -60,7 +60,7 @@ class GutenTAG:
             base_oscillation = BaseOscillation.from_key(key, **base_oscillation_configs)
             anomalies = []
             for anomaly_config in ts.get("anomalies", []):
-                anomaly = Anomaly(Position(anomaly_config.get("position", "middle")), anomaly_config.get("length", 200))
+                anomaly = Anomaly(Position(anomaly_config.get("position", "middle")), anomaly_config.get("length", 200), anomaly_config.get("channel", 0))
 
                 for anomaly_kind in anomaly_config.get("kinds", []):
                     name = anomaly_kind.get("name", "platform")
