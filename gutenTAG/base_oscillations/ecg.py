@@ -24,9 +24,12 @@ class ECG(BaseOscillationInterface):
         frequency = int(frequency or self.frequency)
         heart_rate = heart_rate or self.heart_rate
         sampling_rate = self.length // frequency
-        ecg = nk.ecg_simulate(duration=frequency,
-                              sampling_rate=sampling_rate,
-                              heart_rate=heart_rate,
-                              random_state=np.random.get_state()[1][0],
-                              method='standard')
-        return np.array(ecg).reshape(-1, 1)
+        ts = []
+        for channel in range(self.channels):
+            ecg = nk.ecg_simulate(duration=frequency,
+                                  sampling_rate=sampling_rate,
+                                  heart_rate=heart_rate,
+                                  random_state=np.random.get_state()[1][channel],
+                                  method='standard')
+            ts.append(ecg)
+        return np.column_stack(ts)

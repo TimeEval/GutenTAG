@@ -18,7 +18,7 @@ class CylinderBellFunnel(BaseOscillationInterface):
         return BaseOscillationKind.CylinderBellFunnel
 
     def generate(self) -> Tuple[np.ndarray, np.ndarray]:
-        self.timeseries = self.generate_only_base().reshape(-1, 1)
+        self.timeseries = self.generate_only_base()
         self._generate_anomalies()
         return self.timeseries, self.labels
 
@@ -33,14 +33,19 @@ class CylinderBellFunnel(BaseOscillationInterface):
         amplitude = amplitude or self.amplitude
         variance_pattern_length = variance_pattern_length or self.variance_pattern_length
 
-        return generate_pattern_data(
-            length,
-            self.avg_pattern_length,
-            amplitude,
-            default_variance=frequency,
-            variance_pattern_length=variance_pattern_length,
-            variance_amplitude=2
-        )
+        ts = []
+        for channel in range(self.channels):
+            cbf = generate_pattern_data(
+                length,
+                self.avg_pattern_length,
+                amplitude,
+                default_variance=frequency,
+                variance_pattern_length=variance_pattern_length,
+                variance_amplitude=2
+            )
+            ts.append(cbf)
+        return np.column_stack(ts)
+
 
 
 # Taken from https://github.com/KDD-OpenSource/data-generation/blob/master/generation/cbf.py
