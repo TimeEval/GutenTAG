@@ -29,14 +29,13 @@ class AnomalyExtremum(BaseAnomaly):
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
         bo = anomaly_protocol.base_oscillation
         length = anomaly_protocol.end - anomaly_protocol.start
-        base: np.ndarray = bo.generate_only_base()
+        base: np.ndarray = bo.timeseries
         if self.local:
             base = base[anomaly_protocol.start - self.context_window:anomaly_protocol.end + self.context_window]
             diff = base.max() - base.min()
             extremum = np.random.rand() * diff
             pos = self.context_window
             if self.min:
-                print(base[pos],  base[pos] - extremum)
                 base[pos] -= extremum
             else:
                 base[pos] += extremum

@@ -1,20 +1,32 @@
 timeseries:
-  - base-oscillation: &sinus-base
-      kind: "sinus"
-      length: 1000
+  - base-oscillation: &rw-base
+      kind: "random_walk"
+      length: 10000
       channels: 1
-      frequency: 20.0
-      amplitude: 1.0
-      variance: 0.0
-      avg-pattern-length: 10
-      variance-pattern-length: 10
-      heart-rate: 60
       with-train: false
     anomalies:
-      - position: "middle"
+      - position: "beginning"
         length: 200
         kinds:
-          - name: "pattern-shift"
+          - name: "variance"
             parameters:
-              shift_factor: 0.1
-              transition_window: 75
+              value: 0.1
+  #- base-oscillation: &sinus-base
+  #    kind: "sinus"
+  #    length: 1000
+  #    channels: 1
+  #    frequency: 20.0
+  #    amplitude: 1.0
+  #    variance: 0.0
+  #    avg-pattern-length: 10
+  #    variance-pattern-length: 10
+  #    heart-rate: 60
+  #    with-train: false
+  #  anomalies:
+  #    - position: "middle"
+  #      length: 200
+  #      kinds:
+  #        - name: "pattern-shift"
+  #          parameters:
+  #            shift_factor: 0.1
+  #            transition_window: 75

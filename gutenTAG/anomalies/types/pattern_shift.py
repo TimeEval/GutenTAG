@@ -36,7 +36,9 @@ class AnomalyPatternShift(BaseAnomaly):
             ])
 
             anomaly_protocol.subsequences.append(subsequence)
-        else:  # elif anomaly_protocol.base_oscillation_kind == BaseOscillationKind.RandomWalk:
+        elif anomaly_protocol.base_oscillation_kind == BaseOscillationKind.RandomWalk:
+            self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind.name)
+        else:
             self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind.name)
         return anomaly_protocol
 

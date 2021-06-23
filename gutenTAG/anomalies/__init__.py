@@ -48,9 +48,9 @@ class Anomaly:
         self.anomaly_kinds.append(anomaly_kind)
         return self
 
-    def generate(self, base_oscillation: 'BaseOscillationInterface', timeseries_periods: int, base_oscillation_kind: BaseOscillationKind) -> AnomalyProtocol:
+    def generate(self, base_oscillation: 'BaseOscillationInterface', timeseries_periods: Optional[int], base_oscillation_kind: BaseOscillationKind) -> AnomalyProtocol:
         # AnomalyKind.validate(self.anomaly_kinds)
-        start, end = self.get_position_range(base_oscillation.length, timeseries_periods)
+        start, end = self._get_position_range(base_oscillation.length, timeseries_periods)
         length = end - start
         label_range = LabelRange(start, length)
         protocol = AnomalyProtocol(start, end, self.channel, base_oscillation, base_oscillation_kind, label_range)
@@ -60,7 +60,10 @@ class Anomaly:
 
         return protocol
 
-    def get_position_range(self, timeseries_length: int, timeseries_periods: int) -> Tuple[int, int]:
+    def _get_position_range(self, timeseries_length: int, timeseries_periods: Optional[int]) -> Tuple[int, int]:
+        if timeseries_periods is None:
+            return self._get_position_range_no_periodicity(timeseries_length)
+
         start_period = 0
         period_size = int(timeseries_length / timeseries_periods)
         periods_per_section = int(timeseries_periods / 3)
@@ -74,6 +77,23 @@ class Anomaly:
             start = period_size * (periods_per_section + start_period)
         elif position == Position.End:
             start = period_size * (2 * periods_per_section + start_period)
+        else:
+            raise ValueError(f"The position '{position}' is not yet supported! Guten Tag!")
+
+        end = start + self.anomaly_length
+        return start, end
+
+    def _get_position_range_no_periodicity(self, timeseries_length: int) -> Tuple[int, int]:
+        section_size = timeseries_length // 3
+        position_in_section = random.choice(list(range(section_size - self.anomaly_length)))
+
+        position = self.position
+        if position == Position.Beginning:
+            start = position_in_section
+        elif position == Position.Middle:
+            start = section_size + position_in_section
+        elif position == Position.End:
+            start = 2 * section_size + position_in_section
         else:
             raise ValueError(f"The position '{position}' is not yet supported! Guten Tag!")
 
