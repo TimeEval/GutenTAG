@@ -1,10 +1,10 @@
 timeseries:
   - base-oscillation: &base
-      kind: "cylinder_bell_funnel"
+      kind: "ecg"
       length: 1000
       channels: 1
       with-train: false
-      frequency: 0.1
+      frequency: 10.0
       amplitude: 1.0
       variance: 0.0
       avg-pattern-length: 0
@@ -14,10 +14,9 @@ timeseries:
       - position: "middle"
         length: 200
         kinds:
-         - name: "pattern"
-           parameters:
-             factor: 0.01
-
+          - name: "frequency"
+            parameters:
+              factor: 2.0
   #- base-oscillation: &sinus-base
   #    kind: "sinus"
   #    length: 1000

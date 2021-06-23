@@ -4,7 +4,9 @@ from .interface import BaseOscillationInterface
 from .sinus import Sinus
 from .random_walk import RandomWalk
 from .cylinder_bell_funnel import CylinderBellFunnel
+from .ecg import ECG
 from .comut import CorrelatedMultivarGenerator
+
 
 
 def get_or_error(name: str, value: Optional[Any]) -> Any:
@@ -18,7 +20,7 @@ class BaseOscillation:
         "sinus": Sinus,
         "random_walk": RandomWalk,
         "cylinder_bell_funnel": CylinderBellFunnel,
-        #"ecg": ECG,
+        "ecg": ECG,
         #"comut": CoMuT,
     }
 
@@ -33,11 +35,12 @@ class BaseOscillation:
     @staticmethod
     def CylinderBellFunnel(*args, **kwargs) -> CylinderBellFunnel:
         return CylinderBellFunnel(*args, **kwargs)
-    """
+
     @staticmethod
     def ECG(*args, **kwargs) -> ECG:
         return ECG(*args, **kwargs)
 
+    """
     @staticmethod
     def CoMuT(*args, **kwargs) -> CoMuT:
         return CoMuT(*args, **kwargs)
@@ -63,9 +66,7 @@ class BaseOscillation:
         elif self == BaseOscillation.ECG:
             ts = []
             for channel in range(channels):
-                ecg = nk.ecg_simulate(duration=int(frequency),
-                                      sampling_rate=length // int(frequency),
-                                      heart_rate=heart_rate)
+                
                 ts.append(ecg)
             return np.column_stack(ts)
         elif self == BaseOscillation.CoMuT:
