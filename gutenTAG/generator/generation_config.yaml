@@ -1,16 +1,24 @@
 timeseries:
-  - base-oscillation: &rw-base
-      kind: "random_walk"
-      length: 10000
+  - base-oscillation: &base
+      kind: "cylinder_bell_funnel"
+      length: 1000
       channels: 1
       with-train: false
+      frequency: 0.1
+      amplitude: 0.0
+      variance: 0.0
+      avg-pattern-length: 0
+      variance-pattern-length: 0
+      heart-rate: 60
+
     anomalies:
-      - position: "beginning"
+      - position: "middle"
         length: 200
         kinds:
-          - name: "variance"
+          - name: "frequency"
             parameters:
-              value: 0.1
+              factor: 20.0
+
   #- base-oscillation: &sinus-base
   #    kind: "sinus"
   #    length: 1000

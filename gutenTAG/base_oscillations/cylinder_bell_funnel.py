@@ -1,4 +1,4 @@
-# Taken from https://github.com/KDD-OpenSource/data-generation/blob/master/generation/cbf.py
+from typing import Optional, Tuple
 
 import numpy as np
 import random
@@ -9,30 +9,35 @@ from ..utils.types import BaseOscillationKind
 
 
 class CylinderBellFunnel(BaseOscillationInterface):
-    def generate(self) -> np.ndarray:
-        ts = []
-        for channel in range(self.channels):
-            ts.append(self.generate_only_base())
-        self.timeseries = np.column_stack(ts)
+    def get_timeseries_periods(self) -> Optional[int]:
+        if self.avg_pattern_length > 0:
+            return self.length // self.avg_pattern_length
+        return None
 
-        for anomaly in self.anomalies:
-            protocol = anomaly.generate(self.timeseries, self.length, self.frequency, BaseOscillationKind.RandomWalk)
-            self.timeseries[protocol.start:protocol.end, anomaly.channel] = protocol.subsequences
+    def get_base_oscillation_kind(self) -> BaseOscillationKind:
+        return BaseOscillationKind.CylinderBellFunnel
 
-        return self.timeseries
+    def generate(self) -> Tuple[np.ndarray, np.ndarray]:
+        self.timeseries = self.generate_only_base().reshape(-1, 1)
+        self._generate_anomalies()
+        return self.timeseries, self.labels
 
-    def generate_only_base(self, *args, **kwargs) -> np.ndarray:
+    def generate_only_base(self, length: Optional[int] = None, frequency: Optional[float] = None, amplitude: Optional[float] = None, *args, **kwargs) -> np.ndarray:
+        length = length or self.length
+        frequency = frequency or self.frequency
+        amplitude = amplitude or self.amplitude
+
         return generate_pattern_data(
-            self.length,
+            length,
             self.avg_pattern_length,
-            self.amplitude,
-            default_variance=self.frequency,
+            amplitude,
+            default_variance=frequency,
             variance_pattern_length=self.variance_pattern_length,
             variance_amplitude=2
         )
 
 
-
+# Taken from https://github.com/KDD-OpenSource/data-generation/blob/master/generation/cbf.py
 # cylinder bell funnel based on "Learning comprehensible descriptions of multivariate time series"
 
 def generate_bell(length, amplitude, default_variance):
