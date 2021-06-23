@@ -17,7 +17,7 @@ class AnomalyPatternShiftParameters:
 
 class AnomalyPatternShift(BaseAnomaly):
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
-        if anomaly_protocol.base_oscillation_kind == BaseOscillationKind.Sinus:
+        if anomaly_protocol.base_oscillation_kind in [BaseOscillationKind.Sinus, BaseOscillationKind.ECG]:
             sinus = anomaly_protocol.base_oscillation
             length = anomaly_protocol.end - anomaly_protocol.start
 

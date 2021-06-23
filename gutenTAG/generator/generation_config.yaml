@@ -12,10 +12,12 @@ timeseries:
       heart-rate: 60
     anomalies:
       - position: "middle"
-        length: 100
+        length: 200
         kinds:
-          - name: "pattern"
-            parameters: {}
+          - name: "pattern-shift"
+            parameters:
+              shift_factor: 0.3
+              transition_window: 75
   #- base-oscillation: &sinus-base
   #    kind: "sinus"
   #    length: 1000
