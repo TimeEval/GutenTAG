@@ -76,7 +76,7 @@ BaseOscillation.Sinus(**options).inject_anomalies(anomalies).generate()
 |extremum |x|x|x|x|x|
 |frequency|x|-|x|||
 |mean|x|x|x|x|x|
-|pattern|x|-||||
-|pattern_shift|x|-||||
+|pattern|x|-|x|||
+|pattern_shift|x|-|-|||
 |platform|x|x|x|x|x|
 |variance|x|x|x|x|x|

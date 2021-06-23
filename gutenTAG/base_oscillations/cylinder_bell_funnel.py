@@ -22,17 +22,23 @@ class CylinderBellFunnel(BaseOscillationInterface):
         self._generate_anomalies()
         return self.timeseries, self.labels
 
-    def generate_only_base(self, length: Optional[int] = None, frequency: Optional[float] = None, amplitude: Optional[float] = None, *args, **kwargs) -> np.ndarray:
+    def generate_only_base(self,
+                           length: Optional[int] = None,
+                           frequency: Optional[float] = None,
+                           amplitude: Optional[float] = None,
+                           variance_pattern_length: Optional[int] = None,
+                           *args, **kwargs) -> np.ndarray:
         length = length or self.length
         frequency = frequency or self.frequency
         amplitude = amplitude or self.amplitude
+        variance_pattern_length = variance_pattern_length or self.variance_pattern_length
 
         return generate_pattern_data(
             length,
             self.avg_pattern_length,
             amplitude,
             default_variance=frequency,
-            variance_pattern_length=self.variance_pattern_length,
+            variance_pattern_length=variance_pattern_length,
             variance_amplitude=2
         )
 

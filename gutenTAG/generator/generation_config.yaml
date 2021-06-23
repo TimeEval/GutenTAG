@@ -5,19 +5,18 @@ timeseries:
       channels: 1
       with-train: false
       frequency: 0.1
-      amplitude: 0.0
+      amplitude: 1.0
       variance: 0.0
       avg-pattern-length: 0
-      variance-pattern-length: 0
+      variance-pattern-length: 10
       heart-rate: 60
-
     anomalies:
       - position: "middle"
         length: 200
         kinds:
-          - name: "frequency"
-            parameters:
-              factor: 20.0
+         - name: "pattern"
+           parameters:
+             factor: 0.01
 
   #- base-oscillation: &sinus-base
   #    kind: "sinus"
