@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional, Dict, List, Union
+from typing import Optional, Dict, List, Tuple
 import numpy as np
 import matplotlib.pyplot as plt
 import json, os, yaml
@@ -8,6 +8,8 @@ import json, os, yaml
 from gutenTAG.base_oscillations import BaseOscillation, BaseOscillationInterface
 from gutenTAG.anomalies import Anomaly, AnomalyPlatform, Position, AnomalyFrequency, AnomalyExtremum, AnomalyVariance, \
     AnomalyKind
+
+from .overview import Overview
 
 
 class GutenTAG:
@@ -35,21 +37,23 @@ class GutenTAG:
         plt.show()
 
     @staticmethod
-    def from_json(path: os.PathLike, plot: bool = False) -> List[GutenTAG]:
+    def from_json(path: os.PathLike, plot: bool = False) -> Tuple[List[GutenTAG], Overview]:
         with open(path, "r") as f:
             config = json.load(f)
         return GutenTAG.from_dict(config, plot)
 
     @staticmethod
-    def from_yaml(path: os.PathLike, plot: bool = False) -> List[GutenTAG]:
+    def from_yaml(path: os.PathLike, plot: bool = False) -> Tuple[List[GutenTAG], Overview]:
         with open(path, "r") as f:
             config = yaml.load(f, Loader=yaml.FullLoader)
         return GutenTAG.from_dict(config, plot)
 
     @staticmethod
-    def from_dict(config: Dict, plot: bool = False) -> List[GutenTAG]:
+    def from_dict(config: Dict, plot: bool = False) -> Tuple[List[GutenTAG], Overview]:
+        overview = Overview()
         result = []
         for ts in config.get("timeseries", []):
+            overview.add_dataset(ts)
             base_oscillation_configs = ts.get("base-oscillation", {})
             with_train = base_oscillation_configs.get("with-train", False)
             key = base_oscillation_configs.get("kind", "sinus")
@@ -64,7 +68,7 @@ class GutenTAG:
                     anomaly.set_anomaly(AnomalyKind(name).set_parameters(parameters))
                 anomalies.append(anomaly)
             result.append(GutenTAG(base_oscillation, anomalies, with_train, plot).generate())
-        return result
+        return result, overview
 
 
 if __name__ == "__main__":

@@ -1,15 +1,22 @@
 timeseries:
   - base-oscillation: &base
-      kind: "cylinder_bell_funnel"
+      kind: "ecg"
       length: 1000
-      channels: 2
+      channels: 1 # TODO: noise per channel
       with-train: false
       frequency: 10.0
       amplitude: 1.0
-      variance: 0.0
+      variance: 0.0 # TODO: relative to amplitude
       avg-pattern-length: 0
       variance-pattern-length: 10
       heart-rate: 60
+    anomalies:
+      - position: "middle"
+        length: 200
+        kinds:
+          - name: "pattern"
+            parameters: {}
+  - base-oscillation: *base
   #- base-oscillation: &sinus-base
   #    kind: "sinus"
   #    length: 1000

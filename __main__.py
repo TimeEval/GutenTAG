@@ -6,13 +6,14 @@ from typing import List
 import numpy as np
 
 from gutenTAG import GutenTAG
+from gutenTAG.generator import Overview
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="GutenTAG! A good Time series Anomaly Generator.")
 
     parser.add_argument("--config-yaml", type=Path, required=True, help="Path to config YAML")
-    parser.add_argument("--output-dir", type=Path, default=Path("./generated-timeseries/"), help="Path to output directory")
+    parser.add_argument("--output-dir", type=Path, default=Path("./generated-timeseries/"), help="Path to output directory")  # TODO: config info file + meta file for timeeval
     parser.add_argument("--plot", action="store_true", help="Plot every generated time series.")
     parser.add_argument("--no-save", action="store_true", help="Prevent GutenTAG from saving the generated time series.")
     parser.add_argument("--seed", type=int, default=None, help="Random seed")
@@ -20,8 +21,9 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args(sys.argv[1:])
 
 
-def save_timeseries(timeseries: List[GutenTAG], args: argparse.Namespace):
+def save_timeseries(timeseries: List[GutenTAG], overview: Overview, args: argparse.Namespace):
     os.makedirs(args.output_dir, exist_ok=True)
+    overview.save_to_output_dir(args.output_dir)
 
     for i, ts in enumerate(timeseries):
         SAVE_DIR = os.path.join(args.output_dir, str(i))
@@ -46,7 +48,7 @@ if __name__ == "__main__":
     args = parse_args()
     if args.seed is not None:
         set_random_seed(args)
-    timeseries = GutenTAG.from_yaml(args.config_yaml, args.plot)
+    timeseries, overview = GutenTAG.from_yaml(args.config_yaml, args.plot)
     if args.no_save:
         exit(0)
-    save_timeseries(timeseries, args)
+    save_timeseries(timeseries, overview, args)
