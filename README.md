@@ -1,4 +1,6 @@
-# GutenTAG
+![GutenTAG](./logo_transparent.png)
+
+
 A good **T**imeseries **A**nomaly **G**enerator.
 
 ## Usage
