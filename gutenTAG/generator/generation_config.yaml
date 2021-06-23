@@ -6,7 +6,7 @@ timeseries:
       with-train: false
       frequency: 10.0
       amplitude: 1.0
-      variance: 0.0 # TODO: relative to amplitude
+      variance: 0.0
       avg-pattern-length: 0
       variance-pattern-length: 10
       heart-rate: 60

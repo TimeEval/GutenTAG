@@ -13,7 +13,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="GutenTAG! A good Time series Anomaly Generator.")
 
     parser.add_argument("--config-yaml", type=Path, required=True, help="Path to config YAML")
-    parser.add_argument("--output-dir", type=Path, default=Path("./generated-timeseries/"), help="Path to output directory")  # TODO: config info file + meta file for timeeval
+    parser.add_argument("--output-dir", type=Path, default=Path("./generated-timeseries/"), help="Path to output directory")  # TODO: meta file for timeeval
     parser.add_argument("--plot", action="store_true", help="Plot every generated time series.")
     parser.add_argument("--no-save", action="store_true", help="Prevent GutenTAG from saving the generated time series.")
     parser.add_argument("--seed", type=int, default=None, help="Random seed")

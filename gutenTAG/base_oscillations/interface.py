@@ -22,7 +22,7 @@ class BaseOscillationInterface(ABC):
         self.anomalies: List[Anomaly] = []
         self.timeseries: Optional[np.ndarray] = None
         self.labels: np.ndarray = np.zeros(self.length, dtype=np.int)
-        self.noise = self.generate_noise(self.variance, self.length)
+        self.noise = self.generate_noise(self.variance * self.amplitude, self.length)
 
     def inject_anomalies(self, anomalies: List[Anomaly]) -> BaseOscillationInterface:
         self.anomalies.extend(anomalies)
