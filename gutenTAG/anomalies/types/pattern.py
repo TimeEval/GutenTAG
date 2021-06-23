@@ -11,7 +11,6 @@ from ...utils.types import BaseOscillationKind
 @dataclass
 class AnomalyMeanParameters:
     sinusoid_k: Optional[float] = 10.0
-    factor: Optional[float] = 10
 
 
 class AnomalyPattern(BaseAnomaly):
@@ -29,6 +28,20 @@ class AnomalyPattern(BaseAnomaly):
             cbf = anomaly_protocol.base_oscillation
             subsequence = cbf.generate_only_base(variance_pattern_length=cbf.variance_pattern_length * self.factor).reshape(-1)[anomaly_protocol.start:anomaly_protocol.end]
             anomaly_protocol.subsequences.append(subsequence)
+        elif anomaly_protocol.base_oscillation_kind == BaseOscillationKind.ECG:
+            ecg = anomaly_protocol.base_oscillation
+            length = anomaly_protocol.end - anomaly_protocol.start
+            window = int(length * 0.05)
+
+            for slide in range(-3, 3):
+                start = ecg.timeseries[anomaly_protocol.start+slide:anomaly_protocol.start+window, anomaly_protocol.channel]
+                if np.argmax(start) == 0:
+                    break
+            else:
+                slide = 0
+
+            subsequence = ecg.timeseries[anomaly_protocol.start + slide:anomaly_protocol.end + slide, anomaly_protocol.channel][::-1]
+            anomaly_protocol.subsequences.append(subsequence)
         else:
             self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind.name)
         return anomaly_protocol
@@ -40,4 +53,3 @@ class AnomalyPattern(BaseAnomaly):
     def __init__(self, parameters: AnomalyMeanParameters):
         super().__init__()
         self.sinusoid_k = parameters.sinusoid_k
-        self.factor = parameters.factor

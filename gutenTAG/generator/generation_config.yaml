@@ -12,11 +12,10 @@ timeseries:
       heart-rate: 60
     anomalies:
       - position: "middle"
-        length: 200
+        length: 100
         kinds:
-          - name: "frequency"
-            parameters:
-              factor: 2.0
+          - name: "pattern"
+            parameters: {}
   #- base-oscillation: &sinus-base
   #    kind: "sinus"
   #    length: 1000

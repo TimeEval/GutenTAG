@@ -1,3 +1,5 @@
+import random
+
 import numpy as np
 import neurokit2 as nk
 from typing import Tuple, Optional
@@ -24,5 +26,7 @@ class ECG(BaseOscillationInterface):
         sampling_rate = self.length // frequency
         ecg = nk.ecg_simulate(duration=frequency,
                               sampling_rate=sampling_rate,
-                              heart_rate=heart_rate)
+                              heart_rate=heart_rate,
+                              random_state=np.random.get_state()[1][0],
+                              method='standard')
         return np.array(ecg).reshape(-1, 1)
