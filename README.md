@@ -90,7 +90,8 @@ BaseOscillation.Sinus(**options).inject_anomalies(anomalies).generate()
 
 - [ ] timeeval format
 - [ ] train-with-label
-- [ ] noisy sinus (amplitude+frequency modification over time)
+- [ ] sinus add amplitude+frequency modification over time
+- [ ] clean sinus
 - [ ] linear base oscillation
 - [ ] nested trends (as base oscillation)
 - [ ] check if anomalies collide with same position (shift)
@@ -98,6 +99,8 @@ BaseOscillation.Sinus(**options).inject_anomalies(anomalies).generate()
 - [ ] smoothing for random walk
 - [ ] amplitude anomaly (steep gaussian transition `scipy.stats.norm.pdf(np.linspace(0, 3, 100), scale=1.05)`)
 - [ ] frequency -> sampling_rate
+- [ ] give name to timeseries
+- [ ] generate YAML from docs
 
 ### Anomaly
 
