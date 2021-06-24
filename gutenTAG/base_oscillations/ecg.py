@@ -1,4 +1,5 @@
 import random
+from math import ceil
 
 import numpy as np
 import neurokit2 as nk
@@ -20,16 +21,15 @@ class ECG(BaseOscillationInterface):
         self._generate_anomalies()
         return self.timeseries, self.labels
 
-    def generate_only_base(self, frequency: Optional[float] = None, heart_rate: Optional[float] = None, *args, **kwargs) -> np.ndarray:
+    def generate_only_base(self, frequency: Optional[float] = None, *args, **kwargs) -> np.ndarray:
         frequency = int(frequency or self.frequency)
-        heart_rate = heart_rate or self.heart_rate
-        sampling_rate = self.length // frequency
+        sampling_rate = ceil(self.length / 10.0)
         ts = []
         for channel in range(self.channels):
-            ecg = nk.ecg_simulate(duration=frequency,
+            ecg = nk.ecg_simulate(duration=10,
                                   sampling_rate=sampling_rate,
-                                  heart_rate=heart_rate,
+                                  heart_rate=frequency*6,
                                   random_state=np.random.get_state()[1][channel],
-                                  method='standard')
+                                  method='standard')[:self.length]
             ts.append(ecg)
         return np.column_stack(ts)
