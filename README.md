@@ -90,8 +90,8 @@ BaseOscillation.Sinus(**options).inject_anomalies(anomalies).generate()
 
 - [x] timeeval format
 - [x] train-with-label
-- [ ] sinus add amplitude+frequency modification over time
-- [ ] clean sinus
+- [x] sinus add amplitude+frequency modification over time
+- [x] clean sinus
 - [ ] linear base oscillation
 - [ ] nested trends (as base oscillation)
 - [ ] check if anomalies collide with same position (shift)
