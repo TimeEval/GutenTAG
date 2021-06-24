@@ -89,7 +89,7 @@ BaseOscillation.Sinus(**options).inject_anomalies(anomalies).generate()
 ### Base-Oscillation
 
 - [x] timeeval format
-- [ ] train-with-label
+- [x] train-with-label
 - [ ] sinus add amplitude+frequency modification over time
 - [ ] clean sinus
 - [ ] linear base oscillation
