@@ -82,3 +82,30 @@ BaseOscillation.Sinus(**options).inject_anomalies(anomalies).generate()
 |pattern_shift|x|-|-|x||
 |platform|x|x|x|x|x|
 |variance|x|x|x|x|x|
+
+
+## TODO
+
+### Base-Oscillation
+
+- [ ] timeeval format
+- [ ] train-with-label
+- [ ] noisy sinus (amplitude+frequency modification over time)
+- [ ] linear base oscillation
+- [ ] nested trends (as base oscillation)
+- [ ] check if anomalies collide with same position (shift)
+- [ ] offset to base oscillation
+- [ ] smoothing for random walk
+- [ ] amplitude anomaly (steep gaussian transition `scipy.stats.norm.pdf(np.linspace(0, 3, 100), scale=1.05)`)
+- [ ] frequency -> sampling_rate
+
+### Anomaly
+
+- [ ] Trend anomaly
+
+### Future (nice to have)
+
+- [ ] noise as variance Union[float, List[float]] for each channel
+- [ ] plot with subplot
+- [ ] plot multivariate with subplot
+- [ ] create YAML schema
