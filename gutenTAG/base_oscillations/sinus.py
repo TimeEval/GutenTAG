@@ -23,7 +23,8 @@ class Sinus(BaseOscillationInterface):
                            frequency: Optional = None,
                            amplitude: Optional = None,
                            variance:  Optional = None,
-                           channels:  Optional = 1) -> np.ndarray:
+                           channels:  Optional = 1,
+                           freq_mod: bool = True) -> np.ndarray:
         length = length or self.length
         frequency = frequency or self.frequency
         amplitude = amplitude or self.amplitude
@@ -32,5 +33,8 @@ class Sinus(BaseOscillationInterface):
         end = 2 * np.pi * frequency
         base_ts = np.arange(0, end, end / length).reshape(length, 1)
         base_ts = np.repeat(base_ts, repeats=channels, axis=1)
+
+        if freq_mod:
+            amplitude = (np.sin(np.linspace(0, end * 0.3, length)) * amplitude).reshape(-1, 1)
 
         return (np.sin(base_ts) * amplitude)
