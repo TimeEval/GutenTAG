@@ -4,6 +4,7 @@ import argparse
 from pathlib import Path
 from typing import List
 import numpy as np
+import pandas as pd
 import importlib
 
 from gutenTAG import GutenTAG
@@ -15,7 +16,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="GutenTAG! A good Time series Anomaly Generator.")
 
     parser.add_argument("--config-yaml", type=Path, required=True, help="Path to config YAML")
-    parser.add_argument("--output-dir", type=Path, default=Path("../generated-timeseries/"), help="Path to output directory")
+    parser.add_argument("--output-dir", type=Path, default=Path("./generated-timeseries"), help="Path to output directory")
     parser.add_argument("--plot", action="store_true", help="Plot every generated time series.")
     parser.add_argument("--no-save", action="store_true", help="Prevent GutenTAG from saving the generated time series.")
     parser.add_argument("--seed", type=int, default=None, help="Random seed")
@@ -35,10 +36,11 @@ def save_timeseries(timeseries: List[GutenTAG], overview: Overview, args: argpar
         test = ts.timeseries
         labels = ts.labels
         if train is not None:
-            np.savetxt(os.path.join(SAVE_DIR, "train.csv"), train, delimiter=",")
+            pd.DataFrame(train).to_csv(os.path.join(SAVE_DIR, "train.csv"), sep=",")
+        test = pd.DataFrame(test)
         if labels is not None:
-            test = np.hstack([test, labels.reshape(-1, 1)])
-        np.savetxt(os.path.join(SAVE_DIR, "test.csv"), test, delimiter=",")
+            test["is_anomaly"] = labels
+        test.to_csv(os.path.join(SAVE_DIR, "test.csv"), sep=",")
 
 
 def set_random_seed(args: argparse.Namespace):
