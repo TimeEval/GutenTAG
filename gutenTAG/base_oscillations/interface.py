@@ -17,6 +17,7 @@ class BaseOscillationInterface(ABC):
         self.variance = kwargs.get("variance", 0.0)
         self.avg_pattern_length = kwargs.get("avg-pattern-length", 10)
         self.variance_pattern_length = kwargs.get("variance-pattern-length", 0.0)
+        self.variance_amplitude = kwargs.get("variance-amplitude", 2.0)
         self.heart_rate = kwargs.get("heart-rate", 60.0)
 
         self.anomalies: List[Anomaly] = []

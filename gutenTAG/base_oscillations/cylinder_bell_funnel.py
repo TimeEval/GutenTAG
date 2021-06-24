@@ -24,27 +24,33 @@ class CylinderBellFunnel(BaseOscillationInterface):
 
     def generate_only_base(self,
                            length: Optional[int] = None,
-                           frequency: Optional[float] = None,
+                           variance: Optional[float] = None,
                            amplitude: Optional[float] = None,
                            variance_pattern_length: Optional[int] = None,
+                           channels: Optional[int] = None,
                            *args, **kwargs) -> np.ndarray:
         length = length or self.length
-        frequency = frequency or self.frequency
+        variance = variance or self.variance
         amplitude = amplitude or self.amplitude
         variance_pattern_length = variance_pattern_length or self.variance_pattern_length
+        channels = channels or self.channels
 
         ts = []
-        for channel in range(self.channels):
+        for channel in range(channels):
             cbf = generate_pattern_data(
-                length,
-                self.avg_pattern_length,
-                amplitude,
-                default_variance=frequency,
+                length=length,
+                avg_pattern_length=self.avg_pattern_length,
+                avg_amplitude=amplitude,
+                default_variance=variance,
                 variance_pattern_length=variance_pattern_length,
-                variance_amplitude=2
+                variance_amplitude=self.variance_amplitude
             )
             ts.append(cbf)
         return np.column_stack(ts)
+
+    def _generate_anomalies(self):
+        super()._generate_anomalies()
+        self.timeseries -= self.noise
 
 
 
