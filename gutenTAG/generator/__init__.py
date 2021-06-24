@@ -13,20 +13,25 @@ from .overview import Overview
 
 
 class GutenTAG:
-    def __init__(self, base_oscillation: BaseOscillationInterface, anomalies: List[Anomaly], with_train: bool = False, plot: bool = False):
+    def __init__(self, base_oscillation: BaseOscillationInterface, anomalies: List[Anomaly],
+                 with_train: bool = False, plot: bool = False, train_with_label: bool = False):
         self.base_oscillation = base_oscillation
         self.anomalies = anomalies
-        self.normal_timeseries: Optional[np.ndarray] = None
+        self.train_timeseries: Optional[np.ndarray] = None
         self.anomaly_timeseries: Optional[np.ndarray] = None
         self.labels: Optional[np.ndarray] = None
+        self.train_labels: Optional[np.ndarray] = None
         self.with_train = with_train
         self.plot = plot
+        self.train_with_label = train_with_label
 
     def generate(self) -> GutenTAG:
         self.timeseries, self.labels = self.base_oscillation.inject_anomalies(self.anomalies).generate()
 
         if self.with_train:
-            self.normal_timeseries = self.base_oscillation.generate_only_base()
+            if self.train_with_label:
+                self.train_timeseries, self.train_labels = self.base_oscillation.inject_anomalies(self.anomalies).generate()
+            self.train_timeseries = self.base_oscillation.generate_only_base()
         if self.plot:
             self._plot()
 
@@ -56,6 +61,7 @@ class GutenTAG:
             overview.add_dataset(ts)
             base_oscillation_configs = ts.get("base-oscillation", {})
             with_train = base_oscillation_configs.get("with-train", False)
+            train_with_label = base_oscillation_configs.get("train-with-label", False)
             key = base_oscillation_configs.get("kind", "sinus")
             base_oscillation = BaseOscillation.from_key(key, **base_oscillation_configs)
             anomalies = []
@@ -67,7 +73,7 @@ class GutenTAG:
                     parameters = anomaly_kind.get("parameters", {})
                     anomaly.set_anomaly(AnomalyKind(name).set_parameters(parameters))
                 anomalies.append(anomaly)
-            result.append(GutenTAG(base_oscillation, anomalies, with_train, plot).generate())
+            result.append(GutenTAG(base_oscillation, anomalies, with_train, plot, train_with_label).generate())
         return result, overview
 
 

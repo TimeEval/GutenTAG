@@ -32,12 +32,16 @@ def save_timeseries(timeseries: List[GutenTAG], overview: Overview, args: argpar
     for i, ts in enumerate(timeseries):
         SAVE_DIR = os.path.join(args.output_dir, str(i))
         os.makedirs(SAVE_DIR, exist_ok=True)
-        train = ts.normal_timeseries
-        test = ts.timeseries
+        train = pd.DataFrame(ts.train_timeseries)
+        test = pd.DataFrame(ts.timeseries)
+        train_labels = ts.train_labels
         labels = ts.labels
-        if train is not None:
-            pd.DataFrame(train).to_csv(os.path.join(SAVE_DIR, "train.csv"), sep=",")
-        test = pd.DataFrame(test)
+
+        if not train.empty:
+            if train_labels is not None:
+                train["is_anomaly"] = train_labels
+            train.to_csv(os.path.join(SAVE_DIR, "train.csv"), sep=",")
+
         if labels is not None:
             test["is_anomaly"] = labels
         test.to_csv(os.path.join(SAVE_DIR, "test.csv"), sep=",")
