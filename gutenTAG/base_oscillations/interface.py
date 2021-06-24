@@ -13,13 +13,14 @@ class BaseOscillationInterface(ABC):
         self.length = kwargs.get("length", 10000)
         self.frequency = kwargs.get("frequency", 10.0)
         self.amplitude = kwargs.get("amplitude", 1.0)
-        self.channels = kwargs.get("channels", 2.0)
+        self.channels = kwargs.get("channels", 2)
         self.variance = kwargs.get("variance", 0.0)
         self.avg_pattern_length = kwargs.get("avg-pattern-length", 10)
         self.variance_pattern_length = kwargs.get("variance-pattern-length", 0.0)
         self.variance_amplitude = kwargs.get("variance-amplitude", 2.0)
         self.heart_rate = kwargs.get("heart-rate", 60.0)
         self.freq_mod = kwargs.get("freq-mod", True)
+        self.polynomial = kwargs.get("polynomial", [1,1])
 
         self.anomalies: List[Anomaly] = []
         self.timeseries: Optional[np.ndarray] = None

@@ -6,4 +6,4 @@ class BaseOscillationKind(Enum):
     RandomWalk = "random_walk"
     CylinderBellFunnel = "cylinder_bell_funnel"
     ECG = "ecg"
-    CoMuT = "comut"
+    Polynomial = "polynomial"

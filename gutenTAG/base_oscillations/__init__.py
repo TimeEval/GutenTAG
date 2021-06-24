@@ -1,6 +1,7 @@
 from typing import Optional, Any, List, Dict, Type
 
 from .interface import BaseOscillationInterface
+from .polynomial import Polynomial
 from .sinus import Sinus
 from .random_walk import RandomWalk
 from .cylinder_bell_funnel import CylinderBellFunnel
@@ -21,6 +22,7 @@ class BaseOscillation:
         "random_walk": RandomWalk,
         "cylinder_bell_funnel": CylinderBellFunnel,
         "ecg": ECG,
+        "polynomial": Polynomial
         #"comut": CoMuT,
     }
 
