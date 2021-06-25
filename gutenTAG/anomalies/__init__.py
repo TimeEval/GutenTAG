@@ -1,10 +1,7 @@
 from __future__ import annotations
 from enum import Enum
-from typing import List, Optional, Union, Any, Tuple, Dict
-import math
+from typing import List, Optional, Union, Any, Tuple
 import random
-
-import numpy as np
 
 from ..utils.types import BaseOscillationKind
 from .types import AnomalyProtocol, BaseAnomaly, LabelRange
@@ -45,7 +42,6 @@ class Anomaly:
         # AnomalyKind.validate(self.anomaly_kinds)
         start, end = self._get_position_range(base_oscillation.length, timeseries_periods)
         start, end = self._maybe_repair_position((start, end), positions)
-        print(start, end)
 
         length = end - start
         label_range = LabelRange(start, length)

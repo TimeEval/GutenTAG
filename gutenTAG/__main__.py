@@ -12,6 +12,11 @@ from gutenTAG.generator import Overview
 from gutenTAG.addons import BaseAddOn
 
 
+SUPERVISED_FILENAME = "train_anomaly.csv"
+SEMI_SUPERVISED_FILENAME = "train_no_anomaly.csv"
+UNSUPERVISED_FILENAME = "test.csv"
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="GutenTAG! A good Time series Anomaly Generator.")
 
@@ -33,19 +38,23 @@ def save_timeseries(timeseries: List[GutenTAG], overview: Overview, args: argpar
         title = ts.base_oscillation.title or str(i)
         SAVE_DIR = os.path.join(args.output_dir, title)
         os.makedirs(SAVE_DIR, exist_ok=True)
-        train = pd.DataFrame(ts.train_timeseries)
+        semi_supervised = pd.DataFrame(ts.semi_supervised_timeseries)
+        supervised = pd.DataFrame(ts.supervised_timeseries)
         test = pd.DataFrame(ts.timeseries)
         train_labels = ts.train_labels
         labels = ts.labels
 
-        if not train.empty:
+        if not supervised.empty:
             if train_labels is not None:
-                train["is_anomaly"] = train_labels
-            train.to_csv(os.path.join(SAVE_DIR, "train.csv"), sep=",")
+                supervised["is_anomaly"] = train_labels
+            supervised.to_csv(os.path.join(SAVE_DIR, SUPERVISED_FILENAME), sep=",")
+
+        if not semi_supervised.empty:
+            semi_supervised.to_csv(os.path.join(SAVE_DIR, SEMI_SUPERVISED_FILENAME), sep=",")
 
         if labels is not None:
             test["is_anomaly"] = labels
-        test.to_csv(os.path.join(SAVE_DIR, "test.csv"), sep=",")
+        test.to_csv(os.path.join(SAVE_DIR, UNSUPERVISED_FILENAME), sep=",")
 
 
 def set_random_seed(args: argparse.Namespace):
@@ -73,6 +82,4 @@ if __name__ == "__main__":
     save_timeseries(generators, overview, args)
 
     for addon in addons:
-        addon_o = addon()
-        addon_o.process_overview(overview=overview, args=args)
-        addon_o.process_generators(generators=generators, args=args)
+        addon().process(overview=overview, generators=generators, args=args)

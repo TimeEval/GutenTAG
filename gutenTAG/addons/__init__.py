@@ -1,15 +1,11 @@
 import argparse
-from typing import List
+from typing import List, Tuple
 
 from gutenTAG import GutenTAG
 from gutenTAG.generator import Overview
 
 
 class BaseAddOn:
-    def process_overview(self, overview: Overview, args: argparse.Namespace) -> Overview:
+    def process(self, overview: Overview, generators: List[GutenTAG], args: argparse.Namespace) -> Tuple[Overview, List[GutenTAG]]:
         """Gets called before `process_generators`"""
-        return overview
-
-    def process_generators(self, generators: List[GutenTAG], args: argparse.Namespace) -> List[GutenTAG]:
-        """Gets called after `process_overview`"""
-        return generators
+        return overview, generators

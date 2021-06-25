@@ -1,12 +1,14 @@
 import os
 import argparse
-from typing import List, Dict
+from typing import List, Dict, Tuple, Optional
+from enum import Enum
 
 import numpy as np
 import pandas as pd
 from . import BaseAddOn
 from .. import GutenTAG
 from ..generator import Overview
+from ..__main__ import SUPERVISED_FILENAME, UNSUPERVISED_FILENAME, SEMI_SUPERVISED_FILENAME
 
 columns = [
     "collection_name",
@@ -33,20 +35,33 @@ columns = [
 ]
 
 
-class TimeEvalAddOn(BaseAddOn):
-    def process_overview(self, overview: Overview, args: argparse.Namespace) -> Overview:
-        for i, config in enumerate(overview.datasets):
-            self._process_timeseries_overview(config, i, args)
-        self._set_global_vals(args)
-        return overview
+class LearningType(Enum):
+    Unsupervised = "unsupervised"
+    Supervised = "supervised"
+    SemiSupervised = "semi-supervised"
 
-    def process_generators(self, generators: List[GutenTAG], args: argparse.Namespace) -> List[GutenTAG]:
-        for i, generator in enumerate(generators):
-            self._process_timeseries_generator(generator, i, args)
+    def get_filename(self) -> Optional[str]:
+        if self == LearningType.Supervised:
+            return SUPERVISED_FILENAME
+        elif self == LearningType.SemiSupervised:
+            return SEMI_SUPERVISED_FILENAME
+
+
+class TimeEvalAddOn(BaseAddOn):
+    def process(self, overview: Overview, generators: List[GutenTAG], args: argparse.Namespace) -> Tuple[Overview, List[GutenTAG]]:
+        for i, (generator, config) in enumerate(zip(generators, overview.datasets)):
+            self._process_timeseries(config, i, generator, LearningType.Unsupervised)
+            if generator.supervised:
+                self._process_timeseries(config, i, generator, LearningType.Supervised)
+            if generator.semi_supervised:
+                self._process_timeseries(config, i, generator, LearningType.SemiSupervised)
+        self._set_global_vals(args)
+
         if args.no_save:
-            return generators
+            return overview, generators
+
         self.df.to_csv(os.path.join(args.output_dir, "datasets.csv"), index=False)
-        return generators
+        return overview, generators
 
     def _set_global_vals(self, args: argparse.Namespace):
         self.df["collection_name"] = "GutenTAG"
@@ -54,18 +69,17 @@ class TimeEvalAddOn(BaseAddOn):
         self.df["datetime_index"] = False
         self.df["split_at"] = np.NAN
         self.df["train_is_normal"] = True
-        self.df["trend"] = np.NAN
         self.df["stationarity"] = np.NAN
 
-    def _process_timeseries_generator(self, generator: GutenTAG, i: int, args: argparse.Namespace):
-        self.df.loc[self.df["dataset_name"] == str(i), "mean"] = generator.timeseries.mean()
-        self.df.loc[self.df["dataset_name"] == str(i), "stddev"] = generator.timeseries.std()
-
-    def _process_timeseries_overview(self, config: Dict, i: int, args: argparse.Namespace):
+    def _process_timeseries(self, config: Dict, i: int, generator: GutenTAG, type: LearningType):
         dataset = dict()
-        dataset["dataset_name"] = str(i)
-        dataset["train_path"] = f"{i}/train.csv"
-        dataset["test_path"] = f"{i}/test.csv"
+
+        dataset_name = generator.base_oscillation.title or i
+        if filename := type.get_filename():
+            dataset["train_path"] = f"{dataset_name}/{filename}"
+
+        dataset["dataset_name"] = dataset_name
+        dataset["test_path"] = f"{dataset_name}/{UNSUPERVISED_FILENAME}"
         dataset["input_type"] = "univariate" if config.get("base-oscillation", {}).get("channels", 1) else "multivariate"
         dataset["length"] = config.get("base-oscillation", {}).get("length", 10000)
         dataset["dimensions"] = config.get("base-oscillation", {}).get("channels", 1)
@@ -74,7 +88,10 @@ class TimeEvalAddOn(BaseAddOn):
         dataset["min_anomaly_length"] = min([anomaly.get("length") for anomaly in config.get("anomalies", [])])
         dataset["median_anomaly_length"] = np.median([anomaly.get("length") for anomaly in config.get("anomalies", [])])
         dataset["max_anomaly_length"] = max([anomaly.get("length") for anomaly in config.get("anomalies", [])])
-        dataset["train_type"] = "semi-supervised" if config.get("base-oscillation", {}).get("with_train", False) else "unsupervised"
+        dataset["train_type"] = type.value
+        dataset["mean"] = generator.timeseries.mean()
+        dataset["stddev"] = generator.timeseries.std()
+        dataset["trend"] = config.get("base-oscillation", {}).get("trend", np.NAN).get("kind", np.NAN)
 
         self.df = self.df.append(dataset, ignore_index=True)
 

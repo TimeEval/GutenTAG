@@ -100,6 +100,10 @@ BaseOscillation.Sinus(**options).inject_anomalies(anomalies).generate()
 - [x] amplitude anomaly (steep gaussian transition `scipy.stats.norm.pdf(np.linspace(0, 3, 100), scale=1.05)`)
 - [x] frequency -> sampling_rate
 - [x] give name to timeseries
+- [x] train with&without anomalies
+- [x] 3 entries for datasets.csv ^
+- [x] dataset name/path for datasets.csv 
+- [ ] trend anomaly bug
 - [ ] generate YAML from docs
 
 ### Anomaly
@@ -108,7 +112,8 @@ BaseOscillation.Sinus(**options).inject_anomalies(anomalies).generate()
 
 ### Future (nice to have)
 
+- [ ] datasets.csv trend
 - [ ] noise as variance Union[float, List[float]] for each channel
 - [ ] plot with subplot
 - [ ] plot multivariate with subplot
-- [ ] create YAML schema
+- [ ] create YAML schema (very nice to have, almost important)
