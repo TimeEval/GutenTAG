@@ -30,8 +30,9 @@ class AnomalyTrend(BaseAnomaly):
         amplitude_bell = np.concatenate([start_transition / start_transition.max(), np.ones(plateau_length)])
         amplitude_bell = MinMaxScaler(feature_range=(0,1)).fit_transform(amplitude_bell.reshape(-1, 1)).reshape(-1)
 
+        self.trend.length = length
         timeseries, _ = self.trend.generate()
-        timeseries = timeseries[:length, 0] # use only one channel
+        timeseries = timeseries[:, 0]  # use only one channel
 
         timeseries *= amplitude_bell
         end_point = timeseries[-1]

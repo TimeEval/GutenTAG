@@ -4,6 +4,7 @@ from typing import Optional, Dict, List, Tuple
 import numpy as np
 import matplotlib.pyplot as plt
 import json, os, yaml
+from copy import deepcopy
 
 from gutenTAG.base_oscillations import BaseOscillation, BaseOscillationInterface
 from gutenTAG.anomalies import Anomaly, Position, AnomalyKind
@@ -64,9 +65,13 @@ class GutenTAG:
         result = []
         for ts in config.get("timeseries", []):
             overview.add_dataset(ts)
+            semi_supervised = ts.get("semi-supervised", False)
+            supervised = ts.get("supervised", False)
+            length = ts.get("length", 10000)
+            channels = ts.get("channels", 1)
             base_oscillation_configs = ts.get("base-oscillation", {})
-            semi_supervised = base_oscillation_configs.get("semi-supervised", False)
-            supervised = base_oscillation_configs.get("supervised", False)
+            base_oscillation_configs["length"] = length
+            base_oscillation_configs["channels"] = channels
             key = base_oscillation_configs.get("kind", "sinus")
             base_oscillation = BaseOscillation.from_key(key, **base_oscillation_configs)
             anomalies = []

@@ -104,6 +104,7 @@ BaseOscillation.Sinus(**options).inject_anomalies(anomalies).generate()
 - [x] 3 entries for datasets.csv ^
 - [x] dataset name/path for datasets.csv 
 - [ ] trend anomaly bug
+- [x] pull lengths
 - [ ] generate YAML from docs
 
 ### Anomaly
