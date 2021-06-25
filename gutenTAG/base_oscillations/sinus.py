@@ -11,7 +11,7 @@ class Sinus(BaseOscillationInterface):
         return BaseOscillationKind.Sinus
 
     def get_timeseries_periods(self) -> Optional[int]:
-        return int(self.frequency)
+        return int((self.length / 100) * self.frequency)
 
     def generate(self) -> Tuple[np.ndarray, np.ndarray]:
         self.timeseries = self.generate_only_base(self.length, self.frequency, self.amplitude, self.variance, self.channels, self.freq_mod)
@@ -30,8 +30,10 @@ class Sinus(BaseOscillationInterface):
         amplitude = amplitude or self.amplitude
         channels = channels or self.channels
 
-        end = 2 * np.pi * frequency
-        base_ts = np.arange(0, end, end / length).reshape(length, 1)
+        periods = (length / 100) * frequency
+
+        end = 2 * np.pi * periods
+        base_ts = np.linspace(0, end, length).reshape(length, 1)
         base_ts = np.repeat(base_ts, repeats=channels, axis=1)
 
         if freq_mod:

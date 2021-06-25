@@ -11,7 +11,7 @@ from ..utils.types import BaseOscillationKind
 
 class ECG(BaseOscillationInterface):
     def get_timeseries_periods(self) -> Optional[int]:
-        return int(self.frequency)
+        return int((self.length / 100) * self.frequency)
 
     def get_base_oscillation_kind(self) -> BaseOscillationKind:
         return BaseOscillationKind.ECG
@@ -23,12 +23,14 @@ class ECG(BaseOscillationInterface):
 
     def generate_only_base(self, frequency: Optional[float] = None, *args, **kwargs) -> np.ndarray:
         frequency = int(frequency or self.frequency)
+
+        periods = (self.length / 100) * frequency
         sampling_rate = ceil(self.length / 10.0)
         ts = []
         for channel in range(self.channels):
             ecg = nk.ecg_simulate(duration=10,
                                   sampling_rate=sampling_rate,
-                                  heart_rate=frequency*6,
+                                  heart_rate=periods*6,
                                   random_state=np.random.get_state()[1][channel],
                                   method='standard')[:self.length]
             ts.append(ecg)
