@@ -24,6 +24,7 @@ class BaseOscillationInterface(ABC):
         self.trend: Optional[BaseOscillationInterface] = kwargs.get("trend", None)
         self.offset = kwargs.get("offset", 0.0)
         self.smoothing = kwargs.get("smoothing", 0.01)
+        self.title = kwargs.get("title", None)
 
         self.anomalies: List[Anomaly] = []
         self.timeseries: Optional[np.ndarray] = None

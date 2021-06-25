@@ -99,7 +99,7 @@ BaseOscillation.Sinus(**options).inject_anomalies(anomalies).generate()
 - [x] smoothing for random walk
 - [x] amplitude anomaly (steep gaussian transition `scipy.stats.norm.pdf(np.linspace(0, 3, 100), scale=1.05)`)
 - [ ] frequency -> sampling_rate
-- [ ] give name to timeseries
+- [x] give name to timeseries
 - [ ] generate YAML from docs
 
 ### Anomaly

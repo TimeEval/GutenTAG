@@ -16,7 +16,7 @@ class Overview:
         overview = dict()
         overview["generated-timeseries"] = []
         for i, dataset in enumerate(self.datasets):
-            dataset["generation-id"] = i
+            dataset["generation-id"] = dataset.get("base-oscillation", {}).get("title", i)
             overview["generated-timeseries"].append(dataset)
         with open(os.path.join(path, self.FILENAME), "w") as f:
             yaml.dump(overview, f)

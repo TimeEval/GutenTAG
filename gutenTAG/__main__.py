@@ -30,7 +30,8 @@ def save_timeseries(timeseries: List[GutenTAG], overview: Overview, args: argpar
     overview.save_to_output_dir(args.output_dir)
 
     for i, ts in enumerate(timeseries):
-        SAVE_DIR = os.path.join(args.output_dir, str(i))
+        title = ts.base_oscillation.title or str(i)
+        SAVE_DIR = os.path.join(args.output_dir, title)
         os.makedirs(SAVE_DIR, exist_ok=True)
         train = pd.DataFrame(ts.train_timeseries)
         test = pd.DataFrame(ts.timeseries)
