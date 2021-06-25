@@ -96,7 +96,7 @@ BaseOscillation.Sinus(**options).inject_anomalies(anomalies).generate()
 - [x] nested trends (as base oscillation)
 - [ ] check if anomalies collide with same position (shift)
 - [x] offset to base oscillation
-- [ ] smoothing for random walk
+- [x] smoothing for random walk
 - [ ] amplitude anomaly (steep gaussian transition `scipy.stats.norm.pdf(np.linspace(0, 3, 100), scale=1.05)`)
 - [ ] frequency -> sampling_rate
 - [ ] give name to timeseries
