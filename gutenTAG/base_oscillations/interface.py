@@ -22,11 +22,13 @@ class BaseOscillationInterface(ABC):
         self.freq_mod = kwargs.get("freq-mod", True)
         self.polynomial = kwargs.get("polynomial", [1,1])
         self.trend: Optional[BaseOscillationInterface] = kwargs.get("trend", None)
+        self.offset = kwargs.get("offset", 0.0)
 
         self.anomalies: List[Anomaly] = []
         self.timeseries: Optional[np.ndarray] = None
         self.labels: np.ndarray = np.zeros(self.length, dtype=np.int)
         self.noise = self.generate_noise(self.variance * self.amplitude, self.length, self.channels)
+        self.trend_series: Optional[np.ndarray] = None
 
     def inject_anomalies(self, anomalies: List[Anomaly]) -> BaseOscillationInterface:
         self.anomalies.extend(anomalies)
@@ -41,6 +43,8 @@ class BaseOscillationInterface(ABC):
     def _generate_anomalies(self):
         label_ranges: List[LabelRange] = []
 
+        self._generate_trend()
+
         protocols = [(anomaly.generate(self, self.get_timeseries_periods(), self.get_base_oscillation_kind()), anomaly.channel) for anomaly in
                      self.anomalies]
 
@@ -51,10 +55,13 @@ class BaseOscillationInterface(ABC):
             label_ranges.append(protocol.labels)
 
         self._add_label_ranges_to_labels(label_ranges)
-        trend = 0
+
+        self.timeseries += self.noise + self.trend_series + self.offset
+
+    def _generate_trend(self):
+        self.trend_series = np.zeros((self.length, self.channels))
         if self.trend:
-            trend, _ = self.trend.generate()
-        self.timeseries += self.noise + trend
+            self.trend_series, _ = self.trend.generate()
 
     def _add_label_ranges_to_labels(self, label_ranges: List[LabelRange]):
         for label_range in label_ranges:
