@@ -4,6 +4,7 @@ from math import ceil
 import numpy as np
 import neurokit2 as nk
 from typing import Tuple, Optional
+import signal
 
 from .interface import BaseOscillationInterface
 from ..utils.types import BaseOscillationKind
@@ -32,6 +33,6 @@ class ECG(BaseOscillationInterface):
                                   sampling_rate=sampling_rate,
                                   heart_rate=periods*6,
                                   random_state=np.random.get_state()[1][channel],
-                                  method='standard')[:self.length]
+                                  method='simple')[:self.length]
             ts.append(ecg)
         return np.column_stack(ts)
