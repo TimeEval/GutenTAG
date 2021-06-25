@@ -93,7 +93,7 @@ BaseOscillation.Sinus(**options).inject_anomalies(anomalies).generate()
 - [x] sinus add amplitude+frequency modification over time
 - [x] clean sinus (`freq-mod: false` turns on clean mode)
 - [x] linear base oscillation
-- [ ] nested trends (as base oscillation)
+- [x] nested trends (as base oscillation)
 - [ ] check if anomalies collide with same position (shift)
 - [ ] offset to base oscillation
 - [ ] smoothing for random walk
