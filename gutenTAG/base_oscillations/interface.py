@@ -28,8 +28,8 @@ class BaseOscillationInterface(ABC):
 
         self.anomalies: List[Anomaly] = []
         self.timeseries: Optional[np.ndarray] = None
-        self.labels: np.ndarray = np.zeros(self.length, dtype=np.int)
-        self.noise = self.generate_noise(self.variance * self.amplitude, self.length, self.channels)
+        self.labels: Optional[np.ndarray] = None
+        self.noise: Optional[np.ndarray] = None
         self.trend_series: Optional[np.ndarray] = None
 
     def inject_anomalies(self, anomalies: List[Anomaly]) -> BaseOscillationInterface:
@@ -46,6 +46,8 @@ class BaseOscillationInterface(ABC):
         label_ranges: List[LabelRange] = []
 
         self._generate_trend()
+        self.noise = self.generate_noise(self.variance * self.amplitude, self.length, self.channels)
+        self.labels = np.zeros(self.length, dtype=np.int)
 
         positions: List[Tuple[int, int]] = []
         protocols: List[Tuple[AnomalyProtocol, int]] = []
@@ -67,6 +69,7 @@ class BaseOscillationInterface(ABC):
     def _generate_trend(self):
         self.trend_series = np.zeros((self.length, self.channels))
         if self.trend:
+            self.trend.length = self.length
             self.trend_series, _ = self.trend.generate()
 
     def _add_label_ranges_to_labels(self, label_ranges: List[LabelRange]):
