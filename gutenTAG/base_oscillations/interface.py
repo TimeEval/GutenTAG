@@ -13,7 +13,7 @@ class BaseOscillationInterface(ABC):
         self.length = kwargs.get("length", 10000)
         self.frequency = kwargs.get("frequency", 10.0)
         self.amplitude = kwargs.get("amplitude", 1.0)
-        self.channels = kwargs.get("channels", 2)
+        self.channels = kwargs.get("channels", 1)
         self.variance = kwargs.get("variance", 0.0)
         self.avg_pattern_length = kwargs.get("avg-pattern-length", 10)
         self.variance_pattern_length = kwargs.get("variance-pattern-length", 0.0)
@@ -21,6 +21,7 @@ class BaseOscillationInterface(ABC):
         self.heart_rate = kwargs.get("heart-rate", 60.0)
         self.freq_mod = kwargs.get("freq-mod", True)
         self.polynomial = kwargs.get("polynomial", [1,1])
+        self.trend: Optional[BaseOscillationInterface] = kwargs.get("trend", None)
 
         self.anomalies: List[Anomaly] = []
         self.timeseries: Optional[np.ndarray] = None
@@ -50,7 +51,10 @@ class BaseOscillationInterface(ABC):
             label_ranges.append(protocol.labels)
 
         self._add_label_ranges_to_labels(label_ranges)
-        self.timeseries += self.noise
+        trend = 0
+        if self.trend:
+            trend, _ = self.trend.generate()
+        self.timeseries += self.noise + trend
 
     def _add_label_ranges_to_labels(self, label_ranges: List[LabelRange]):
         for label_range in label_ranges:

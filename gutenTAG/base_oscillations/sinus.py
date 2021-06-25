@@ -14,7 +14,7 @@ class Sinus(BaseOscillationInterface):
         return int(self.frequency)
 
     def generate(self) -> Tuple[np.ndarray, np.ndarray]:
-        self.timeseries = self.generate_only_base(self.length, self.frequency, self.amplitude, self.variance, self.channels)
+        self.timeseries = self.generate_only_base(self.length, self.frequency, self.amplitude, self.variance, self.channels, self.freq_mod)
         self._generate_anomalies()
         return self.timeseries, self.labels
 
