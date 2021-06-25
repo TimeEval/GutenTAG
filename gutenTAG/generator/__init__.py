@@ -1,14 +1,15 @@
 from __future__ import annotations
 
+import json
+import os
+import yaml
 from typing import Optional, Dict, List, Tuple
-import numpy as np
+
 import matplotlib.pyplot as plt
-import json, os, yaml
-from copy import deepcopy
+import numpy as np
 
-from gutenTAG.base_oscillations import BaseOscillation, BaseOscillationInterface
 from gutenTAG.anomalies import Anomaly, Position, AnomalyKind
-
+from gutenTAG.base_oscillations import BaseOscillation, BaseOscillationInterface
 from .overview import Overview
 
 
@@ -36,8 +37,8 @@ class GutenTAG:
 
         if self.semi_supervised:
             self.semi_supervised_timeseries = self.base_oscillation.generate_only_base()
-            if self.supervised:
-                self.supervised_timeseries, self.train_labels = self.base_oscillation.inject_anomalies(self.anomalies).generate()
+        if self.supervised:
+            self.supervised_timeseries, self.train_labels = self.base_oscillation.inject_anomalies(self.anomalies).generate()
         if self.plot:
             self._plot()
 

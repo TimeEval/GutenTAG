@@ -47,13 +47,18 @@ def save_timeseries(timeseries: List[GutenTAG], overview: Overview, args: argpar
         if not supervised.empty:
             if train_labels is not None:
                 supervised["is_anomaly"] = train_labels
+            else:
+                supervised["is_anomaly"] = np.nan
             supervised.to_csv(os.path.join(SAVE_DIR, SUPERVISED_FILENAME), sep=",")
 
         if not semi_supervised.empty:
+            semi_supervised["is_anomaly"] = 0
             semi_supervised.to_csv(os.path.join(SAVE_DIR, SEMI_SUPERVISED_FILENAME), sep=",")
 
         if labels is not None:
             test["is_anomaly"] = labels
+        else:
+            test["is_anomaly"] = 0
         test.to_csv(os.path.join(SAVE_DIR, UNSUPERVISED_FILENAME), sep=",")
 
 
