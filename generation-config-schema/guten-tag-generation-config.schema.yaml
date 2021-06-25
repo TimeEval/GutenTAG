@@ -1,0 +1,48 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: guten-tag-generation-config.schema.yaml
+id: guten-tag-generation-config.schema.yaml
+title: GutenTAG generation config schema
+description: |
+  A schema describing the GutenTAG configuration file syntax.
+type: object
+required:
+  - timeseries
+properties:
+  timeseries:
+    type: array
+    uniqueItems: false
+    minItems: 1
+    description: Array of time series configurations to generate.
+    items:
+      type: object
+      required:
+        - length
+        - channels
+        - base-oscillation
+        - anomalies
+      properties:
+        name:
+          type: string
+          description: Name for this time series.
+        length:
+          type: integer
+          description: Length of the time series.
+          minimum: 1
+        channels:
+          type: integer
+          description: Number of channels (dimensions) of the generated time series.
+        semi-supervised:
+          type: boolean
+          description: Whether a training file for semi-supervised algorithms should be generated for this time series.
+        supervised:
+          type: boolean
+          description: Whether a training file for unsupervised algorithms should be generated for this time series.
+        base-oscillation:
+          description: Base oscillation used for (all channels of) this time series.
+          $ref: oscillation.guten-tag-generation-config.schema.yaml
+        anomalies:
+          type: array
+          description: List of anomalies.
+          uniqueItems: true
+          items:
+            $ref: anomaly.guten-tag-generation-config.schema.yaml
