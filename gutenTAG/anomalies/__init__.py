@@ -43,7 +43,10 @@ class Anomaly:
 
     def generate(self, base_oscillation: 'BaseOscillationInterface', timeseries_periods: Optional[int], base_oscillation_kind: BaseOscillationKind, positions: List[Tuple[int, int]]) -> AnomalyProtocol:
         # AnomalyKind.validate(self.anomaly_kinds)
-        start, end = self._get_position_range(base_oscillation.length, timeseries_periods, positions)
+        start, end = self._get_position_range(base_oscillation.length, timeseries_periods)
+        start, end = self._maybe_repair_position((start, end), positions)
+        print(start, end)
+
         length = end - start
         label_range = LabelRange(start, length)
         protocol = AnomalyProtocol(start, end, self.channel, base_oscillation, base_oscillation_kind, label_range)
@@ -53,8 +56,8 @@ class Anomaly:
 
         return protocol
 
-    def _get_position_range(self, timeseries_length: int, timeseries_periods: Optional[int], positions: List[Tuple[int, int]]) -> Tuple[int, int]:
-        if timeseries_periods is None:
+    def _get_position_range(self, timeseries_length: int, timeseries_periods: Optional[int]) -> Tuple[int, int]:
+        if timeseries_periods is None or timeseries_periods <= 6:
             return self._get_position_range_no_periodicity(timeseries_length)
 
         start_period = 0
@@ -91,4 +94,14 @@ class Anomaly:
             raise ValueError(f"The position '{position}' is not yet supported! Guten Tag!")
 
         end = start + self.anomaly_length
+        return start, end
+
+    def _maybe_repair_position(self, current: Tuple[int, int], others: List[Tuple[int, int]]) -> Tuple[int, int]:
+        start, end = current
+        current_length = current[1] - current[0]
+        for other in others:
+            if other[0] <= current[0] and other[1] >= current[0] or \
+               other[0] <= current[1] and other[1] >= current[1]:
+               start = other[1] + 1
+               end = start + current_length
         return start, end

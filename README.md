@@ -94,7 +94,7 @@ BaseOscillation.Sinus(**options).inject_anomalies(anomalies).generate()
 - [x] clean sinus (`freq-mod: false` turns on clean mode)
 - [x] linear base oscillation
 - [x] nested trends (as base oscillation)
-- [ ] check if anomalies collide with same position (shift)
+- [x] check if anomalies collide with same position (shift)
 - [x] offset to base oscillation
 - [x] smoothing for random walk
 - [x] amplitude anomaly (steep gaussian transition `scipy.stats.norm.pdf(np.linspace(0, 3, 100), scale=1.05)`)
@@ -104,7 +104,7 @@ BaseOscillation.Sinus(**options).inject_anomalies(anomalies).generate()
 
 ### Anomaly
 
-- [ ] Trend anomaly
+- [x] Trend anomaly
 
 ### Future (nice to have)
 
