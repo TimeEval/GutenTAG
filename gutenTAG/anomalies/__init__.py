@@ -9,13 +9,6 @@ import numpy as np
 from ..utils.types import BaseOscillationKind
 from .types import AnomalyProtocol, BaseAnomaly, LabelRange
 from .types.kind import AnomalyKind
-from .types.extremum import AnomalyExtremum
-from .types.frequency import AnomalyFrequency
-from .types.mean import AnomalyMean
-from .types.pattern import AnomalyPattern
-from .types.pattern_shift import AnomalyPatternShift
-from .types.platform import AnomalyPlatform
-from .types.variance import AnomalyVariance
 
 
 def list_or_wrap(value: Union[Any, List[Any]]) -> List[Any]:
@@ -48,9 +41,9 @@ class Anomaly:
         self.anomaly_kinds.append(anomaly_kind)
         return self
 
-    def generate(self, base_oscillation: 'BaseOscillationInterface', timeseries_periods: Optional[int], base_oscillation_kind: BaseOscillationKind) -> AnomalyProtocol:
+    def generate(self, base_oscillation: 'BaseOscillationInterface', timeseries_periods: Optional[int], base_oscillation_kind: BaseOscillationKind, positions: List[Tuple[int, int]]) -> AnomalyProtocol:
         # AnomalyKind.validate(self.anomaly_kinds)
-        start, end = self._get_position_range(base_oscillation.length, timeseries_periods)
+        start, end = self._get_position_range(base_oscillation.length, timeseries_periods, positions)
         length = end - start
         label_range = LabelRange(start, length)
         protocol = AnomalyProtocol(start, end, self.channel, base_oscillation, base_oscillation_kind, label_range)
@@ -60,7 +53,7 @@ class Anomaly:
 
         return protocol
 
-    def _get_position_range(self, timeseries_length: int, timeseries_periods: Optional[int]) -> Tuple[int, int]:
+    def _get_position_range(self, timeseries_length: int, timeseries_periods: Optional[int], positions: List[Tuple[int, int]]) -> Tuple[int, int]:
         if timeseries_periods is None:
             return self._get_position_range_no_periodicity(timeseries_length)
 

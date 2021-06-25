@@ -6,10 +6,14 @@ import matplotlib.pyplot as plt
 import json, os, yaml
 
 from gutenTAG.base_oscillations import BaseOscillation, BaseOscillationInterface
-from gutenTAG.anomalies import Anomaly, AnomalyPlatform, Position, AnomalyFrequency, AnomalyExtremum, AnomalyVariance, \
-    AnomalyKind
+from gutenTAG.anomalies import Anomaly, Position, AnomalyKind
 
 from .overview import Overview
+
+
+def decode_trend_obj(trend: Dict) -> Optional[BaseOscillationInterface]:
+    trend_key = trend.get("kind", None)
+    return BaseOscillation.from_key(trend_key, **trend) if trend_key else None
 
 
 class GutenTAG:
@@ -70,7 +74,10 @@ class GutenTAG:
 
                 for anomaly_kind in anomaly_config.get("kinds", []):
                     name = anomaly_kind.get("name", "platform")
-                    parameters = anomaly_kind.get("parameters", {})
+                    if name == "trend":
+                        parameters = {"trend": decode_trend_obj(anomaly_kind.get("parameters", {}).get("trend", {}))}
+                    else:
+                        parameters = anomaly_kind.get("parameters", {})
                     anomaly.set_anomaly(AnomalyKind(name).set_parameters(parameters))
                 anomalies.append(anomaly)
             result.append(GutenTAG(base_oscillation, anomalies, with_train, plot, train_with_label).generate())

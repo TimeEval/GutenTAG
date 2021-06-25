@@ -14,6 +14,19 @@ def get_or_error(name: str, value: Optional[Any]) -> Any:
     return value
 
 
+def find_trend_anomalies(obj: Dict) -> Dict:
+    for anomaly in obj.get("anomalies", []):
+        for kind in anomaly.get("kinds", []):
+            if kind.get("name", "") == "trend":
+                kind["parameters"]["trend"] = decode_trend_obj(kind.get("parameters", {}).get("trend", {}))
+    return obj
+
+
+def decode_trend_obj(trend: Dict) -> Optional[BaseOscillationInterface]:
+    trend_key = trend.get("kind", None)
+    return BaseOscillation.from_key(trend_key, **trend) if trend_key else None
+
+
 class BaseOscillation:
     key_mapping: Dict[str, Type[BaseOscillationInterface]] = {
         "sinus": Sinus,
@@ -26,6 +39,5 @@ class BaseOscillation:
     @staticmethod
     def from_key(key: str, *args, **kwargs) -> BaseOscillationInterface:
         trend = kwargs.get("trend", {})
-        trend_key = trend.get("kind", None)
-        kwargs["trend"] = BaseOscillation.from_key(trend_key, **trend) if trend_key else None
+        kwargs["trend"] = decode_trend_obj(trend)
         return BaseOscillation.key_mapping[key](*args, **kwargs)

@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from typing import List, Optional, Tuple
 import numpy as np
 
-from ..anomalies import Anomaly, LabelRange
+from ..anomalies import Anomaly, LabelRange, AnomalyProtocol
 from ..utils.types import BaseOscillationKind
 
 
@@ -47,8 +47,12 @@ class BaseOscillationInterface(ABC):
 
         self._generate_trend()
 
-        protocols = [(anomaly.generate(self, self.get_timeseries_periods(), self.get_base_oscillation_kind()), anomaly.channel) for anomaly in
-                     self.anomalies]
+        positions: List[Tuple[int, int]] = []
+        protocols: List[Tuple[AnomalyProtocol, int]] = []
+        for anomaly in self.anomalies:
+            anomaly_protocol = anomaly.generate(self, self.get_timeseries_periods(), self.get_base_oscillation_kind(), positions)
+            positions.append((anomaly_protocol.start, anomaly_protocol.end))
+            protocols.append((anomaly_protocol, anomaly.channel))
 
         for protocol, channel in protocols:
             if len(protocol.subsequences) > 0:
