@@ -10,6 +10,7 @@ from ..utils.types import BaseOscillationKind
 
 class BaseOscillationInterface(ABC):
     def __init__(self, *args, **kwargs):
+        self.name = kwargs.get("name", None)
         self.length = kwargs.get("length", 10000)
         self.frequency = kwargs.get("frequency", 10.0)
         self.amplitude = kwargs.get("amplitude", 1.0)
@@ -18,13 +19,11 @@ class BaseOscillationInterface(ABC):
         self.avg_pattern_length = kwargs.get("avg-pattern-length", 10)
         self.variance_pattern_length = kwargs.get("variance-pattern-length", 0.0)
         self.variance_amplitude = kwargs.get("variance-amplitude", 2.0)
-        self.heart_rate = kwargs.get("heart-rate", 60.0)
         self.freq_mod = kwargs.get("freq-mod", 0.0)
         self.polynomial = kwargs.get("polynomial", [1, 1])
         self.trend: Optional[BaseOscillationInterface] = kwargs.get("trend", None)
         self.offset = kwargs.get("offset", 0.0)
         self.smoothing = kwargs.get("smoothing", 0.01)
-        self.name = kwargs.get("name", None)
 
         self.anomalies: List[Anomaly] = []
         self.timeseries: Optional[np.ndarray] = None
@@ -63,7 +62,6 @@ class BaseOscillationInterface(ABC):
             label_ranges.append(protocol.labels)
 
         self._add_label_ranges_to_labels(label_ranges)
-
         self.timeseries += self.noise + self.trend_series + self.offset
 
     def _generate_trend(self):

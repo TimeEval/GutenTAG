@@ -5,22 +5,9 @@ title: GutenTAG anomaly configuration
 description: Anomaly configuration for a time series.
 type: object
 required:
-  - kind
-  - parameters
+  - length
+  - kinds
 properties:
-  kind:
-    type: string
-    enum:
-      - amplitude
-      - extremum
-      - frequency
-      - mean
-      - pattern
-      - pattern_shift
-      - platform
-      - trend
-      - variance
-    description: Kind of the anomaly.
   position:
     type: string
     enum:
@@ -38,95 +25,11 @@ properties:
   channel:
     type: integer
     description: Channel identifier, where this anomaly should be applied to.
-  parameters:
-    type: object
-    description: Parameters of the chosen anomaly.
-    anyOf:
-      - $ref: "#/definitions/extremum-params"
-      - $ref: "#/definitions/frequency-params"
-      - $ref: "#/definitions/mean-params"
-      - $ref: "#/definitions/pattern-params"
-      - $ref: "#/definitions/pattern-shift-params"
-      - $ref: "#/definitions/platform-params"
-      - $ref: "#/definitions/variance-params"
-      - $ref: "#/definitions/amplitude-params"
-      - $ref: oscillation.guten-tag-generation-config.schema.yaml
-
-definitions:
-  extremum-params:
-    type: object
-    required:
-      - min
-      - local
-    properties:
-      min:
-        type: boolean
-        description: Whether a minimum (true) or a maximum (false) should be generated.
-      local:
-        type: boolean
-        description: Whether a local (true) or a global (false) extremum should be generated.
-      context_window:
-        type: integer
-        description: How many points to the left and right are used to calculate a LOCAL extremum.
-  frequency-params:
-    type: object
-    required:
-      - frequency_factor
-    properties:
-      frequency_factor:
-        type: number
-        description: Relative change of frequency.
-  mean-params:
-    type: object
-    required:
-      - offset
-    properties:
-      offset:
-        type: number
-        description: Offset to shift the time series on the y axis within this anomaly region.
-  pattern-params:
-    type: object
-    required:
-      - sinusoid_k
-    properties:
-      sinusoid_k:
-        type: number
-        description: |
-          Only used for base oscillations of type 'sinus'.
-          Ramming factor for change in sine wave.
-  pattern-shift-params:
-    type: object
-    required:
-      - shift_factor
-      - transition_window
-    properties:
-      shift_factor:
-        type: number
-        description: Relative size of the shift dependent on the anomaly length.
-      transition_window:
-        type: integer
-        description: Number of points to the left and right used to interpolate a smooth transition.
-  platform-params:
-    type: object
-    required:
-      - value
-    properties:
-      value:
-        type: number
-        description: Value of the platform on the y axis.
-  variance-params:
-    type: object
-    required:
-      - variance
-    properties:
-      variance:
-        type: number
-        description: Value of the new variance.
-  amplitude-params:
-    type: object
-    required:
-      - amplitude_factor
-    properties:
-      amplitude_factor:
-        type: number
-        description: Relative change of the amplitude.
+  kinds:
+    type: array
+    description: |
+      List of anomaly kinds.
+      They are stagged on top of each other for this anomaly region.
+    minimum: 1
+    items:
+      $ref: anomaly-kind.guten-tag-generation-config.schema.yaml
