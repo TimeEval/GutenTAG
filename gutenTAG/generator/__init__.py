@@ -2,19 +2,20 @@ from __future__ import annotations
 
 import json
 import os
-import yaml
 from typing import Optional, Dict, List, Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
+import yaml
 
 from gutenTAG.anomalies import Anomaly, Position, AnomalyKind
 from gutenTAG.base_oscillations import BaseOscillation, BaseOscillationInterface
 from .overview import Overview
 
 
-def decode_trend_obj(trend: Dict) -> Optional[BaseOscillationInterface]:
+def decode_trend_obj(trend: Dict, length_overwrite: int) -> Optional[BaseOscillationInterface]:
     trend_key = trend.get("kind", None)
+    trend["length"] = length_overwrite
     return BaseOscillation.from_key(trend_key, **trend) if trend_key else None
 
 
@@ -25,7 +26,7 @@ class GutenTAG:
         self.anomalies = anomalies
         self.semi_supervised_timeseries: Optional[np.ndarray] = None
         self.supervised_timeseries: Optional[np.ndarray] = None
-        self.anomaly_timeseries: Optional[np.ndarray] = None
+        self.timeseries: Optional[np.ndarray] = None
         self.labels: Optional[np.ndarray] = None
         self.train_labels: Optional[np.ndarray] = None
         self.semi_supervised = semi_supervised
@@ -45,7 +46,11 @@ class GutenTAG:
         return self
 
     def _plot(self):
-        plt.plot(self.timeseries)
+        fig, axs = plt.subplots(2, sharex="all")
+        axs[0].set_title("Time series")
+        axs[0].plot(self.timeseries)
+        axs[1].set_title("Label")
+        axs[1].plot(self.labels)
         plt.show()
 
     @staticmethod
@@ -84,7 +89,9 @@ class GutenTAG:
                 for anomaly_kind in anomaly_config.get("kinds", []):
                     kind = anomaly_kind.get("kind", "platform")
                     if kind == "trend":
-                        parameters = {"trend": decode_trend_obj(anomaly_kind.get("parameters", {}).get("trend", {}))}
+                        parameters = {
+                            "trend": decode_trend_obj(anomaly_kind.get("parameters", {}), anomaly.anomaly_length)
+                        }
                     else:
                         parameters = anomaly_kind.get("parameters", {})
                     anomaly.set_anomaly(AnomalyKind(kind).set_parameters(parameters))
