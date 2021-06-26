@@ -40,8 +40,8 @@ properties:
       Amplitude of the oscillation (+/- from 0).
       It will be bounded to [-amplitude, amplitude].
   freq-mod:
-    type: boolean
-    description: Whether to use slight time-dependent frequency and amplitude modulation.
+    type: number
+    description: Factor of time-dependent frequency modulation (modulates the sinus amplitude).
   smoothing:
     type: number
     description: |

@@ -1,9 +1,9 @@
-import numpy as np
-from typing import Optional, List, Tuple
+from typing import Optional, Tuple
 
-from ..anomalies.types import LabelRange
-from ..utils.types import BaseOscillationKind
+import numpy as np
+
 from .interface import BaseOscillationInterface
+from ..utils.types import BaseOscillationKind
 
 
 class Sinus(BaseOscillationInterface):
@@ -19,12 +19,12 @@ class Sinus(BaseOscillationInterface):
         return self.timeseries, self.labels
 
     def generate_only_base(self,
-                           length:    Optional = None,
-                           frequency: Optional = None,
-                           amplitude: Optional = None,
-                           variance:  Optional = None,
-                           channels:  Optional = 1,
-                           freq_mod: bool = True) -> np.ndarray:
+                           length:    Optional[int] = None,
+                           frequency: Optional[float] = None,
+                           amplitude: Optional[float] = None,
+                           variance:  Optional[float] = None,
+                           channels:  Optional[int] = None,
+                           freq_mod: float = .0) -> np.ndarray:
         length = length or self.length
         frequency = frequency or self.frequency
         amplitude = amplitude or self.amplitude
@@ -37,6 +37,6 @@ class Sinus(BaseOscillationInterface):
         base_ts = np.repeat(base_ts, repeats=channels, axis=1)
 
         if freq_mod:
-            amplitude = (np.sin(np.linspace(0, end * 0.3, length)) * amplitude).reshape(-1, 1)
+            amplitude = (np.sin(np.linspace(0, end * freq_mod, length)) * amplitude).reshape(-1, 1)
 
-        return (np.sin(base_ts) * amplitude)
+        return np.sin(base_ts) * amplitude
