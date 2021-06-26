@@ -2,7 +2,7 @@ import os
 import sys
 import argparse
 from pathlib import Path
-from typing import List
+from typing import List, Type
 import numpy as np
 import pandas as pd
 import importlib
@@ -35,7 +35,7 @@ def save_timeseries(timeseries: List[GutenTAG], overview: Overview, args: argpar
     overview.save_to_output_dir(args.output_dir)
 
     for i, ts in enumerate(timeseries):
-        title = ts.base_oscillation.title or str(i)
+        title = ts.base_oscillation.name or str(i)
         SAVE_DIR = os.path.join(args.output_dir, title)
         os.makedirs(SAVE_DIR, exist_ok=True)
         semi_supervised = pd.DataFrame(ts.semi_supervised_timeseries)
@@ -68,7 +68,7 @@ def set_random_seed(args: argparse.Namespace):
     random.seed(args.seed)
 
 
-def import_addons(addons: List[str]) -> List[BaseAddOn]:
+def import_addons(addons: List[str]) -> List[Type[BaseAddOn]]:
     module_classes = [addon.rsplit(".", 1) for addon in addons]
 
     classes = [importlib.import_module(package).__dict__[cls] for package, cls in module_classes]

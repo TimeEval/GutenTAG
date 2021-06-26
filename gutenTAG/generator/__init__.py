@@ -66,11 +66,13 @@ class GutenTAG:
         result = []
         for ts in config.get("timeseries", []):
             overview.add_dataset(ts)
-            semi_supervised = ts.get("semi-supervised", False)
-            supervised = ts.get("supervised", False)
+            name = ts.get("name", None)
             length = ts.get("length", 10000)
             channels = ts.get("channels", 1)
+            semi_supervised = ts.get("semi-supervised", False)
+            supervised = ts.get("supervised", False)
             base_oscillation_configs = ts.get("base-oscillation", {})
+            base_oscillation_configs["name"] = name
             base_oscillation_configs["length"] = length
             base_oscillation_configs["channels"] = channels
             key = base_oscillation_configs.get("kind", "sinus")
@@ -80,12 +82,12 @@ class GutenTAG:
                 anomaly = Anomaly(Position(anomaly_config.get("position", "middle")), anomaly_config.get("length", 200), anomaly_config.get("channel", 0))
 
                 for anomaly_kind in anomaly_config.get("kinds", []):
-                    name = anomaly_kind.get("name", "platform")
-                    if name == "trend":
+                    kind = anomaly_kind.get("kind", "platform")
+                    if kind == "trend":
                         parameters = {"trend": decode_trend_obj(anomaly_kind.get("parameters", {}).get("trend", {}))}
                     else:
                         parameters = anomaly_kind.get("parameters", {})
-                    anomaly.set_anomaly(AnomalyKind(name).set_parameters(parameters))
+                    anomaly.set_anomaly(AnomalyKind(kind).set_parameters(parameters))
                 anomalies.append(anomaly)
             result.append(GutenTAG(base_oscillation, anomalies, semi_supervised, supervised, plot).generate())
         return result, overview
