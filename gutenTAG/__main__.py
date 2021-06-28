@@ -1,15 +1,20 @@
+import argparse
+import importlib
 import os
 import sys
-import argparse
+import warnings
 from pathlib import Path
-from typing import List, Type
+from typing import List, Type, Tuple
+
 import numpy as np
 import pandas as pd
-import importlib
+from joblib import Parallel, delayed
+from tqdm import tqdm
 
 from gutenTAG import GutenTAG
-from gutenTAG.generator import Overview
 from gutenTAG.addons import BaseAddOn
+from gutenTAG.generator import Overview
+from gutenTAG.utils.tqdm_joblib import tqdm_joblib
 
 
 SUPERVISED_FILENAME = "train_anomaly.csv"
@@ -17,7 +22,7 @@ SEMI_SUPERVISED_FILENAME = "train_no_anomaly.csv"
 UNSUPERVISED_FILENAME = "test.csv"
 
 
-def parse_args() -> argparse.Namespace:
+def parse_args(args: List[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="GutenTAG! A good Time series Anomaly Generator.")
 
     parser.add_argument("--config-yaml", type=Path, required=True, help="Path to config YAML")
@@ -26,18 +31,19 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--no-save", action="store_true", help="Prevent GutenTAG from saving the generated time series.")
     parser.add_argument("--seed", type=int, default=None, help="Random seed")
     parser.add_argument("--addons", nargs="*", default=[], help="Use Add-Ons for generating time series.")
+    parser.add_argument("--n_jobs", "--n-jobs", type=int, default=1, help="Number of time series to generate in parallel.")
 
-    return parser.parse_args(sys.argv[1:])
+    return parser.parse_args(args)
 
 
 def save_timeseries(timeseries: List[GutenTAG], overview: Overview, args: argparse.Namespace):
     os.makedirs(args.output_dir, exist_ok=True)
     overview.save_to_output_dir(args.output_dir)
 
-    for i, ts in enumerate(timeseries):
+    for i, ts in tqdm(enumerate(timeseries), desc="Saving time series to disk", total=len(timeseries)):
         title = ts.base_oscillation.name or str(i)
-        SAVE_DIR = os.path.join(args.output_dir, title)
-        os.makedirs(SAVE_DIR, exist_ok=True)
+        save_dir = os.path.join(args.output_dir, title)
+        os.makedirs(save_dir, exist_ok=True)
         semi_supervised = pd.DataFrame(ts.semi_supervised_timeseries)
         supervised = pd.DataFrame(ts.supervised_timeseries)
         test = pd.DataFrame(ts.timeseries)
@@ -49,17 +55,17 @@ def save_timeseries(timeseries: List[GutenTAG], overview: Overview, args: argpar
                 supervised["is_anomaly"] = train_labels
             else:
                 supervised["is_anomaly"] = np.nan
-            supervised.to_csv(os.path.join(SAVE_DIR, SUPERVISED_FILENAME), sep=",")
+            supervised.to_csv(os.path.join(save_dir, SUPERVISED_FILENAME), sep=",")
 
         if not semi_supervised.empty:
             semi_supervised["is_anomaly"] = 0
-            semi_supervised.to_csv(os.path.join(SAVE_DIR, SEMI_SUPERVISED_FILENAME), sep=",")
+            semi_supervised.to_csv(os.path.join(save_dir, SEMI_SUPERVISED_FILENAME), sep=",")
 
         if labels is not None:
             test["is_anomaly"] = labels
         else:
             test["is_anomaly"] = 0
-        test.to_csv(os.path.join(SAVE_DIR, UNSUPERVISED_FILENAME), sep=",")
+        test.to_csv(os.path.join(save_dir, UNSUPERVISED_FILENAME), sep=",")
 
 
 def set_random_seed(args: argparse.Namespace):
@@ -75,12 +81,27 @@ def import_addons(addons: List[str]) -> List[Type[BaseAddOn]]:
     return [cls for cls in classes if issubclass(cls, BaseAddOn)]
 
 
-if __name__ == "__main__":
-    args = parse_args()
+def generate_all(args: argparse.Namespace) -> Tuple[List[GutenTAG], Overview]:
+    generators, overview = GutenTAG.from_yaml(args.config_yaml, args.plot)
+    n_jobs = args.n_jobs
+    if n_jobs != 1 and args.plot:
+        warnings.warn(f"Cannot generate time series in parallel while plotting ('n_jobs' was set to {n_jobs})! Falling "
+                      f"back to serial generation.")
+        n_jobs = 1
+
+    with tqdm_joblib(tqdm(desc="Generating datasets", total=len(generators))):
+        Parallel(n_jobs=n_jobs)(
+            delayed(g.generate)() for g in generators
+        )
+    return generators, overview
+
+
+def main(args: List[str]) -> None:
+    args = parse_args(args)
     addons = import_addons(args.addons)
     if args.seed is not None:
         set_random_seed(args)
-    generators, overview = GutenTAG.from_yaml(args.config_yaml, args.plot)
+    generators, overview = generate_all(args)
 
     if args.no_save:
         exit(0)
@@ -88,3 +109,7 @@ if __name__ == "__main__":
 
     for addon in addons:
         addon().process(overview=overview, generators=generators, args=args)
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
