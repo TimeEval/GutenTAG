@@ -43,6 +43,5 @@ properties:
         anomalies:
           type: array
           description: List of anomalies.
-          uniqueItems: true
           items:
             $ref: anomaly.guten-tag-generation-config.schema.yaml
