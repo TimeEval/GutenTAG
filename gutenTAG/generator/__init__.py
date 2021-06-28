@@ -16,6 +16,8 @@ from .overview import Overview
 def decode_trend_obj(trend: Dict, length_overwrite: int) -> Optional[BaseOscillationInterface]:
     trend_key = trend.get("kind", None)
     trend["length"] = length_overwrite
+    if "trend" in trend:
+        trend["trend"] = decode_trend_obj(trend["trend"], length_overwrite)
     return BaseOscillation.from_key(trend_key, **trend) if trend_key else None
 
 
@@ -80,6 +82,7 @@ class GutenTAG:
             base_oscillation_configs["name"] = name
             base_oscillation_configs["length"] = length
             base_oscillation_configs["channels"] = channels
+            base_oscillation_configs["trend"] = decode_trend_obj(base_oscillation_configs.get("trend", {}), length)
             key = base_oscillation_configs.get("kind", "sinus")
             base_oscillation = BaseOscillation.from_key(key, **base_oscillation_configs)
             anomalies = []
