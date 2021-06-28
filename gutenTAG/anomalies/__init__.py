@@ -32,9 +32,9 @@ class Anomaly:
         self.anomaly_length = anomaly_length
         self.channel = channel
 
-        self.anomaly_kinds: List[AnomalyKind] = []
+        self.anomaly_kinds: List[BaseAnomaly] = []
 
-    def set_anomaly(self, anomaly_kind: AnomalyKind) -> Anomaly:
+    def set_anomaly(self, anomaly_kind: BaseAnomaly) -> Anomaly:
         self.anomaly_kinds.append(anomaly_kind)
         return self
 

@@ -104,7 +104,7 @@ class GutenTAG:
                         }
                     else:
                         parameters = anomaly_kind.get("parameters", {})
-                    anomaly.set_anomaly(AnomalyKind(kind).set_parameters(parameters))
+                    anomaly.set_anomaly(AnomalyKind(kind).create(deepcopy(parameters)))
                 anomalies.append(anomaly)
             result.append(GutenTAG(base_oscillation, anomalies, semi_supervised, supervised, plot))
         return result, overview
