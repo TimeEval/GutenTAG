@@ -1,0 +1,65 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: oscillation.guten-tag-generation-config.schema.yaml
+id: oscillation.guten-tag-generation-config.schema.yaml
+title: GutenTAG base oscillation configuration
+description: Base oscillation configuration for a time series.
+type: object
+required:
+  - kind
+properties:
+  kind:
+    type: string
+    enum:
+      - sinus
+      - random_walk
+      - ecg
+      - polynomial
+      - cylinder_bell_funnel
+    description: Kind of the base oscillation.
+  trend:
+    description: Trend to add to the base oscillation
+    $ref: "#"
+#    $ref: trend.guten-tag-generation-config.schema.yaml
+  offset:
+    type: number
+    description: Constant offset added to the base oscillation.
+  variance:
+    type: number
+    description: |
+      Variance of the signal relative to signal value.
+      This is also called white noise.
+      If set to 0, there is no noise.
+  frequency:
+    type: number
+    description: Number of oscillations per 100 points.
+    minimum: 0
+  amplitude:
+    type: number
+    exclusiveMinimum: 0
+    description: |
+      Amplitude of the oscillation (+/- from 0).
+      It will be bounded to [-amplitude, amplitude].
+  freq-mod:
+    type: number
+    description: Factor of time-dependent frequency modulation (modulates the sinus amplitude).
+  smoothing:
+    type: number
+    description: |
+      Smoothing factor for convolutional smoothing of the random walk.
+      Depends on the time series length.
+      Default is 0.01.
+  avg-pattern-length:
+    type: integer
+    description: Average length of the pattern in the time series.
+  variance-pattern-length:
+    type: number
+    description: Variance in the length of the pattern.
+  variance-amplitude:
+    type: number
+    description: Variance in the amplitude of the pattern.
+  polynomial:
+    type: array
+    description: Polynomial coefficients in order of increasing degree, i.e., (1, 2, 3) give 1 + 2*x + 3*x**2.
+    minItems: 1
+    items:
+      type: integer

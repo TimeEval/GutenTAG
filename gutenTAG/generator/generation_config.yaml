@@ -1,34 +1,52 @@
-# base definitions
+$schema: "generation-config-schema/guten-tag-generation-config.schema.yaml"
+
+#############################
+# Definitions
+#############################
+# base oscillations
 base:
-  - base-oscillation: &base
-      length: 10000
-      channels: 1
-      with-train: true
-      frequency: 100.0
-      amplitude: 1.0
-      variance: 0.1
+  - &base-ts
+    length: 10000
+    channels: 1
+    semi-supervised: true
+    supervised: true
+  - &base-osci
+    frequency: 5.0
+    amplitude: 1.0
+    variance: 0.1
 sinus:
-  - base-oscillation: &sinus-0
-      <<: *base
-      kind: "sinus"
-  - base-oscillation: &sinus-1
-      <<: *sinus-0
-      frequency: 75.1
-      amplitude: 2.5
-      offset: -2.0
-  - base-oscillation: &sinus-2
-      <<: *sinus-0
-      frequency: 125.4
-      amplitude: 0.5
-      offset: 1.3
-  - base-oscillation: &sinus-linear-trend
-      <<: *sinus-1
-  - base-oscillation: &sinus-other-trend
-      <<: *sinus-2
-noisy_sinus: {}
+  - &sinus-0
+    <<: *base-osci
+    kind: "sinus"
+#    freq-mod: 0.05
+  - &sinus-1
+    <<: *sinus-0
+    frequency: 2.3
+    amplitude: 2.5
+    offset: -2.0
+    freq-mod: 0.5
+  - &sinus-2
+    <<: *sinus-0
+    frequency: 12.4
+    amplitude: 0.5
+    offset: 1.3
+    freq-mod: 0.01
+  - &sinus-linear-trend
+    <<: *sinus-1
+    trend:
+      kind: polynomial
+      polynomial: [ 2 ]
+  - &sinus-other-trend
+    <<: *sinus-0
+    trend:
+      kind: sinus
+      frequency: 1
+      amplitude: 2
+      variance: 0
+clean_sinus: {}
 random_walk:
   - base-oscillation: &rw-0
-      <<: *base
+      <<: *base-osci
       kind: "random_walk"
       variance: 0.0
   - base-oscillation: &rw-1
@@ -48,62 +66,141 @@ random_walk:
       <<: *rw-2
 cylinder_bell_funnel: {}
 ecg: {}
+
+# anomalies
 anomaly_kinds:
   - &local-extremum
-    name: "extremum"
-    parameters:
-      min: true
-      local: true
-      context_window: 10
+    length: 1
+    kinds:
+      - kind: "extremum"
+        parameters:
+          min: true
+          local: true
+          context_window: 50
   - &global-extremum
-    name: "extremum"
-    parameters:
-      min: false
-      local: false
+    length: 1
+    kinds:
+      - kind: "extremum"
+        parameters:
+          min: false
+          local: false
   - &frequency
-    name: "frequency"
-    parameters:
-      factor: 2.0
+    length: 100
+    kinds:
+      - kind: "frequency"
+        parameters:
+          frequency_factor: 2.0
   - &mean
-    name: "mean"
-    parameters:
-      offset: 1.0
+    length: 100
+    kinds:
+      - kind: "mean"
+        parameters:
+          offset: 1.0
   - &pattern
-    name: "pattern"
-    parameters:
-      sinusoid_k: 10.0
-      factor: 2.0
+    length: 100
+    kinds:
+      - kind: "pattern"
+        parameters:
+          sinusoid_k: 10.0
   - &pattern-shift
-    name: "pattern-shift"
-    parameters:
-      shift_factor: 0.5
-      transition_window: 10
+    length: 100
+    kinds:
+      - kind: "pattern-shift"
+        parameters:
+          shift_factor: 0.5
+          transition_window: 10
   - &platform
-    name: "platform"
-    parameters:
-      value: 0.0
-  - &variance-larger
-    name: "variance"
-    parameters:
-      value: 0.3
-  - &variance-smaller
-    name: "variance"
-    parameters:
-      value: 0.03
-# declaration
+    length: 100
+    kinds:
+      - kind: "platform"
+        parameters:
+          value: 0.0
+  - &variance-large
+    length: 100
+    kinds:
+      - kind: "variance"
+        parameters:
+          variance: 0.3
+  - &variance-small
+    length: 100
+    kinds:
+      - kind: "variance"
+        parameters:
+          variance: 0.03
+  - &amplitude-larger
+    length: 100
+    kinds:
+      - kind: "amplitude"
+        parameters:
+          amplitude_factor: 2
+  - &amplitude-smaller
+    length: 100
+    kinds:
+      - kind: "amplitude"
+        parameters:
+          amplitude_factor: 0.5
+  - &trend-anomaly-sinus
+    length: 100
+    kinds:
+      - kind: "trend"
+        parameters:
+          kind: "sinus"
+          frequency: 1
+          amplitude: 1.0
+          variance: 0.0
+
+
+#############################
+# Time series declarations
+#############################
 timeseries:
-  # sinus
-  - base-oscillation: *sinus-0
+# For sinus base
+#############################
+  # noise
+  - name: sinus-noise-00%-0
+    <<: *base-ts
+    base-oscillation:
+      <<: *sinus-0
+      variance: 0
     anomalies:
-      - position: "beginning"
-        length: 100
-        channel: 0
-        kinds:
-          - <<: *variance-smaller
-  - base-oscillation: *sinus-1
+      - *platform
+  - name: sinus-noise-01%-0
+    <<: *base-ts
+    base-oscillation:
+      <<: *sinus-0
+      variance: 0.01
     anomalies:
-      - position: "beginning"
-        length: 100
-        channel: 0
-        kinds:
-          - <<: *variance-larger
+      - *platform
+  - name: sinus-noise-10%-0
+    <<: *base-ts
+    base-oscillation:
+      <<: *sinus-0
+      variance: 0.1
+    anomalies:
+      - *platform
+  - name: sinus-noise-30%-0
+    <<: *base-ts
+    base-oscillation:
+      <<: *sinus-0
+      variance: 0.3
+    anomalies:
+      - *platform
+  - name: sinus-noise-50%-0
+    <<: *base-ts
+    base-oscillation:
+      <<: *sinus-0
+      variance: 0.5
+    anomalies:
+      - *platform
+
+  - name: sinus-noise-00%-1
+    <<: *base-ts
+    base-oscillation:
+      <<: *sinus-1
+      variance: 0
+    anomalies:
+      - *trend-anomaly-sinus
+# ...
+
+# For ecg base
+#############################

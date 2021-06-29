@@ -8,22 +8,22 @@ from ...utils.types import BaseOscillationKind
 
 @dataclass
 class AnomalyVarianceParameters:
-    value: float = 0.0
+    variance: float = 0.0
 
 
 class AnomalyVariance(BaseAnomaly):
     def __init__(self, parameters: AnomalyVarianceParameters):
         super().__init__()
-        self.value = parameters.value
+        self.variance = parameters.variance
 
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
         base = anomaly_protocol.base_oscillation
         if anomaly_protocol.base_oscillation_kind == BaseOscillationKind.CylinderBellFunnel:
-            subsequence = base.generate_only_base(variance=self.value, channels=1)[anomaly_protocol.start:anomaly_protocol.end, 0]
+            subsequence = base.generate_only_base(variance=self.variance, channels=1)[anomaly_protocol.start:anomaly_protocol.end, 0]
             anomaly_protocol.subsequences.append(subsequence)
         else:
             length = anomaly_protocol.end - anomaly_protocol.start
-            base.noise[anomaly_protocol.start:anomaly_protocol.end, anomaly_protocol.channel] = base.generate_noise(self.value * base.amplitude, length, channels=1).reshape(-1)
+            base.noise[anomaly_protocol.start:anomaly_protocol.end, anomaly_protocol.channel] = base.generate_noise(self.variance * base.amplitude, length, channels=1).reshape(-1)
         return anomaly_protocol
 
     @staticmethod

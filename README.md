@@ -1,14 +1,25 @@
-![GutenTAG](./logo_transparent.png)
-
+<img src="logo_transparent.png" alt="GutenTAG logo" width="400px" align="middle"/>
 
 A good **T**imeseries **A**nomaly **G**enerator.
 
 ## Usage
 
+
+### From python
+
 ```python
 from gutenTAG.generator import GutenTAG
 ```
 
+### From CLI
+
+Example call from CLI:
+
+```bash
+python -m gutenTAG --config-yaml gutenTAG/generator/generation_config.yaml --plot --seed 42
+# see help page with
+python -m gutenTAG --help
+```
 
 ## Structure
 

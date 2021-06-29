@@ -1,0 +1,35 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: anomaly.guten-tag-generation-config.schema.yaml
+id: anomaly.guten-tag-generation-config.schema.yaml
+title: GutenTAG anomaly configuration
+description: Anomaly configuration for a time series.
+type: object
+required:
+  - length
+  - kinds
+properties:
+  position:
+    type: string
+    enum:
+      - beginning
+      - middle
+      - end
+    description: |
+      Approximate position of the anomaly.
+      There can be multiple anomalies with the same position annotation.
+      They get spread out, but GutenTAG tries to keep them at the specified position.
+  length:
+    type: integer
+    minimum: 1
+    description: Length of the anomaly region. For extrema, this must be 1.
+  channel:
+    type: integer
+    description: Channel identifier, where this anomaly should be applied to.
+  kinds:
+    type: array
+    description: |
+      List of anomaly kinds.
+      They are stagged on top of each other for this anomaly region.
+    minimum: 1
+    items:
+      $ref: anomaly-kind.guten-tag-generation-config.schema.yaml

@@ -1,7 +1,6 @@
 from dataclasses import dataclass
-from typing import Type, Optional
+from typing import Type
 
-import matplotlib.pyplot as plt
 import numpy as np
 
 from . import BaseAnomaly
@@ -36,8 +35,6 @@ class AnomalyPatternShift(BaseAnomaly):
             ])
 
             anomaly_protocol.subsequences.append(subsequence)
-        elif anomaly_protocol.base_oscillation_kind == BaseOscillationKind.RandomWalk:
-            self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind.name)
         else:
             self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind.name)
         return anomaly_protocol

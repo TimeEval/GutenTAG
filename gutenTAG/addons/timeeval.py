@@ -74,7 +74,7 @@ class TimeEvalAddOn(BaseAddOn):
     def _process_timeseries(self, config: Dict, i: int, generator: GutenTAG, type: LearningType):
         dataset = dict()
 
-        dataset_name = generator.base_oscillation.title or i
+        dataset_name = generator.base_oscillation.name or i
         if filename := type.get_filename():
             dataset["train_path"] = f"{dataset_name}/{filename}"
 

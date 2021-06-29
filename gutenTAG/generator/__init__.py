@@ -1,19 +1,23 @@
 from __future__ import annotations
 
+import json
+import os
 from typing import Optional, Dict, List, Tuple
-import numpy as np
+
 import matplotlib.pyplot as plt
-import json, os, yaml
-from copy import deepcopy
+import numpy as np
+import yaml
 
-from gutenTAG.base_oscillations import BaseOscillation, BaseOscillationInterface
 from gutenTAG.anomalies import Anomaly, Position, AnomalyKind
-
+from gutenTAG.base_oscillations import BaseOscillation, BaseOscillationInterface
 from .overview import Overview
 
 
-def decode_trend_obj(trend: Dict) -> Optional[BaseOscillationInterface]:
+def decode_trend_obj(trend: Dict, length_overwrite: int) -> Optional[BaseOscillationInterface]:
     trend_key = trend.get("kind", None)
+    trend["length"] = length_overwrite
+    if "trend" in trend:
+        trend["trend"] = decode_trend_obj(trend["trend"], length_overwrite)
     return BaseOscillation.from_key(trend_key, **trend) if trend_key else None
 
 
@@ -24,7 +28,7 @@ class GutenTAG:
         self.anomalies = anomalies
         self.semi_supervised_timeseries: Optional[np.ndarray] = None
         self.supervised_timeseries: Optional[np.ndarray] = None
-        self.anomaly_timeseries: Optional[np.ndarray] = None
+        self.timeseries: Optional[np.ndarray] = None
         self.labels: Optional[np.ndarray] = None
         self.train_labels: Optional[np.ndarray] = None
         self.semi_supervised = semi_supervised
@@ -36,15 +40,19 @@ class GutenTAG:
 
         if self.semi_supervised:
             self.semi_supervised_timeseries = self.base_oscillation.generate_only_base()
-            if self.supervised:
-                self.supervised_timeseries, self.train_labels = self.base_oscillation.inject_anomalies(self.anomalies).generate()
+        if self.supervised:
+            self.supervised_timeseries, self.train_labels = self.base_oscillation.inject_anomalies(self.anomalies).generate()
         if self.plot:
             self._plot()
 
         return self
 
     def _plot(self):
-        plt.plot(self.timeseries)
+        fig, axs = plt.subplots(2, sharex="all")
+        axs[0].set_title("Time series")
+        axs[0].plot(self.timeseries)
+        axs[1].set_title("Label")
+        axs[1].plot(self.labels)
         plt.show()
 
     @staticmethod
@@ -65,13 +73,16 @@ class GutenTAG:
         result = []
         for ts in config.get("timeseries", []):
             overview.add_dataset(ts)
-            semi_supervised = ts.get("semi-supervised", False)
-            supervised = ts.get("supervised", False)
+            name = ts.get("name", None)
             length = ts.get("length", 10000)
             channels = ts.get("channels", 1)
+            semi_supervised = ts.get("semi-supervised", False)
+            supervised = ts.get("supervised", False)
             base_oscillation_configs = ts.get("base-oscillation", {})
+            base_oscillation_configs["name"] = name
             base_oscillation_configs["length"] = length
             base_oscillation_configs["channels"] = channels
+            base_oscillation_configs["trend"] = decode_trend_obj(base_oscillation_configs.get("trend", {}), length)
             key = base_oscillation_configs.get("kind", "sinus")
             base_oscillation = BaseOscillation.from_key(key, **base_oscillation_configs)
             anomalies = []
@@ -79,12 +90,14 @@ class GutenTAG:
                 anomaly = Anomaly(Position(anomaly_config.get("position", "middle")), anomaly_config.get("length", 200), anomaly_config.get("channel", 0))
 
                 for anomaly_kind in anomaly_config.get("kinds", []):
-                    name = anomaly_kind.get("name", "platform")
-                    if name == "trend":
-                        parameters = {"trend": decode_trend_obj(anomaly_kind.get("parameters", {}).get("trend", {}))}
+                    kind = anomaly_kind.get("kind", "platform")
+                    if kind == "trend":
+                        parameters = {
+                            "trend": decode_trend_obj(anomaly_kind.get("parameters", {}), anomaly.anomaly_length)
+                        }
                     else:
                         parameters = anomaly_kind.get("parameters", {})
-                    anomaly.set_anomaly(AnomalyKind(name).set_parameters(parameters))
+                    anomaly.set_anomaly(AnomalyKind(kind).set_parameters(parameters))
                 anomalies.append(anomaly)
             result.append(GutenTAG(base_oscillation, anomalies, semi_supervised, supervised, plot).generate())
         return result, overview
