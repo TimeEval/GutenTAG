@@ -80,12 +80,12 @@ definitions:
   pattern-shift-params:
     type: object
     required:
-      - shift_factor
+      - shift_by
       - transition_window
     properties:
-      shift_factor:
-        type: number
-        description: Relative size of the shift dependent on the anomaly length.
+      shift_by:
+        type: integer
+        description: Size of the shift length to the right. Can be negative for shift to the left.
       transition_window:
         type: integer
         description: Number of points to the left and right used to interpolate a smooth transition.

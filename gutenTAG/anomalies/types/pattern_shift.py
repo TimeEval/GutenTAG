@@ -10,22 +10,23 @@ from ...utils.types import BaseOscillationKind
 
 @dataclass
 class AnomalyPatternShiftParameters:
-    shift_factor: float = 0.5
+    shift_by: int = 5
     transition_window: int = 10
 
 
 class AnomalyPatternShift(BaseAnomaly):
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
         if anomaly_protocol.base_oscillation_kind in [BaseOscillationKind.Sinus, BaseOscillationKind.ECG]:
-            sinus = anomaly_protocol.base_oscillation
-            length = anomaly_protocol.end - anomaly_protocol.start
+            assert abs(self.shift_by) <= self.transition_window, \
+                "The parameter 'shift_by' must not be larger than 'transition_window' in absolute terms! Guten Tag!"
 
-            shift_by = int(length * self.shift_factor)
-            subsequence = sinus.timeseries[anomaly_protocol.start:anomaly_protocol.end, anomaly_protocol.channel]
-            transition_start = np.interp(np.linspace(0, self.transition_window, self.transition_window - shift_by),
+            base = anomaly_protocol.base_oscillation
+
+            subsequence = base.timeseries[anomaly_protocol.start:anomaly_protocol.end, anomaly_protocol.channel]
+            transition_start = np.interp(np.linspace(0, self.transition_window, self.transition_window + self.shift_by),
                                          np.arange(self.transition_window), subsequence[:self.transition_window])
             shifted = subsequence[self.transition_window:-self.transition_window]
-            transition_end = np.interp(np.linspace(0, self.transition_window, self.transition_window + shift_by),
+            transition_end = np.interp(np.linspace(0, self.transition_window, self.transition_window - self.shift_by),
                                        np.arange(self.transition_window), subsequence[-self.transition_window:])
 
             subsequence = np.concatenate([
@@ -45,5 +46,5 @@ class AnomalyPatternShift(BaseAnomaly):
 
     def __init__(self, parameters: AnomalyPatternShiftParameters):
         super().__init__()
-        self.shift_factor = parameters.shift_factor
+        self.shift_by = parameters.shift_by
         self.transition_window = parameters.transition_window
