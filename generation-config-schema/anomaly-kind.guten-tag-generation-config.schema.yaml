@@ -71,12 +71,18 @@ definitions:
     type: object
     required:
       - sinusoid_k
+      - cbf_pattern_factor
     properties:
       sinusoid_k:
         type: number
         description: |
           Only used for base oscillations of type 'sinus'.
           Ramming factor for change in sine wave.
+      cbf_pattern_factor:
+        type: number
+        description: |
+          Only used for base oscillations of type 'cylinder_bell_funnel'.
+          Pattern variance factor for change in CBF wave.
   pattern-shift-params:
     type: object
     required:

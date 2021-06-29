@@ -9,8 +9,9 @@ from ...utils.types import BaseOscillationKind
 
 
 @dataclass
-class AnomalyMeanParameters:
+class AnomalyPatterParameters:
     sinusoid_k: float = 10.0
+    cbf_pattern_factor: float = 2.0
 
 
 class AnomalyPattern(BaseAnomaly):
@@ -26,7 +27,7 @@ class AnomalyPattern(BaseAnomaly):
             self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind.name)
         elif anomaly_protocol.base_oscillation_kind == BaseOscillationKind.CylinderBellFunnel:
             cbf = anomaly_protocol.base_oscillation
-            subsequence = cbf.generate_only_base(variance_pattern_length=cbf.variance_pattern_length * self.factor).reshape(-1)[anomaly_protocol.start:anomaly_protocol.end]
+            subsequence = cbf.generate_only_base(variance_pattern_length=cbf.variance_pattern_length * self.cbf_pattern_factor).reshape(-1)[anomaly_protocol.start:anomaly_protocol.end]
             anomaly_protocol.subsequences.append(subsequence)
         elif anomaly_protocol.base_oscillation_kind == BaseOscillationKind.ECG:
             ecg = anomaly_protocol.base_oscillation
@@ -47,9 +48,10 @@ class AnomalyPattern(BaseAnomaly):
         return anomaly_protocol
 
     @staticmethod
-    def get_parameter_class() -> Type[AnomalyMeanParameters]:
-        return AnomalyMeanParameters
+    def get_parameter_class() -> Type[AnomalyPatterParameters]:
+        return AnomalyPatterParameters
 
-    def __init__(self, parameters: AnomalyMeanParameters):
+    def __init__(self, parameters: AnomalyPatterParameters):
         super().__init__()
         self.sinusoid_k = parameters.sinusoid_k
+        self.cbf_pattern_factor = parameters.cbf_pattern_factor
