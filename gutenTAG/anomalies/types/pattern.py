@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Type, Optional
+from typing import Type
 
 import numpy as np
 
@@ -10,7 +10,7 @@ from ...utils.types import BaseOscillationKind
 
 @dataclass
 class AnomalyMeanParameters:
-    sinusoid_k: Optional[float] = 10.0
+    sinusoid_k: float = 10.0
 
 
 class AnomalyPattern(BaseAnomaly):

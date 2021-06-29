@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+from copy import deepcopy
 from typing import Optional, Dict, List, Tuple
 
 import matplotlib.pyplot as plt
@@ -78,16 +79,22 @@ class GutenTAG:
             channels = ts.get("channels", 1)
             semi_supervised = ts.get("semi-supervised", False)
             supervised = ts.get("supervised", False)
-            base_oscillation_configs = ts.get("base-oscillation", {})
+
+            base_oscillation_configs = deepcopy(ts.get("base-oscillation", {}))
             base_oscillation_configs["name"] = name
             base_oscillation_configs["length"] = length
             base_oscillation_configs["channels"] = channels
-            base_oscillation_configs["trend"] = decode_trend_obj(base_oscillation_configs.get("trend", {}), length)
+            trend = base_oscillation_configs.get("trend", {})
+            base_oscillation_configs["trend"] = decode_trend_obj(trend, length)
             key = base_oscillation_configs.get("kind", "sinus")
             base_oscillation = BaseOscillation.from_key(key, **base_oscillation_configs)
             anomalies = []
             for anomaly_config in ts.get("anomalies", []):
-                anomaly = Anomaly(Position(anomaly_config.get("position", "middle")), anomaly_config.get("length", 200), anomaly_config.get("channel", 0))
+                anomaly = Anomaly(
+                    Position(anomaly_config.get("position", "middle")),
+                    anomaly_config.get("length", 200),
+                    anomaly_config.get("channel", 0)
+                )
 
                 for anomaly_kind in anomaly_config.get("kinds", []):
                     kind = anomaly_kind.get("kind", "platform")
@@ -97,9 +104,9 @@ class GutenTAG:
                         }
                     else:
                         parameters = anomaly_kind.get("parameters", {})
-                    anomaly.set_anomaly(AnomalyKind(kind).set_parameters(parameters))
+                    anomaly.set_anomaly(AnomalyKind(kind).create(deepcopy(parameters)))
                 anomalies.append(anomaly)
-            result.append(GutenTAG(base_oscillation, anomalies, semi_supervised, supervised, plot).generate())
+            result.append(GutenTAG(base_oscillation, anomalies, semi_supervised, supervised, plot))
         return result, overview
 
 
@@ -108,4 +115,6 @@ if __name__ == "__main__":
     np.random.seed(42)
     random.seed(42)
     OUTPUT_DIR = "../../generated-timeseries/"
-    timeseries = GutenTAG.from_yaml("./generation_config.yaml", plot=True)
+    timeseries, _ = GutenTAG.from_yaml("./generation_config.yaml", plot=True)
+    for ts in timeseries:
+        ts.generate()

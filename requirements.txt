@@ -1,4 +1,7 @@
 pandas==1.2.0
+numpy==1.20.2
 scikit-learn
 neurokit2==0.1.2
 pyyaml==5.3.1
+tqdm==4.61.1
+joblib>=1.0.1
