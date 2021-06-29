@@ -9,7 +9,7 @@ from ...utils.types import BaseOscillationKind
 
 
 @dataclass
-class AnomalyPatterParameters:
+class AnomalyPatternParameters:
     sinusoid_k: float = 10.0
     cbf_pattern_factor: float = 2.0
 
@@ -48,10 +48,10 @@ class AnomalyPattern(BaseAnomaly):
         return anomaly_protocol
 
     @staticmethod
-    def get_parameter_class() -> Type[AnomalyPatterParameters]:
-        return AnomalyPatterParameters
+    def get_parameter_class() -> Type[AnomalyPatternParameters]:
+        return AnomalyPatternParameters
 
-    def __init__(self, parameters: AnomalyPatterParameters):
+    def __init__(self, parameters: AnomalyPatternParameters):
         super().__init__()
         self.sinusoid_k = parameters.sinusoid_k
         self.cbf_pattern_factor = parameters.cbf_pattern_factor
