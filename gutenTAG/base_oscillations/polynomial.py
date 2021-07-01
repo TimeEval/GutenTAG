@@ -1,8 +1,9 @@
-import numpy as np
-from typing import Optional, List, Tuple
+from typing import Optional, List
 
-from ..utils.types import BaseOscillationKind
+import numpy as np
+
 from .interface import BaseOscillationInterface
+from ..utils.types import BaseOscillationKind
 
 
 class Polynomial(BaseOscillationInterface):
@@ -12,15 +13,11 @@ class Polynomial(BaseOscillationInterface):
     def get_timeseries_periods(self) -> Optional[int]:
         return None
 
-    def generate(self) -> Tuple[np.ndarray, np.ndarray]:
-        self.timeseries = self.generate_only_base()
-        self._generate_anomalies()
-        return self.timeseries, self.labels
-
     def generate_only_base(self,
-                           length:    Optional = None,
-                           polynomial: Optional = None,
-                           channels:  Optional = None) -> np.ndarray:
+                           length: Optional[int] = None,
+                           polynomial: Optional[List[float]] = None,
+                           channels: Optional[int] = None,
+                           *args, **kwargs) -> np.ndarray:
         length = length or self.length
         polynomial = polynomial or self.polynomial
         channels = channels or self.channels

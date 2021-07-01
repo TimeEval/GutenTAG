@@ -41,42 +41,43 @@ class BaseOscillationInterface(ABC):
     def generate_noise(self, variance: float, length: int, channels: int) -> np.ndarray:
         return np.random.normal(0, variance, (length, channels))
 
-    def _generate_anomalies(self):
-        label_ranges: List[LabelRange] = []
-
-        self._generate_trend()
-        self.noise = self.generate_noise(self.variance * self.amplitude, self.length, self.channels)
-        self.labels = np.zeros(self.length, dtype=np.int)
-
-        positions: List[Tuple[int, int]] = []
-        protocols: List[Tuple[AnomalyProtocol, int]] = []
-        for anomaly in self.anomalies:
-            anomaly_protocol = anomaly.generate(self, self.get_timeseries_periods(), self.get_base_oscillation_kind(), positions)
-            positions.append((anomaly_protocol.start, anomaly_protocol.end))
-            protocols.append((anomaly_protocol, anomaly.channel))
-
-        for protocol, channel in protocols:
-            if len(protocol.subsequences) > 0:
-                subsequence = np.vstack(protocol.subsequences).sum(axis=0)
-                self.timeseries[protocol.start:protocol.end, channel] = subsequence
-            label_ranges.append(protocol.labels)
-
-        self._add_label_ranges_to_labels(label_ranges)
-        self.timeseries += self.noise + self.trend_series + self.offset
-
-    def _generate_trend(self):
-        self.trend_series = np.zeros((self.length, self.channels))
+    def _generate_trend(self) -> np.ndarray:
+        trend_series = np.zeros((self.length, self.channels))
         if self.trend:
             self.trend.length = self.length
-            self.trend_series, _ = self.trend.generate()
+            trend_series, _ = self.trend.generate(with_anomalies=False)
+        return trend_series
 
     def _add_label_ranges_to_labels(self, label_ranges: List[LabelRange]):
         for label_range in label_ranges:
             self.labels[label_range.start:label_range.start + label_range.length] = 1
 
-    @abstractmethod
-    def generate(self) -> Tuple[np.ndarray, Optional[np.ndarray]]:
-        raise NotImplementedError()
+    def generate(self, with_anomalies: bool = True) -> Tuple[np.ndarray, Optional[np.ndarray]]:
+        self.timeseries = self.generate_only_base()
+        self.trend_series = self._generate_trend()
+        self.noise = self.generate_noise(self.variance * self.amplitude, self.length, self.channels)
+        self.labels = np.zeros(self.length, dtype=np.int8)
+
+        if with_anomalies:
+            positions: List[Tuple[int, int]] = []
+            protocols: List[Tuple[AnomalyProtocol, int]] = []
+            label_ranges: List[LabelRange] = []
+            for anomaly in self.anomalies:
+                anomaly_protocol = anomaly.generate(self, self.get_timeseries_periods(), self.get_base_oscillation_kind(),
+                                                    positions)
+                positions.append((anomaly_protocol.start, anomaly_protocol.end))
+                protocols.append((anomaly_protocol, anomaly.channel))
+
+            for protocol, channel in protocols:
+                if len(protocol.subsequences) > 0:
+                    subsequence = np.vstack(protocol.subsequences).sum(axis=0)
+                    self.timeseries[protocol.start:protocol.end, channel] = subsequence
+                label_ranges.append(protocol.labels)
+
+            self._add_label_ranges_to_labels(label_ranges)
+
+        self.timeseries += self.noise + self.trend_series + self.offset
+        return self.timeseries, self.labels
 
     @abstractmethod
     def get_timeseries_periods(self) -> Optional[int]:

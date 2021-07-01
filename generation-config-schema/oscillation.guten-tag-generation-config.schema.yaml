@@ -62,4 +62,4 @@ properties:
     description: Polynomial coefficients in order of increasing degree, i.e., (1, 2, 3) give 1 + 2*x + 3*x**2.
     minItems: 1
     items:
-      type: integer
+      type: number

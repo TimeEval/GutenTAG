@@ -32,28 +32,49 @@ class GutenTAG:
         self.timeseries: Optional[np.ndarray] = None
         self.labels: Optional[np.ndarray] = None
         self.train_labels: Optional[np.ndarray] = None
+        self.semi_train_labels: Optional[np.ndarray] = None
         self.semi_supervised = semi_supervised
         self.supervised = supervised
         self.plot = plot
 
     def generate(self) -> GutenTAG:
-        self.timeseries, self.labels = self.base_oscillation.inject_anomalies(self.anomalies).generate()
+        self.base_oscillation.inject_anomalies(self.anomalies)
+        self.timeseries, self.labels = self.base_oscillation.generate()
 
         if self.semi_supervised:
-            self.semi_supervised_timeseries = self.base_oscillation.generate_only_base()
+            self.semi_supervised_timeseries, self.semi_train_labels = self.base_oscillation.generate(with_anomalies=False)
         if self.supervised:
-            self.supervised_timeseries, self.train_labels = self.base_oscillation.inject_anomalies(self.anomalies).generate()
+            self.supervised_timeseries, self.train_labels = self.base_oscillation.generate()
         if self.plot:
             self._plot()
 
         return self
 
     def _plot(self):
-        fig, axs = plt.subplots(2, sharex="all")
-        axs[0].set_title("Time series")
-        axs[0].plot(self.timeseries)
-        axs[1].set_title("Label")
-        axs[1].plot(self.labels)
+        n_series = 1 + np.sum([self.semi_supervised, self.supervised])
+        fig, axs = plt.subplots(2, n_series, sharex="all", sharey="row", figsize=(n_series*4, 4))
+        # fix indexing, because subplots only returns a 1-dim array in this case:
+        if n_series == 1:
+            axs = np.array([axs]).T
+
+        names = ["test"]
+        series = [self.timeseries]
+        labels = [self.labels]
+        if self.supervised:
+            names.append("train_supervised")
+            series.append(self.supervised_timeseries)
+            labels.append(self.train_labels)
+        if self.semi_supervised:
+            names.append("train_semi-supervised")
+            series.append(self.semi_supervised_timeseries)
+            labels.append(self.semi_train_labels)
+        for i, (name, ts, label) in enumerate(zip(names, series, labels)):
+            axs[0, i].set_title(name)
+            name = list(map(lambda j: f"channel-{j}", range(ts.shape[1]))) if ts.shape[1] > 1 else "time series"
+            axs[0, i].plot(ts, label=name)
+            axs[1, i].plot(label, color="orange", label="ground truth")
+        axs[0, 0].legend()
+        axs[1, 0].legend()
         plt.show()
 
     @staticmethod
@@ -63,18 +84,22 @@ class GutenTAG:
         return GutenTAG.from_dict(config, plot)
 
     @staticmethod
-    def from_yaml(path: os.PathLike, plot: bool = False) -> Tuple[List[GutenTAG], Overview]:
+    def from_yaml(path: os.PathLike, plot: bool = False, only: Optional[str] = None) -> Tuple[List[GutenTAG], Overview]:
         with open(path, "r") as f:
             config = yaml.load(f, Loader=yaml.FullLoader)
-        return GutenTAG.from_dict(config, plot)
+        return GutenTAG.from_dict(config, plot, only)
 
     @staticmethod
-    def from_dict(config: Dict, plot: bool = False) -> Tuple[List[GutenTAG], Overview]:
+    def from_dict(config: Dict, plot: bool = False, only: Optional[str] = None) -> Tuple[List[GutenTAG], Overview]:
         overview = Overview()
         result = []
         for ts in config.get("timeseries", []):
-            overview.add_dataset(ts)
             name = ts.get("name", None)
+
+            if only and name != only:
+                continue
+
+            overview.add_dataset(ts)
             length = ts.get("length", 10000)
             channels = ts.get("channels", 1)
             semi_supervised = ts.get("semi-supervised", False)
@@ -92,6 +117,7 @@ class GutenTAG:
             for anomaly_config in ts.get("anomalies", []):
                 anomaly = Anomaly(
                     Position(anomaly_config.get("position", "middle")),
+                    anomaly_config.get("exact-position", None),
                     anomaly_config.get("length", 200),
                     anomaly_config.get("channel", 0)
                 )
