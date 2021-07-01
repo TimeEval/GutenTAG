@@ -5,13 +5,37 @@ A good **T**imeseries **A**nomaly **G**enerator.
 ## Usage
 
 
-### From python
+### From within python as library
+
+Example API usage using Python 3:
 
 ```python
-from gutenTAG.generator import GutenTAG
+from gutenTAG.base_oscillations import BaseOscillation
+from gutenTAG.anomalies import Anomaly, Position, AnomalyKind
+
+
+options = {
+   # ...
+}
+
+osci = BaseOscillation.from_key("sinus", **options)
+# to generate a sinus oscillation without anomalies
+timeseries, labels = osci.generate(with_anomalies=False)
+
+# inject anomalies
+anomaly = Anomaly(
+   position=Position.Middle,
+   exact_position=None,
+   anomaly_length=100,
+   channel=0
+)
+params = {"frequency_factor": 2.0}
+anomaly.set_anomaly(AnomalyKind("frequency").create(**params))
+# to generate a sinus oscillation with a frequency anomaly in the middle
+timeseries, labels = osci.generate(with_anomalies=True)
 ```
 
-### From CLI
+### From CLI as program
 
 Example call from CLI:
 
@@ -21,111 +45,88 @@ python -m gutenTAG --config-yaml gutenTAG/generator/generation_config.yaml --plo
 python -m gutenTAG --help
 ```
 
+See the [`generation_config.yaml`-file](./gutenTAG/generator/generation_config.yaml) for an example of a configuration file.
+
 ## Structure
 
+GutenTag generates time series based on two fundamental building blocks: base oscillations and anomalies.
+Each time series has the following properties:
+
+- optional name
+- length
+- number of channels
+- a single base oscillation
+- a list of anomalies (at different positions in the time series)
+
+For a more detailled look at the structure of GutenTAG, please consider the [Wiki](https://gitlab.hpi.de/akita/guten-tag/-/wikis/home).
+
 ### Base Oscillations
+
 The generator comes with the following base oscillations in [./gutenTAG/base_oscillations](./gutenTAG/base_oscillations):
 
 - sinus
-- random walk
-- cylinder bell funnel
-- synthetic ecg
-- CoMuT
+- random_walk
+- cylinder_bell_funnel
+- ecg
+- polynomial
 
-#### Usage
+Base oscillations can have an underlying trend.
+This trend can be any of the above base oscillations.
 
-```python
-from gutenTAG.base_oscillations import BaseOscillation
-
-options = {
-    # ...
-}
-
-# to generate a sinus oscillation without anomalies
-BaseOscillation.Sinus(**options).generate()
-```
+Using the `variance` property, you can add noise to the base oscillation.
+The general kind of base oscillation is always the same for all channels of a time series.
+However, noise and other random parameters differ between channels.
 
 ### Anomalies
-Also, the generator comes with the following anomaly types in [./gutenTAG/anomalies/types](./gutenTAG/anomalies/types):
 
+The generator comes with the following anomaly types in [./gutenTAG/anomalies/types](./gutenTAG/anomalies/types):
+
+- amplitude
 - extremum
 - frequency
 - mean
 - pattern
 - pattern_shift
 - platform
+- trend
 - variance
-
-#### Usage
-
-```python
-from gutenTAG.base_oscillations import BaseOscillation
-from gutenTAG.anomalies import Anomaly, Position
-from gutenTAG.anomalies.types.platform import AnomalyPlatform
-
-options = {
-    # ...
-}
-
-anomalies = [
-    Anomaly(Position.Beginning, anomaly_length=200).set_platform(AnomalyPlatform(0.0))
-]
-
-# to generate a sinus oscillation with a platform anomaly
-BaseOscillation.Sinus(**options).inject_anomalies(anomalies).generate()
-```
 
 ## Adding a new Anomaly Type
 
 1. create a new Enum type for [`AnomalyKind`](gutenTAG/anomalies/types/kind.py) and adapt the `generate` method
 2. [RECOMMENDED] create a new anomaly type class under [gutenTAG/anomalies/types](gutenTAG/anomalies/types)
-    2. the new class should inherit from [`gutenTAG.anomalies.BaseAnomaly`](gutenTAG/anomalies/types/__init__.py)
+    1. the new class should inherit from [`gutenTAG.anomalies.BaseAnomaly`](gutenTAG/anomalies/types/__init__.py)
 
 
 ## Status
 
-|   | Sinus | Random Walk | CBF | ECG | CoMuT |
-|---|-------|-------------|-----|-----|-------|
-|extremum |x|x|x|x|x|
-|frequency|x|-|x|x||
-|mean|x|x|x|x|x|
-|pattern|x|-|x|x||
-|pattern_shift|x|-|-|x||
-|platform|x|x|x|x|x|
-|variance|x|x|x|x|x|
+The following table shows which anomalies and base oscillations can be combined and
+which combinations GutenTAG does not supported.
+
+`x` = Combination allowed
+`-` = Combination not allowed
+
+|               | Sinus | Random Walk | CBF | ECG | Polynomial |
+|:--------------|:-----:|:-----------:|:---:|:---:|:----------:|
+| amplitude     |   x   |      x      |  x  |  x  |      -     |
+| extremum      |   x   |      x      |  x  |  x  |      x     |
+| frequency     |   x   |      -      |  -  |  x  |      -     |
+| mean          |   x   |      x      |  x  |  x  |      x     |
+| pattern       |   x   |      -      |  x  |  x  |      -     |
+| pattern_shift |   x   |      -      |  -  |  x  |      -     |
+| platform      |   x   |      x      |  x  |  x  |      x     |
+| trend         |   x   |      x      |  x  |  x  |      x     |
+| variance      |   x   |      x      |  x  |  x  |      x     |
 
 
 ## TODO
 
-### Base-Oscillation
+### Features
 
-- [x] timeeval format
-- [x] train-with-label
-- [x] sinus add amplitude+frequency modification over time
-- [x] clean sinus (`freq-mod: false` turns on clean mode)
-- [x] linear base oscillation
-- [x] nested trends (as base oscillation)
-- [x] check if anomalies collide with same position (shift)
-- [x] offset to base oscillation
-- [x] smoothing for random walk
-- [x] amplitude anomaly (steep gaussian transition `scipy.stats.norm.pdf(np.linspace(0, 3, 100), scale=1.05)`)
-- [x] frequency -> sampling_rate
-- [x] give name to timeseries
-- [x] train with&without anomalies
-- [x] 3 entries for datasets.csv ^
-- [x] dataset name/path for datasets.csv 
 - [ ] trend anomaly bug
-- [x] pull lengths
 - [ ] generate YAML from docs
-
-### Anomaly
-
-- [x] Trend anomaly
 
 ### Future (nice to have)
 
-- [ ] datasets.csv trend
 - [ ] noise as variance Union[float, List[float]] for each channel
-- [ ] plot with subplot
-- [ ] plot multivariate with subplot
-- [ ] create YAML schema (very nice to have, almost important)
+- [ ] nicer plot for multivariate time series
