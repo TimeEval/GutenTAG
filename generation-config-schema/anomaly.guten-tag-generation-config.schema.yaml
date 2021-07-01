@@ -18,6 +18,13 @@ properties:
       Approximate position of the anomaly.
       There can be multiple anomalies with the same position annotation.
       They get spread out, but GutenTAG tries to keep them at the specified position.
+  exact-position:
+    type: integer
+    minimum: 0
+    description: |
+      Exact position of the anomaly.
+      Starts at the given integer and ends at `exact-position + length`.
+      Renders the 'position' parameter useless.
   length:
     type: integer
     minimum: 1

@@ -1,6 +1,6 @@
 import os
 import argparse
-from typing import List, Dict, Tuple, Optional
+from typing import List, Dict, Tuple, Optional, Iterable
 from enum import Enum
 
 import numpy as np
@@ -55,7 +55,7 @@ class TimeEvalAddOn(BaseAddOn):
                 self._process_timeseries(config, i, generator, LearningType.Supervised)
             if generator.semi_supervised:
                 self._process_timeseries(config, i, generator, LearningType.SemiSupervised)
-        self._set_global_vals(args)
+        self._set_global_vals()
 
         if args.no_save:
             return overview, generators
@@ -63,7 +63,7 @@ class TimeEvalAddOn(BaseAddOn):
         self.df.to_csv(os.path.join(args.output_dir, "datasets.csv"), index=False)
         return overview, generators
 
-    def _set_global_vals(self, args: argparse.Namespace):
+    def _set_global_vals(self):
         self.df["collection_name"] = "GutenTAG"
         self.df["dataset_type"] = "synthetic"
         self.df["datetime_index"] = False
@@ -71,34 +71,34 @@ class TimeEvalAddOn(BaseAddOn):
         self.df["train_is_normal"] = True
         self.df["stationarity"] = np.NAN
 
-    def _process_timeseries(self, config: Dict, i: int, generator: GutenTAG, type: LearningType):
+    def _process_timeseries(self, config: Dict, i: int, generator: GutenTAG, tpe: LearningType):
         dataset = dict()
 
         dataset_name = generator.base_oscillation.name or i
-        if filename := type.get_filename():
+        if filename := tpe.get_filename():
             dataset["train_path"] = f"{dataset_name}/{filename}"
 
-        dataset["dataset_name"] = dataset_name
+        dataset["dataset_name"] = f"{dataset_name}.{tpe.value}"
         dataset["test_path"] = f"{dataset_name}/{UNSUPERVISED_FILENAME}"
         dataset["input_type"] = "univariate" if config.get("base-oscillation", {}).get("channels", 1) else "multivariate"
-        dataset["length"] = config.get("base-oscillation", {}).get("length", 10000)
-        dataset["dimensions"] = config.get("base-oscillation", {}).get("channels", 1)
-        dataset["contamination"] = self._calc_contamination(config)
+        dataset["length"] = config.get("length", 10000)
+        dataset["dimensions"] = config.get("channels", 1)
+        dataset["contamination"] = self._calc_contamination(config.get("anomalies", []), dataset["length"])
         dataset["num_anomalies"] = len(config.get("anomalies", []))
         dataset["min_anomaly_length"] = min([anomaly.get("length") for anomaly in config.get("anomalies", [])])
         dataset["median_anomaly_length"] = np.median([anomaly.get("length") for anomaly in config.get("anomalies", [])])
         dataset["max_anomaly_length"] = max([anomaly.get("length") for anomaly in config.get("anomalies", [])])
-        dataset["train_type"] = type.value
+        dataset["train_type"] = tpe.value
         dataset["mean"] = generator.timeseries.mean()
         dataset["stddev"] = generator.timeseries.std()
-        dataset["trend"] = config.get("base-oscillation", {}).get("trend", np.NAN).get("kind", np.NAN)
+        dataset["trend"] = config.get("base-oscillation", {}).get("trend", {}).get("kind", np.NAN)
 
         self.df = self.df.append(dataset, ignore_index=True)
 
-    def _calc_contamination(self, config: Dict) -> float:
-        anomaly_lengths = [anomaly.get("length") for anomaly in config.get("anomalies", [])]
-        length = float(config.get("base-oscillation", {}).get("length"))
-        return sum(anomaly_lengths) / length
+    @staticmethod
+    def _calc_contamination(anomalies: Iterable[Dict], ts_length: int) -> float:
+        anomaly_lengths = [anomaly.get("length") for anomaly in anomalies]
+        return sum(anomaly_lengths) / ts_length
 
     def __init__(self):
         self.df = pd.DataFrame(columns=columns)

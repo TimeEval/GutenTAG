@@ -26,9 +26,11 @@ class Anomaly:
 
     def __init__(self,
                  position: Position,
+                 exact_position: Optional[int],
                  anomaly_length: int,
                  channel: int = 0):
         self.position = position
+        self.exact_position = exact_position
         self.anomaly_length = anomaly_length
         self.channel = channel
 
@@ -39,9 +41,13 @@ class Anomaly:
         return self
 
     def generate(self, base_oscillation: 'BaseOscillationInterface', timeseries_periods: Optional[int], base_oscillation_kind: BaseOscillationKind, positions: List[Tuple[int, int]]) -> AnomalyProtocol:
-        # AnomalyKind.validate(self.anomaly_kinds)
-        start, end = self._get_position_range(base_oscillation.length, timeseries_periods)
-        start, end = self._maybe_repair_position((start, end), positions)
+        if self.exact_position is None:
+            start, end = self._get_position_range(base_oscillation.length, timeseries_periods)
+            while end > base_oscillation.length:
+                start, end = self._get_position_range(base_oscillation.length, timeseries_periods)
+                start, end = self._maybe_repair_position((start, end), positions)
+        else:
+            start, end = self.exact_position, self.exact_position + self.anomaly_length
 
         length = end - start
         label_range = LabelRange(start, length)
@@ -96,8 +102,7 @@ class Anomaly:
         start, end = current
         current_length = current[1] - current[0]
         for other in others:
-            if other[0] <= current[0] and other[1] >= current[0] or \
-               other[0] <= current[1] and other[1] >= current[1]:
-               start = other[1] + 1
-               end = start + current_length
+            if other[0] <= current[0] <= other[1] or other[0] <= current[1] <= other[1]:
+                start = other[1] + 1
+                end = start + current_length
         return start, end

@@ -1,7 +1,7 @@
-import matplotlib.pyplot as plt
-import numpy as np
 from dataclasses import dataclass
-from typing import Type, Dict
+from typing import Type
+
+import numpy as np
 from scipy.stats import norm
 from sklearn.preprocessing import MinMaxScaler
 
@@ -28,11 +28,11 @@ class AnomalyTrend(BaseAnomaly):
         plateau_length = int(length * 0.8)
         start_transition = norm.pdf(np.linspace(-3, 0, transition_length), scale=1.05)
         amplitude_bell = np.concatenate([start_transition / start_transition.max(), np.ones(plateau_length)])
-        amplitude_bell = MinMaxScaler(feature_range=(0,1)).fit_transform(amplitude_bell.reshape(-1, 1)).reshape(-1)
+        amplitude_bell = MinMaxScaler(feature_range=(0, 1)).fit_transform(amplitude_bell.reshape(-1, 1)).reshape(-1)
 
         self.trend.length = length
         timeseries, _ = self.trend.generate()
-        timeseries = timeseries[:, 0]  # use only one channel
+        timeseries = timeseries[:, anomaly_protocol.channel]  # use only one channel
 
         timeseries *= amplitude_bell
         end_point = timeseries[-1]

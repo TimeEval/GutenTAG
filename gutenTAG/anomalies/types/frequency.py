@@ -25,11 +25,11 @@ class AnomalyFrequency(BaseAnomaly):
         if anomaly_protocol.base_oscillation_kind == BaseOscillationKind.Sinus:
             sinus = anomaly_protocol.base_oscillation
             length = anomaly_protocol.end - anomaly_protocol.start
-            subsequence = sinus.generate_only_base(length, sinus.frequency * self.frequency_factor, freq_mod=sinus.freq_mod).reshape(-1)
+            subsequence = sinus.generate_only_base(length, sinus.frequency * self.frequency_factor, freq_mod=sinus.freq_mod)[:, anomaly_protocol.channel]
             anomaly_protocol.subsequences.append(subsequence)
         elif anomaly_protocol.base_oscillation_kind == BaseOscillationKind.ECG:
             ecg = anomaly_protocol.base_oscillation
-            subsequence = ecg.generate_only_base(frequency=ecg.frequency * self.frequency_factor).reshape(-1)[anomaly_protocol.start:anomaly_protocol.end]
+            subsequence = ecg.generate_only_base(frequency=ecg.frequency * self.frequency_factor)[anomaly_protocol.start:anomaly_protocol.end, anomaly_protocol.channel]
             anomaly_protocol.subsequences.append(subsequence)
         else:
             self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind.name)

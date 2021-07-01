@@ -6,6 +6,7 @@ from scipy.stats import norm
 from sklearn.preprocessing import MinMaxScaler
 
 from . import BaseAnomaly, AnomalyProtocol
+from ...utils.types import BaseOscillationKind
 
 
 @dataclass
@@ -23,6 +24,10 @@ class AnomalyAmplitude(BaseAnomaly):
         self.amplitude_factor = parameters.amplitude_factor
 
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
+        if anomaly_protocol.base_oscillation_kind == BaseOscillationKind.Polynomial:
+            self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind.name)
+            return anomaly_protocol
+
         length = anomaly_protocol.end - anomaly_protocol.start
         transition_length = int(length * 0.2)
         plateau_length = int(length * 0.6)

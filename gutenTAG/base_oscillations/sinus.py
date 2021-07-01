@@ -1,4 +1,4 @@
-from typing import Optional, Tuple
+from typing import Optional
 
 import numpy as np
 
@@ -13,22 +13,18 @@ class Sinus(BaseOscillationInterface):
     def get_timeseries_periods(self) -> Optional[int]:
         return int((self.length / 100) * self.frequency)
 
-    def generate(self) -> Tuple[np.ndarray, np.ndarray]:
-        self.timeseries = self.generate_only_base(self.length, self.frequency, self.amplitude, self.variance, self.channels, self.freq_mod)
-        self._generate_anomalies()
-        return self.timeseries, self.labels
-
     def generate_only_base(self,
-                           length:    Optional[int] = None,
+                           length: Optional[int] = None,
                            frequency: Optional[float] = None,
                            amplitude: Optional[float] = None,
-                           variance:  Optional[float] = None,
-                           channels:  Optional[int] = None,
-                           freq_mod: float = .0) -> np.ndarray:
+                           channels: Optional[int] = None,
+                           freq_mod: Optional[float] = None,
+                           *args, **kwargs) -> np.ndarray:
         length = length or self.length
         frequency = frequency or self.frequency
         amplitude = amplitude or self.amplitude
         channels = channels or self.channels
+        freq_mod = freq_mod or self.freq_mod
 
         periods = (length / 100) * frequency
 

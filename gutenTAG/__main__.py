@@ -32,6 +32,7 @@ def parse_args(args: List[str]) -> argparse.Namespace:
     parser.add_argument("--seed", type=int, default=None, help="Random seed")
     parser.add_argument("--addons", nargs="*", default=[], help="Use Add-Ons for generating time series.")
     parser.add_argument("--n_jobs", "--n-jobs", type=int, default=1, help="Number of time series to generate in parallel.")
+    parser.add_argument("--only", type=str, help="Process only timeseries with the defined name.")
 
     return parser.parse_args(args)
 
@@ -40,7 +41,7 @@ def save_timeseries(timeseries: List[GutenTAG], overview: Overview, args: argpar
     os.makedirs(args.output_dir, exist_ok=True)
     overview.save_to_output_dir(args.output_dir)
 
-    for i, ts in tqdm(enumerate(timeseries), desc="Saving time series to disk", total=len(timeseries)):
+    for i, ts in tqdm(enumerate(timeseries), desc="Saving datasets to disk", total=len(timeseries)):
         title = ts.base_oscillation.name or str(i)
         save_dir = os.path.join(args.output_dir, title)
         os.makedirs(save_dir, exist_ok=True)
@@ -82,7 +83,7 @@ def import_addons(addons: List[str]) -> List[Type[BaseAddOn]]:
 
 
 def generate_all(args: argparse.Namespace) -> Tuple[List[GutenTAG], Overview]:
-    generators, overview = GutenTAG.from_yaml(args.config_yaml, args.plot)
+    generators, overview = GutenTAG.from_yaml(args.config_yaml, args.plot, args.only)
     n_jobs = args.n_jobs
     if n_jobs != 1 and args.plot:
         warnings.warn(f"Cannot generate time series in parallel while plotting ('n_jobs' was set to {n_jobs})! Falling "
@@ -90,7 +91,7 @@ def generate_all(args: argparse.Namespace) -> Tuple[List[GutenTAG], Overview]:
         n_jobs = 1
 
     with tqdm_joblib(tqdm(desc="Generating datasets", total=len(generators))):
-        Parallel(n_jobs=n_jobs)(
+        generators = Parallel(n_jobs=n_jobs)(
             delayed(g.generate)() for g in generators
         )
     return generators, overview
@@ -99,6 +100,23 @@ def generate_all(args: argparse.Namespace) -> Tuple[List[GutenTAG], Overview]:
 def main(args: List[str]) -> None:
     args = parse_args(args)
     addons = import_addons(args.addons)
+    print(
+        """
+
+                    Welcome to
+
+       _____       _          _______       _____ _
+      / ____|     | |        |__   __|/\   / ____| |
+     | |  __ _   _| |_ ___ _ __ | |  /  \ | |  __| |
+     | | |_ | | | | __/ _ \ '_ \| | / /\ \| | |_ | |
+     | |__| | |_| | ||  __/ | | | |/ ____ \ |__| |_|
+      \_____|\__,_|\__\___|_| |_|_/_/    \_\_____(_)
+
+"Good day!" wishes your friendly Timeseries Anomaly Generator.
+
+
+"""
+    )
     if args.seed is not None:
         set_random_seed(args)
     generators, overview = generate_all(args)
@@ -107,7 +125,7 @@ def main(args: List[str]) -> None:
         exit(0)
     save_timeseries(generators, overview, args)
 
-    for addon in addons:
+    for addon in tqdm(addons, desc="Executing addons"):
         addon().process(overview=overview, generators=generators, args=args)
 
 
