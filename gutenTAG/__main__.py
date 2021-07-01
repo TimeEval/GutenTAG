@@ -4,7 +4,7 @@ import os
 import sys
 import warnings
 from pathlib import Path
-from typing import List, Type, Tuple
+from typing import List, Type, Tuple, Union, Optional
 
 import numpy as np
 import pandas as pd
@@ -37,6 +37,16 @@ def parse_args(args: List[str]) -> argparse.Namespace:
     return parser.parse_args(args)
 
 
+def _create_ts_df(ts: np.ndarray, labels: Optional[np.ndarray] = None) -> pd.DataFrame:
+    if labels is None:
+        labels = 0.0
+    channel_names = list(map(lambda i: f"value-{i}", range(ts.shape[1])))
+    df = pd.DataFrame(ts, columns=channel_names)
+    df.index.name = "timestamp"
+    df["is_anomaly"] = labels
+    return df
+
+
 def save_timeseries(timeseries: List[GutenTAG], overview: Overview, args: argparse.Namespace):
     os.makedirs(args.output_dir, exist_ok=True)
     overview.save_to_output_dir(args.output_dir)
@@ -45,28 +55,17 @@ def save_timeseries(timeseries: List[GutenTAG], overview: Overview, args: argpar
         title = ts.base_oscillation.name or str(i)
         save_dir = os.path.join(args.output_dir, title)
         os.makedirs(save_dir, exist_ok=True)
-        semi_supervised = pd.DataFrame(ts.semi_supervised_timeseries)
-        supervised = pd.DataFrame(ts.supervised_timeseries)
-        test = pd.DataFrame(ts.timeseries)
-        train_labels = ts.train_labels
-        labels = ts.labels
 
-        if not supervised.empty:
-            if train_labels is not None:
-                supervised["is_anomaly"] = train_labels
-            else:
-                supervised["is_anomaly"] = np.nan
-            supervised.to_csv(os.path.join(save_dir, SUPERVISED_FILENAME), sep=",")
+        test = _create_ts_df(ts.timeseries, ts.labels)
+        test.to_csv(os.path.join(save_dir, UNSUPERVISED_FILENAME), sep=",", index=True)
 
-        if not semi_supervised.empty:
-            semi_supervised["is_anomaly"] = 0
-            semi_supervised.to_csv(os.path.join(save_dir, SEMI_SUPERVISED_FILENAME), sep=",")
+        if ts.supervised:
+            supervised = _create_ts_df(ts.supervised_timeseries, ts.train_labels)
+            supervised.to_csv(os.path.join(save_dir, SUPERVISED_FILENAME), sep=",", index=True)
 
-        if labels is not None:
-            test["is_anomaly"] = labels
-        else:
-            test["is_anomaly"] = 0
-        test.to_csv(os.path.join(save_dir, UNSUPERVISED_FILENAME), sep=",")
+        if ts.semi_supervised:
+            semi_supervised = _create_ts_df(ts.semi_supervised_timeseries)
+            semi_supervised.to_csv(os.path.join(save_dir, SEMI_SUPERVISED_FILENAME), sep=",", index=True)
 
 
 def set_random_seed(args: argparse.Namespace):
