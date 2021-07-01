@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
+from typing import List
+
 import numpy as np
-from typing import Optional, List, Dict
 
 from ...utils.logger import GutenTagLogger
 from ...utils.types import BaseOscillationKind
