@@ -1,6 +1,6 @@
 import os
 import argparse
-from typing import List, Dict, Tuple, Optional, Iterable
+from typing import List, Dict, Tuple, Optional, Iterable, Any
 from enum import Enum
 
 import numpy as np
@@ -31,7 +31,8 @@ columns = [
     "mean",
     "stddev",
     "trend",
-    "stationarity"
+    "stationarity",
+    "period_size"
 ]
 
 
@@ -92,6 +93,7 @@ class TimeEvalAddOn(BaseAddOn):
         dataset["mean"] = generator.timeseries.mean()
         dataset["stddev"] = generator.timeseries.std()
         dataset["trend"] = config.get("base-oscillation", {}).get("trend", {}).get("kind", np.NAN)
+        dataset["period_size"] = TimeEvalAddOn._calc_period_size(config.get("base-oscillation", {}))
 
         self.df = self.df.append(dataset, ignore_index=True)
 
@@ -99,6 +101,14 @@ class TimeEvalAddOn(BaseAddOn):
     def _calc_contamination(anomalies: Iterable[Dict], ts_length: int) -> float:
         anomaly_lengths = [anomaly.get("length") for anomaly in anomalies]
         return sum(anomaly_lengths) / ts_length
+
+    @staticmethod
+    def _calc_period_size(base: Dict[str, Any]) -> float:
+        frequency = base.get("frequency")
+        kind = base.get("kind")
+        if frequency is None or kind not in ["sinus", "ecg"]:
+            return np.NAN
+        return int(100 / frequency)
 
     def __init__(self):
         self.df = pd.DataFrame(columns=columns)
