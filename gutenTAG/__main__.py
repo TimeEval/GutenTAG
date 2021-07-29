@@ -97,12 +97,9 @@ def generate_all(args: argparse.Namespace) -> Tuple[List[GutenTAG], Overview]:
 
 
 def main(args: List[str]) -> None:
-    args = parse_args(args)
-    addons = import_addons(args.addons)
-    print(
-        """
+    print("""
 
-                    Welcome to
+                      Welcome to
 
        _____       _          _______       _____ _
       / ____|     | |        |__   __|/\   / ____| |
@@ -116,6 +113,8 @@ def main(args: List[str]) -> None:
 
 """
     )
+    args = parse_args(args)
+    addons = import_addons(args.addons)
     if args.seed is not None:
         set_random_seed(args)
     generators, overview = generate_all(args)

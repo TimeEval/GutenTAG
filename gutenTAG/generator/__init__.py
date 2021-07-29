@@ -52,7 +52,7 @@ class GutenTAG:
 
     def _plot(self):
         n_series = 1 + np.sum([self.semi_supervised, self.supervised])
-        fig, axs = plt.subplots(2, n_series, sharex="all", sharey="row", figsize=(n_series*4, 4))
+        fig, axs = plt.subplots(2, n_series, sharex="all", sharey="row", figsize=(10, n_series*4))
         # fix indexing, because subplots only returns a 1-dim array in this case:
         if n_series == 1:
             axs = np.array([axs]).T

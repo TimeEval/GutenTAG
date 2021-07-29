@@ -1,39 +1,65 @@
+# GutenTAG
+
 <img src="logo_transparent.png" alt="GutenTAG logo" width="400px" align="middle"/>
 
 A good **T**imeseries **A**nomaly **G**enerator.
 
+GutenTAG is an extensible tool to generate time series datasets with and without anomalies.
+A GutenTAG time series consists of a single (univariate) or multiple (multivariate) channels containing a base osciallation with different anomalies at different positions and of different kinds.
+
+## tl;dr
+
+The following call uses the [`example-config.yaml`](./example-config.yaml) configuration file to generate a single time series with two anomalies in the middle and the end of the series.
+
+```bash
+python -m gutenTAG --config-yaml example-config.yaml --seed 11 --no-save --plot
+```
+
+![Example unsupervised time series with two anomalies](example-ts.png)
+
+## Installation
+
+```bash
+# clone GutenTAG repository or extract the archive
+git clone git@gitlab.hpi.de:akita/guten-tag.git #or unzip guten-tag.zip
+cd guten-tag
+
+# (optionally) create a new conda environment with Python 3
+conda create -n gutentag python=3
+conda activate gutentag
+
+# install dependencies
+pip install -r requirements.txt
+
+# test installation
+python -m gutenTAG
+```
+
+Test the installation with `python -m gutenTAG` and you should see the greeting and usage instructions:
+
+```plain
+$ python -m gutenTAG
+
+                      Welcome to
+
+       _____       _          _______       _____ _
+      / ____|     | |        |__   __|/\   / ____| |
+     | |  __ _   _| |_ ___ _ __ | |  /  \ | |  __| |
+     | | |_ | | | | __/ _ \ '_ \| | / /\ \| | |_ | |
+     | |__| | |_| | ||  __/ | | | |/ ____ \ |__| |_|
+      \_____|\__,_|\__\___|_| |_|_/_/    \_\_____(_)
+
+"Good day!" wishes your friendly Timeseries Anomaly Generator.
+
+
+
+usage: __main__.py [-h] --config-yaml CONFIG_YAML [--output-dir OUTPUT_DIR] [--plot] [--no-save] [--seed SEED] [--addons [ADDONS ...]] [--n_jobs N_JOBS] [--only ONLY]
+__main__.py: error: the following arguments are required: --config-yaml
+```
+
 ## Usage
 
-
-### From within python as library
-
-Example API usage using Python 3:
-
-```python
-from gutenTAG.base_oscillations import BaseOscillation
-from gutenTAG.anomalies import Anomaly, Position, AnomalyKind
-
-
-options = {
-   # ...
-}
-
-osci = BaseOscillation.from_key("sinus", **options)
-# to generate a sinus oscillation without anomalies
-timeseries, labels = osci.generate(with_anomalies=False)
-
-# inject anomalies
-anomaly = Anomaly(
-   position=Position.Middle,
-   exact_position=None,
-   anomaly_length=100,
-   channel=0
-)
-params = {"frequency_factor": 2.0}
-anomaly.set_anomaly(AnomalyKind("frequency").create(**params))
-# to generate a sinus oscillation with a frequency anomaly in the middle
-timeseries, labels = osci.generate(with_anomalies=True)
-```
+GutenTAG can be used as a python library and from the CLI.
 
 ### From CLI as program
 
@@ -46,6 +72,47 @@ python -m gutenTAG --help
 ```
 
 See the [`generation_config.yaml`-file](./gutenTAG/generator/generation_config.yaml) for an example of a configuration file.
+
+### From within python as library
+
+To generate GutenTAG time series from Python, you have multiple options. Either you write a `dict()` with the same schema as the configuration uses and call the following:
+
+```python
+from gutenTAG import GutenTAG
+
+config = {
+  "timeseries": [
+    {
+      "name": "test",
+      "length": 100,
+      "channels": 1,
+      "base-oscillation": { "kind": "sinus" },
+      "anomalies": [
+        {"length": 5, "types": [{"kind": "mean"}]
+      ]
+    }
+  ]
+}
+generators, overview = GutenTAG.from_dict(config, plot=True)
+
+# call generate() to create the datasets (in-memory)
+for g in generators:
+  g.generate()
+
+# we only defined a single time series
+assert len(generators) == 1
+gen = generators[0]
+
+# the data points are stored at
+gen.timeseries
+# the labels are stored at
+gen.labels
+
+# you can plot the results via
+gen.plot()
+```
+
+Or you call the class and set its parameters yourself. However, this is not recommended!
 
 ## Structure
 
@@ -97,14 +164,13 @@ The generator comes with the following anomaly types in [./gutenTAG/anomalies/ty
 2. [RECOMMENDED] create a new anomaly type class under [gutenTAG/anomalies/types](gutenTAG/anomalies/types)
     1. the new class should inherit from [`gutenTAG.anomalies.BaseAnomaly`](gutenTAG/anomalies/types/__init__.py)
 
-
 ## Status
 
 The following table shows which anomalies and base oscillations can be combined and
 which combinations GutenTAG does not supported.
 
-`x` = Combination allowed
-`-` = Combination not allowed
+- `x` = Combination allowed
+- `-` = Combination not allowed
 
 |               | Sinus | Random Walk | CBF | ECG | Polynomial |
 |:--------------|:-----:|:-----------:|:---:|:---:|:----------:|
@@ -118,15 +184,13 @@ which combinations GutenTAG does not supported.
 | trend         |   x   |      x      |  x  |  x  |      x     |
 | variance      |   x   |      x      |  x  |  x  |      x     |
 
-
 ## TODO
 
 ### Features
 
 - [ ] trend anomaly bug
-- [ ] generate YAML from docs
 
 ### Future (nice to have)
 
-- [ ] noise as variance Union[float, List[float]] for each channel
+- [ ] noise as variance `Union[float, List[float]]` for each channel
 - [ ] nicer plot for multivariate time series
