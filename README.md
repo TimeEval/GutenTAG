@@ -136,6 +136,7 @@ The generator comes with the following base oscillations in [./gutenTAG/base_osc
 - cylinder_bell_funnel
 - ecg
 - polynomial
+- random mode jump
 
 Base oscillations can have an underlying trend.
 This trend can be any of the above base oscillations.
@@ -157,6 +158,7 @@ The generator comes with the following anomaly types in [./gutenTAG/anomalies/ty
 - platform
 - trend
 - variance
+- mode correlation
 
 ## Adding a new Anomaly Type
 
@@ -172,17 +174,18 @@ which combinations GutenTAG does not supported.
 - `x` = Combination allowed
 - `-` = Combination not allowed
 
-|               | Sinus | Random Walk | CBF | ECG | Polynomial |
-|:--------------|:-----:|:-----------:|:---:|:---:|:----------:|
-| amplitude     |   x   |      x      |  x  |  x  |      -     |
-| extremum      |   x   |      x      |  x  |  x  |      x     |
-| frequency     |   x   |      -      |  -  |  x  |      -     |
-| mean          |   x   |      x      |  x  |  x  |      x     |
-| pattern       |   x   |      -      |  x  |  x  |      -     |
-| pattern_shift |   x   |      -      |  -  |  x  |      -     |
-| platform      |   x   |      x      |  x  |  x  |      x     |
-| trend         |   x   |      x      |  x  |  x  |      x     |
-| variance      |   x   |      x      |  x  |  x  |      x     |
+|                  | Sinus | Random Walk | CBF | ECG | Polynomial | Random Mode Jump |
+|:-----------------|:-----:|:-----------:|:---:|:---:|:----------:|:----------------:|
+| amplitude        |   x   |      x      |  x  |  x  |      -     |         -        |
+| extremum         |   x   |      x      |  x  |  x  |      x     |         -        |
+| frequency        |   x   |      -      |  -  |  x  |      -     |         -        |
+| mean             |   x   |      x      |  x  |  x  |      x     |         -        |
+| pattern          |   x   |      -      |  x  |  x  |      -     |         -        |
+| pattern_shift    |   x   |      -      |  -  |  x  |      -     |         -        |
+| platform         |   x   |      x      |  x  |  x  |      x     |         -        |
+| trend            |   x   |      x      |  x  |  x  |      x     |         -        |
+| variance         |   x   |      x      |  x  |  x  |      x     |         -        |
+| mode_correlation |   -   |      -      |  -  |  -  |      -     |         x        |
 
 ## TODO
 
