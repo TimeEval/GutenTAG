@@ -83,6 +83,7 @@ def import_addons(addons: List[str]) -> List[Type[BaseAddOn]]:
 
 def generate_all(args: argparse.Namespace) -> Tuple[List[GutenTAG], Overview]:
     generators, overview = GutenTAG.from_yaml(args.config_yaml, args.plot, args.only)
+    overview.add_seed(args.seed)
     n_jobs = args.n_jobs
     if n_jobs != 1 and args.plot:
         warnings.warn(f"Cannot generate time series in parallel while plotting ('n_jobs' was set to {n_jobs})! Falling "
