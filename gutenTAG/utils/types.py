@@ -7,3 +7,4 @@ class BaseOscillationKind(Enum):
     CylinderBellFunnel = "cylinder_bell_funnel"
     ECG = "ecg"
     Polynomial = "polynomial"
+    RandomModeJump = "random_mode_jump"

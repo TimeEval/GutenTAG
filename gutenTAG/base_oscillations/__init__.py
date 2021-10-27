@@ -6,6 +6,7 @@ from .sinus import Sinus
 from .random_walk import RandomWalk
 from .cylinder_bell_funnel import CylinderBellFunnel
 from .ecg import ECG
+from .random_mode_jump import RandomModeJump
 
 
 def get_or_error(name: str, value: Optional[Any]) -> Any:
@@ -20,7 +21,8 @@ class BaseOscillation:
         "random_walk": RandomWalk,
         "cylinder_bell_funnel": CylinderBellFunnel,
         "ecg": ECG,
-        "polynomial": Polynomial
+        "polynomial": Polynomial,
+        "random_mode_jump": RandomModeJump
     }
 
     @staticmethod
