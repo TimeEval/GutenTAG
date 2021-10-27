@@ -7,6 +7,7 @@ from .amplitude import AnomalyAmplitude
 from .extremum import AnomalyExtremum
 from .frequency import AnomalyFrequency
 from .mean import AnomalyMean
+from .mode_correlation import AnomalyModeCorrelation
 from .pattern import AnomalyPattern
 from .pattern_shift import AnomalyPatternShift
 from .platform import AnomalyPlatform
@@ -29,6 +30,7 @@ class AnomalyKind(Enum):
     Variance = "variance"
     Amplitude = "amplitude"
     Trend = "trend"
+    ModeCorrelation = "mode_correlation"
 
     def create(self, parameters: Dict) -> 'BaseAnomaly':
         if self == AnomalyKind.Platform:
@@ -49,6 +51,8 @@ class AnomalyKind(Enum):
             anomaly = AnomalyAmplitude(AnomalyAmplitude.get_parameter_class()(**parameters))
         elif self == AnomalyKind.Trend:
             anomaly = AnomalyTrend(AnomalyTrend.get_parameter_class()(**parameters))
+        elif self == AnomalyKind.ModeCorrelation:
+            anomaly = AnomalyModeCorrelation(AnomalyModeCorrelation.get_parameter_class()(**parameters))
         else:
             raise ValueError(f"AnomalyKind {self.value} is not supported, yet! Guten Tag!")
 
