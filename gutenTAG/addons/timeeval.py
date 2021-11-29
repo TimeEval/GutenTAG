@@ -81,7 +81,7 @@ class TimeEvalAddOn(BaseAddOn):
 
         dataset["dataset_name"] = f"{dataset_name}.{tpe.value}"
         dataset["test_path"] = f"{dataset_name}/{UNSUPERVISED_FILENAME}"
-        dataset["input_type"] = "univariate" if config.get("base-oscillation", {}).get("channels", 1) else "multivariate"
+        dataset["input_type"] = "univariate" if config.get("channels", 1) == 1 else "multivariate"
         dataset["length"] = config.get("length", 10000)
         dataset["dimensions"] = config.get("channels", 1)
         dataset["contamination"] = self._calc_contamination(config.get("anomalies", []), dataset["length"])
