@@ -1,6 +1,6 @@
 # GutenTAG generation configuration schema
 
-This folder contains the YAML/JSON schema definitions for GutenTAG generation configuration files (such as [`example-config.yaml`](../example-config.yaml)).
+This folder contains the YAML/JSON schema definitions for GutenTAG generation configuration files (such as [`example-config.yaml`](../generation_configs/example-config.yaml)).
 
 The schema can be used to enhance IDEs and editors with syntax highlighting, code completion, and linting features for the GutenTAG configuration files.
 
@@ -27,7 +27,7 @@ The file `guten-tag-generation-config.schema.yaml` is the base schema that refer
 
 ### JetBrains (PyCharm)
 
-1. Open the desired file (e.g. the [`example-config.yaml`](../example-config.yaml))
+1. Open the desired file (e.g. the [`example-config.yaml`](../generation_configs/example-config.yaml))
 2. In the lower right cornern, click on _No JSON schema_
    ![PyCharm select schema](./docs/pycharm-select-schema.png)
 3. In the upcoming dropdown list, select _New schema mapping ..._

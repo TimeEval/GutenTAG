@@ -141,6 +141,6 @@ if __name__ == "__main__":
     np.random.seed(42)
     random.seed(42)
     OUTPUT_DIR = "../../generated-timeseries/"
-    timeseries, _ = GutenTAG.from_yaml("./generation_config.yaml", plot=True)
+    timeseries, _ = GutenTAG.from_yaml("../../generation_configs/example-config.yaml", plot=True)
     for ts in timeseries:
         ts.generate()

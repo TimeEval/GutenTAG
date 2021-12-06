@@ -1,0 +1,155 @@
+$schema: "generation-config-schema/guten-tag-generation-config.schema.yaml"
+
+#############################
+# Definitions
+#############################
+# base oscillations
+base:
+  - &base-ts
+    length: 10000
+    channels: 2
+    semi-supervised: true
+    supervised: true
+  - &base-osc
+    frequency: 250.0 # step length = 40
+    amplitude: 1.0
+    variance: 0.05
+
+random_mode_jump:
+  - &rmj0
+    <<: *base-osc
+    kind: "random_mode_jump"
+
+anomaly_kinds:
+  - &base-mode-correlation
+    kinds:
+      - kind: "mode_correlation"
+
+  - &short-mode-correlation
+    <<: *base-mode-correlation
+    length: 40
+
+  - &medium-mode-correlation
+    <<: *base-mode-correlation
+    length: 80
+
+  - &large-mode-correlation
+    <<: *base-mode-correlation
+    length: 160
+
+timeseries_templates:
+  - &rmj-short-mode-correlation-on-different-number-of-channels
+    <<: *base-ts
+    base-oscillation:
+      *rmj0
+    anomalies:
+      - position: beginning
+        <<: *short-mode-correlation
+
+  - &rmj-medium-mode-correlation-on-different-number-of-channels
+    <<: *base-ts
+    base-oscillation:
+      *rmj0
+    anomalies:
+      - position: beginning
+        <<: *medium-mode-correlation
+
+  - &rmj-large-mode-correlation-on-different-number-of-channels
+    <<: *base-ts
+    base-oscillation:
+      *rmj0
+    anomalies:
+      - position: beginning
+        <<: *large-mode-correlation
+
+timeseries:
+###################################################
+# Different sizes on different number of channels #
+###################################################
+  - name: rmj-short-mode-correlation-on-2
+    <<: *rmj-short-mode-correlation-on-different-number-of-channels
+
+  - name: rmj-short-mode-correlation-on-3
+    <<: *rmj-short-mode-correlation-on-different-number-of-channels
+    channels: 3
+
+  - name: rmj-short-mode-correlation-on-4
+    <<: *rmj-short-mode-correlation-on-different-number-of-channels
+    channels: 4
+
+  - name: rmj-medium-mode-correlation-on-2
+    <<: *rmj-medium-mode-correlation-on-different-number-of-channels
+
+  - name: rmj-medium-mode-correlation-on-3
+    <<: *rmj-medium-mode-correlation-on-different-number-of-channels
+    channels: 3
+
+  - name: rmj-medium-mode-correlation-on-4
+    <<: *rmj-medium-mode-correlation-on-different-number-of-channels
+    channels: 4
+
+  - name: rmj-large-mode-correlation-on-2
+    <<: *rmj-large-mode-correlation-on-different-number-of-channels
+
+  - name: rmj-large-mode-correlation-on-3
+    <<: *rmj-large-mode-correlation-on-different-number-of-channels
+    channels: 3
+
+  - name: rmj-large-mode-correlation-on-4
+    <<: *rmj-large-mode-correlation-on-different-number-of-channels
+    channels: 4
+
+######################
+# Multiple anomalies #
+######################
+
+  - name: rmj-2-short-anomalies-on-2-same-channel
+    <<: *base-ts
+    base-oscillation:
+      *rmj0
+    anomalies:
+      - position: beginning
+        <<: *short-mode-correlation
+      - position: end
+        <<: *short-mode-correlation
+
+  - name: rmj-2-short-anomalies-on-2-different-channel
+    <<: *base-ts
+    base-oscillation:
+      *rmj0
+    anomalies:
+      - position: beginning
+        channel: 0
+        <<: *short-mode-correlation
+      - position: end
+        channel: 1
+        <<: *short-mode-correlation
+
+  - name: rmj-3-short-anomalies-on-3-same-channel
+    <<: *base-ts
+    channels: 3
+    base-oscillation:
+      *rmj0
+    anomalies:
+      - position: beginning
+        <<: *short-mode-correlation
+      - position: middle
+        <<: *short-mode-correlation
+      - position: end
+        <<: *short-mode-correlation
+
+  - name: rmj-3-short-anomalies-on-3-different-channel
+    <<: *base-ts
+    channels: 3
+    base-oscillation:
+      *rmj0
+    anomalies:
+      - position: beginning
+        channel: 0
+        <<: *short-mode-correlation
+      - position: middle
+        channel: 1
+        <<: *short-mode-correlation
+      - position: end
+        channel: 2
+        <<: *short-mode-correlation
