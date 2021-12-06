@@ -2,7 +2,7 @@ from typing import Optional, Any, List, Dict, Type
 
 from .interface import BaseOscillationInterface
 from .polynomial import Polynomial
-from .sinus import Sinus
+from .sine import Sine
 from .random_walk import RandomWalk
 from .cylinder_bell_funnel import CylinderBellFunnel
 from .ecg import ECG
@@ -17,7 +17,7 @@ def get_or_error(name: str, value: Optional[Any]) -> Any:
 
 class BaseOscillation:
     key_mapping: Dict[str, Type[BaseOscillationInterface]] = {
-        "sinus": Sinus,
+        "sine": Sine,
         "random_walk": RandomWalk,
         "cylinder_bell_funnel": CylinderBellFunnel,
         "ecg": ECG,

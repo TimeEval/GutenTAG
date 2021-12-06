@@ -76,7 +76,7 @@ definitions:
       sinusoid_k:
         type: number
         description: |
-          Only used for base oscillations of type 'sinus'.
+          Only used for base oscillations of type 'sine'.
           Ramming factor for change in sine wave.
       cbf_pattern_factor:
         type: number

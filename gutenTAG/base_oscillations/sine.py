@@ -6,9 +6,9 @@ from .interface import BaseOscillationInterface
 from ..utils.types import BaseOscillationKind
 
 
-class Sinus(BaseOscillationInterface):
+class Sine(BaseOscillationInterface):
     def get_base_oscillation_kind(self) -> BaseOscillationKind:
-        return BaseOscillationKind.Sinus
+        return BaseOscillationKind.Sine
 
     def get_timeseries_periods(self) -> Optional[int]:
         return int((self.length / 100) * self.frequency)

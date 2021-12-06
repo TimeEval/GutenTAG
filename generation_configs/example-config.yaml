@@ -7,7 +7,7 @@ timeseries:
     semi-supervised: true
     supervised: true
     base-oscillation:
-      kind: sinus
+      kind: sine
       frequency: 4.0
       amplitude: 1.0
       variance: 0.05
