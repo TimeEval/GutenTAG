@@ -81,23 +81,23 @@ To generate GutenTAG time series from Python, you have multiple options. Either 
 from gutenTAG import GutenTAG
 
 config = {
-  "timeseries": [
-    {
-      "name": "test",
-      "length": 100,
-      "channels": 1,
-      "base-oscillation": { "kind": "sinus" },
-      "anomalies": [
-        {"length": 5, "types": [{"kind": "mean"}]
-      ]
-    }
-  ]
+   "timeseries": [
+      {
+         "name": "test",
+         "length": 100,
+         "channels": 1,
+         "base-oscillation": {"kind": "sinus"},
+         "anomalies": [
+            {"length": 5, "types": [{"kind": "mean"}]}
+         ]
+      }
+   ]
 }
 generators, overview = GutenTAG.from_dict(config, plot=True)
 
 # call generate() to create the datasets (in-memory)
 for g in generators:
-  g.generate()
+   g.generate()
 
 # we only defined a single time series
 assert len(generators) == 1
