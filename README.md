@@ -12,7 +12,7 @@ A GutenTAG time series consists of a single (univariate) or multiple (multivaria
 The following call uses the [`example-config.yaml`](generation_configs/example-config.yaml) configuration file to generate a single time series with two anomalies in the middle and the end of the series.
 
 ```bash
-python -m gutenTAG --config-yaml example-config.yaml --seed 11 --no-save --plot
+python -m gutenTAG --config-yaml generation_configs/example-config.yaml --seed 11 --no-save --plot
 ```
 
 ![Example unsupervised time series with two anomalies](example-ts.png)
@@ -66,7 +66,7 @@ GutenTAG can be used as a python library and from the CLI.
 Example call from CLI:
 
 ```bash
-python -m gutenTAG --config-yaml gutenTAG/generator/generation_config.yaml --plot --seed 42
+python -m gutenTAG --config-yaml generation_configs/example-config.yaml --plot --seed 42
 # see help page with
 python -m gutenTAG --help
 ```
