@@ -106,7 +106,7 @@ class TimeEvalAddOn(BaseAddOn):
     def _calc_period_size(base: Dict[str, Any]) -> float:
         frequency = base.get("frequency")
         kind = base.get("kind")
-        if frequency is None or kind not in ["sinus", "ecg"]:
+        if frequency is None or kind not in ["sine", "ecg"]:
             return np.NAN
         return int(100 / frequency)
 

@@ -17,14 +17,14 @@ class AnomalyPatternParameters:
 
 class AnomalyPattern(BaseAnomaly):
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
-        if anomaly_protocol.base_oscillation_kind == BaseOscillationKind.Sinus:
+        if anomaly_protocol.base_oscillation_kind == BaseOscillationKind.Sine:
             def sinusoid(t: np.ndarray, k: float, amplitude: float) -> np.ndarray:
                 pattern = (np.arctan(k * t) / np.arctan(k))
                 scaled = MinMaxScaler(feature_range=(-amplitude, amplitude)).fit_transform(pattern.reshape(-1, 1)).reshape(-1)
                 return scaled
 
-            sinus = anomaly_protocol.base_oscillation
-            subsequence = sinusoid(sinus.timeseries[anomaly_protocol.start:anomaly_protocol.end, anomaly_protocol.channel], self.sinusoid_k, sinus.amplitude)
+            sine = anomaly_protocol.base_oscillation
+            subsequence = sinusoid(sine.timeseries[anomaly_protocol.start:anomaly_protocol.end, anomaly_protocol.channel], self.sinusoid_k, sine.amplitude)
             anomaly_protocol.subsequences.append(subsequence)
         elif anomaly_protocol.base_oscillation_kind == BaseOscillationKind.RandomWalk:
             self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind.name)

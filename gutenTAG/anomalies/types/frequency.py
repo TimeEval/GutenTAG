@@ -22,10 +22,10 @@ class AnomalyFrequency(BaseAnomaly):
         self.frequency_factor = parameters.frequency_factor
 
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
-        if anomaly_protocol.base_oscillation_kind == BaseOscillationKind.Sinus:
-            sinus = anomaly_protocol.base_oscillation
+        if anomaly_protocol.base_oscillation_kind == BaseOscillationKind.Sine:
+            sine = anomaly_protocol.base_oscillation
             length = anomaly_protocol.end - anomaly_protocol.start
-            subsequence = sinus.generate_only_base(length, sinus.frequency * self.frequency_factor, freq_mod=sinus.freq_mod)[:, anomaly_protocol.channel]
+            subsequence = sine.generate_only_base(length, sine.frequency * self.frequency_factor, freq_mod=sine.freq_mod)[:, anomaly_protocol.channel]
             anomaly_protocol.subsequences.append(subsequence)
         elif anomaly_protocol.base_oscillation_kind == BaseOscillationKind.ECG:
             ecg = anomaly_protocol.base_oscillation

@@ -15,39 +15,39 @@ base:
     amplitude: 1.0
     variance: 0.05
 
-sinus:
-  - &sinus-0
+sine:
+  - &sine-0
     <<: *base-osci
-    kind: "sinus"
-  - &sinus-1
-    <<: *sinus-0
+    kind: "sine"
+  - &sine-1
+    <<: *sine-0
     frequency: 2.3
     amplitude: 2.5
     offset: -2.0
     freq-mod: 0.5
-  - &sinus-2
-    <<: *sinus-0
+  - &sine-2
+    <<: *sine-0
     frequency: 12.4
     amplitude: 0.5
     offset: 1.3
     freq-mod: 0.01
-  - &sinus-linear-trend
-    <<: *sinus-1
+  - &sine-linear-trend
+    <<: *sine-1
     trend:
       kind: "polynomial"
       polynomial: [ 2, 2 ]
-  - &sinus-other-trend
-    <<: *sinus-0
+  - &sine-other-trend
+    <<: *sine-0
     amplitude: 2
     variance: 0.1
     trend:
-      kind: "sinus"
+      kind: "sine"
       frequency: 0.1
       amplitude: 0.5
       variance: 0
-  - &sinus-low-freq
+  - &sine-low-freq
     <<: *base-osci
-    kind: "sinus"
+    kind: "sine"
     frequency: 0.1
     amplitude: 0.5
 
@@ -94,7 +94,7 @@ random_walk:
   - &rw-other-trend
     <<: *rw-2
     trend:
-      kind: "sinus"
+      kind: "sine"
       frequency: 0.05
       amplitude: 0.25
       variance: 0
@@ -139,7 +139,7 @@ polynomial:
     variance: 0.1
     offset: 34.2
     trend:
-      kind: "sinus"
+      kind: "sine"
       frequency: 0.1
       amplitude: 0.5
   - &poly-linear
@@ -225,12 +225,12 @@ anomaly_kinds:
       - kind: "amplitude"
         parameters:
           amplitude_factor: 0.5
-  - &trend-anomaly-sinus
+  - &trend-anomaly-sine
     length: 100
     kinds:
       - kind: "trend"
         parameters:
-          kind: "sinus"
+          kind: "sine"
           frequency: 1
           amplitude: 1.0
           variance: 0.0
@@ -248,38 +248,38 @@ anomaly_kinds:
 #############################
 timeseries:
   # noise
-  - name: sinus-noise-00%
+  - name: sine-noise-00%
     <<: *base-ts
     base-oscillation:
-      <<: *sinus-0
+      <<: *sine-0
       variance: 0
     anomalies:
       - *platform
-  - name: sinus-noise-01%
+  - name: sine-noise-01%
     <<: *base-ts
     base-oscillation:
-      <<: *sinus-0
+      <<: *sine-0
       variance: 0.01
     anomalies:
       - *platform
-  - name: sinus-noise-10%
+  - name: sine-noise-10%
     <<: *base-ts
     base-oscillation:
-      <<: *sinus-0
+      <<: *sine-0
       variance: 0.1
     anomalies:
       - *platform
-  - name: sinus-noise-30%
+  - name: sine-noise-30%
     <<: *base-ts
     base-oscillation:
-      <<: *sinus-0
+      <<: *sine-0
       variance: 0.3
     anomalies:
       - *platform
-  - name: sinus-noise-50%
+  - name: sine-noise-50%
     <<: *base-ts
     base-oscillation:
-      <<: *sinus-0
+      <<: *sine-0
       variance: 0.5
     anomalies:
       - *platform
@@ -343,51 +343,51 @@ timeseries:
       - position: end
         <<: *variance-large
 
-  - name: sinus-position-beginning
+  - name: sine-position-beginning
     <<: *base-ts
     base-oscillation:
-      <<: *sinus-other-trend
+      <<: *sine-other-trend
     anomalies:
       - position: beginning
         <<: *mean
-  - name: sinus-position-middle
+  - name: sine-position-middle
     <<: *base-ts
     base-oscillation:
-      <<: *sinus-other-trend
+      <<: *sine-other-trend
     anomalies:
       - position: middle
         <<: *mean
-  - name: sinus-position-end
+  - name: sine-position-end
     <<: *base-ts
     base-oscillation:
-      <<: *sinus-other-trend
+      <<: *sine-other-trend
     anomalies:
       - position: end
         <<: *mean
 
-# For sinus base
+# For sine base
 #############################
   # same-count
-  - name: sinus-same-count-1
+  - name: sine-same-count-1
     <<: *base-ts
     base-oscillation:
-      <<: *sinus-2
+      <<: *sine-2
     anomalies:
       - position: middle
         <<: *frequency
-  - name: sinus-same-count-2
+  - name: sine-same-count-2
     <<: *base-ts
     base-oscillation:
-      <<: *sinus-2
+      <<: *sine-2
     anomalies:
       - position: middle
         <<: *frequency
       - position: middle
         <<: *frequency
-  - name: sinus-same-count-5
+  - name: sine-same-count-5
     <<: *base-ts
     base-oscillation:
-      <<: *sinus-2
+      <<: *sine-2
     anomalies:
       - position: middle
         <<: *frequency
@@ -399,10 +399,10 @@ timeseries:
         <<: *frequency
       - position: end
         <<: *frequency
-  - name: sinus-same-count-10
+  - name: sine-same-count-10
     <<: *base-ts
     base-oscillation:
-      <<: *sinus-2
+      <<: *sine-2
     anomalies:
       - position: middle
         <<: *frequency
@@ -426,26 +426,26 @@ timeseries:
         <<: *frequency
 
   # diff-count
-  - name: sinus-diff-count-1
+  - name: sine-diff-count-1
     <<: *base-ts
     base-oscillation:
-      *sinus-1
+      *sine-1
     anomalies:
       - position: middle
         <<: *frequency
-  - name: sinus-diff-count-2
+  - name: sine-diff-count-2
     <<: *base-ts
     base-oscillation:
-      *sinus-1
+      *sine-1
     anomalies:
       - position: middle
         <<: *frequency
       - position: end
         <<: *pattern
-  - name: sinus-diff-count-3
+  - name: sine-diff-count-3
     <<: *base-ts
     base-oscillation:
-      *sinus-1
+      *sine-1
     anomalies:
       - position: beginning
         <<: *pattern-shift
@@ -453,10 +453,10 @@ timeseries:
         <<: *frequency
       - position: end
         <<: *pattern
-  - name: sinus-diff-count-4
+  - name: sine-diff-count-4
     <<: *base-ts
     base-oscillation:
-      *sinus-1
+      *sine-1
     anomalies:
       - position: beginning
         <<: *pattern-shift
@@ -466,10 +466,10 @@ timeseries:
         <<: *pattern
       - position: end
         <<: *local-extremum
-  - name: sinus-diff-count-5
+  - name: sine-diff-count-5
     <<: *base-ts
     base-oscillation:
-      *sinus-1
+      *sine-1
     anomalies:
       - position: beginning
         <<: *pattern-shift
@@ -481,10 +481,10 @@ timeseries:
         <<: *global-extremum
       - position: end
         <<: *variance-large
-  - name: sinus-diff-count-6
+  - name: sine-diff-count-6
     <<: *base-ts
     base-oscillation:
-      *sinus-1
+      *sine-1
     anomalies:
       - position: beginning
         <<: *pattern-shift
@@ -498,10 +498,10 @@ timeseries:
         <<: *global-extremum
       - position: end
         <<: *variance-large
-  - name: sinus-diff-count-7
+  - name: sine-diff-count-7
     <<: *base-ts
     base-oscillation:
-      *sinus-1
+      *sine-1
     anomalies:
       - position: beginning
         <<: *pattern-shift
@@ -517,10 +517,10 @@ timeseries:
         <<: *variance-large
       - position: end
         <<: *platform
-  - name: sinus-diff-count-8
+  - name: sine-diff-count-8
     <<: *base-ts
     base-oscillation:
-      *sinus-1
+      *sine-1
     anomalies:
       - position: beginning
         <<: *pattern-shift
@@ -538,10 +538,10 @@ timeseries:
         <<: *variance-large
       - position: end
         <<: *platform
-  - name: sinus-diff-count-9
+  - name: sine-diff-count-9
     <<: *base-ts
     base-oscillation:
-      *sinus-1
+      *sine-1
     anomalies:
       - position: beginning
         <<: *pattern-shift
@@ -560,13 +560,13 @@ timeseries:
       - position: end
         <<: *platform
       - position: end
-        <<: *trend-anomaly-sinus
+        <<: *trend-anomaly-sine
 
   # combined
-  - name: sinus-combined-diff-1
+  - name: sine-combined-diff-1
     <<: *base-ts
     base-oscillation:
-      *sinus-1
+      *sine-1
     anomalies:
       - position: beginning
         <<: *variance-large
@@ -580,10 +580,10 @@ timeseries:
         <<: *variance-large
       - position: end
         <<: *variance-large
-  - name: sinus-combined-diff-2
+  - name: sine-combined-diff-2
     <<: *base-ts
     base-oscillation:
-      *sinus-2
+      *sine-2
     anomalies:
       - position: beginning
         <<: *frequency
@@ -594,7 +594,7 @@ timeseries:
         kinds:
           - kind: "trend"
             parameters:
-              kind: "sinus"
+              kind: "sine"
               frequency: 0.725
               amplitude: 0.25
               variance: 0.0
@@ -604,10 +604,10 @@ timeseries:
         <<: *frequency
       - position: end
         <<: *frequency
-  - name: sinus-combined-diff-3
+  - name: sine-combined-diff-3
     <<: *base-ts
     base-oscillation:
-      *sinus-0
+      *sine-0
     anomalies:
       - position: beginning
         <<: *local-extremum
@@ -633,155 +633,155 @@ timeseries:
               context_window: 50
 
   # length
-  - name: sinus-length-1
+  - name: sine-length-1
     <<: *base-ts
     base-oscillation:
-      *sinus-0
+      *sine-0
     anomalies:
       - position: middle
         <<: *global-extremum
-  - name: sinus-length-10
+  - name: sine-length-10
     <<: *base-ts
     base-oscillation:
-      *sinus-0
+      *sine-0
     anomalies:
       - position: middle
         <<: *variance-large
         length: 10
-  - name: sinus-length-50
+  - name: sine-length-50
     <<: *base-ts
     base-oscillation:
-      *sinus-0
+      *sine-0
     anomalies:
       - position: middle
         <<: *variance-large
         length: 50
-  - name: sinus-length-100
+  - name: sine-length-100
     <<: *base-ts
     base-oscillation:
-      *sinus-0
+      *sine-0
     anomalies:
       - position: middle
         <<: *variance-large
         length: 100
-  - name: sinus-length-500
+  - name: sine-length-500
     <<: *base-ts
     base-oscillation:
-      *sinus-0
+      *sine-0
     anomalies:
       - position: middle
         <<: *variance-large
         length: 500
-  - name: sinus-length-1000
+  - name: sine-length-1000
     <<: *base-ts
     base-oscillation:
-      *sinus-0
+      *sine-0
     anomalies:
       - position: middle
         <<: *variance-large
         length: 1000
 
   # trend
-  - name: sinus-trend-linear
+  - name: sine-trend-linear
     <<: *base-ts
     base-oscillation:
-      <<: *sinus-1
+      <<: *sine-1
       trend:
         <<: *poly-linear
     anomalies:
       - position: middle
         <<: *variance-large
-  - name: sinus-trend-quadratic
+  - name: sine-trend-quadratic
     <<: *base-ts
     base-oscillation:
-      <<: *sinus-1
+      <<: *sine-1
       trend:
         <<: *poly-quadratic
     anomalies:
       - position: middle
         <<: *variance-large
-  - name: sinus-trend-sinus
+  - name: sine-trend-sine
     <<: *base-ts
     base-oscillation:
-      <<: *sinus-1
+      <<: *sine-1
       trend:
-        <<: *sinus-low-freq
+        <<: *sine-low-freq
     anomalies:
       - position: middle
         <<: *variance-large
 
   # anomaly-type
-  - name: sinus-type-amplitude
+  - name: sine-type-amplitude
     <<: *base-ts
     base-oscillation:
-      *sinus-0
+      *sine-0
     anomalies:
       - position: middle
         <<: *amplitude-larger
-  - name: sinus-type-extremum
+  - name: sine-type-extremum
     <<: *base-ts
     base-oscillation:
-      *sinus-0
+      *sine-0
     anomalies:
       - position: middle
         length: 1
         <<: *global-extremum
-  - name: sinus-type-frequency
+  - name: sine-type-frequency
     <<: *base-ts
     base-oscillation:
-      *sinus-0
+      *sine-0
     anomalies:
       - position: middle
         <<: *frequency
-  - name: sinus-type-mean
+  - name: sine-type-mean
     <<: *base-ts
     base-oscillation:
-      *sinus-0
+      *sine-0
     anomalies:
       - position: middle
         <<: *mean
-  - name: sinus-type-pattern
+  - name: sine-type-pattern
     <<: *base-ts
     base-oscillation:
-      *sinus-0
+      *sine-0
     anomalies:
       - position: middle
         <<: *pattern
-  - name: sinus-type-pattern-shift
+  - name: sine-type-pattern-shift
     <<: *base-ts
     base-oscillation:
-      *sinus-0
+      *sine-0
     anomalies:
       - position: middle
         <<: *pattern-shift
-  - name: sinus-type-platform
+  - name: sine-type-platform
     <<: *base-ts
     base-oscillation:
-      *sinus-0
+      *sine-0
     anomalies:
       - position: middle
         <<: *platform
-  - name: sinus-type-trend
+  - name: sine-type-trend
     <<: *base-ts
     base-oscillation:
-      *sinus-0
+      *sine-0
     anomalies:
       - position: middle
         <<: *trend-anomaly-linear
-  - name: sinus-type-variance
+  - name: sine-type-variance
     <<: *base-ts
     base-oscillation:
-      *sinus-0
+      *sine-0
     anomalies:
       - position: middle
         <<: *variance-large
 
   # channels
-  - name: sinus-channels-all-of-3
+  - name: sine-channels-all-of-3
     <<: *base-ts
     channels: 3
     base-oscillation:
-      *sinus-2
+      *sine-2
     anomalies:
       - exact-position: 5000
         channel: 0
@@ -792,38 +792,38 @@ timeseries:
       - exact-position: 5000
         channel: 2
         <<: *frequency
-  - name: sinus-channels-single-of-2
+  - name: sine-channels-single-of-2
     <<: *base-ts
     channels: 2
     base-oscillation:
-      *sinus-2
+      *sine-2
     anomalies:
       - position: middle
         channel: 0
         <<: *frequency
-  - name: sinus-channels-single-of-5
+  - name: sine-channels-single-of-5
     <<: *base-ts
     channels: 5
     base-oscillation:
-      *sinus-2
+      *sine-2
     anomalies:
       - position: middle
         channel: 0
         <<: *frequency
-  - name: sinus-channels-single-of-10
+  - name: sine-channels-single-of-10
     <<: *base-ts
     channels: 10
     base-oscillation:
-      *sinus-2
+      *sine-2
     anomalies:
       - position: middle
         channel: 0
         <<: *frequency
-  - name: sinus-channels-single-of-20
+  - name: sine-channels-single-of-20
     <<: *base-ts
     channels: 20
     base-oscillation:
-      *sinus-2
+      *sine-2
     anomalies:
       - position: middle
         channel: 0
@@ -1023,7 +1023,7 @@ timeseries:
       - position: end
         <<: *platform
       - position: end
-        <<: *trend-anomaly-sinus
+        <<: *trend-anomaly-sine
 
   # combined
   - name: ecg-combined-diff-1
@@ -1057,7 +1057,7 @@ timeseries:
         kinds:
           - kind: "trend"
             parameters:
-              kind: "sinus"
+              kind: "sine"
               frequency: 0.725
               amplitude: 0.25
               variance: 0.0
@@ -1163,12 +1163,12 @@ timeseries:
     anomalies:
       - position: middle
         <<: *variance-large
-  - name: ecg-trend-sinus
+  - name: ecg-trend-sine
     <<: *base-ts
     base-oscillation:
       <<: *ecg-0
       trend:
-        <<: *sinus-low-freq
+        <<: *sine-low-freq
     anomalies:
       - position: middle
         <<: *variance-large
@@ -1444,7 +1444,7 @@ timeseries:
       - position: end
         <<: *platform
       - position: end
-        <<: *trend-anomaly-sinus
+        <<: *trend-anomaly-sine
 
   # combined
   - name: cbf-combined-diff-1
@@ -1478,7 +1478,7 @@ timeseries:
         kinds:
           - kind: "trend"
             parameters:
-              kind: "sinus"
+              kind: "sine"
               frequency: 0.725
               amplitude: 0.25
               variance: 0.0
@@ -1584,12 +1584,12 @@ timeseries:
     anomalies:
       - position: middle
         <<: *variance-large
-  - name: cbf-trend-sinus
+  - name: cbf-trend-sine
     <<: *base-ts
     base-oscillation:
       <<: *cbf-0
       trend:
-        <<: *sinus-low-freq
+        <<: *sine-low-freq
     anomalies:
       - position: middle
         <<: *variance-large
@@ -1832,7 +1832,7 @@ timeseries:
       - position: end
         <<: *platform
       - position: end
-        <<: *trend-anomaly-sinus
+        <<: *trend-anomaly-sine
 
   # combined
   - name: rw-combined-diff-1
@@ -1866,7 +1866,7 @@ timeseries:
         kinds:
           - kind: "trend"
             parameters:
-              kind: "sinus"
+              kind: "sine"
               frequency: 0.725
               amplitude: 0.25
               variance: 0.0
@@ -1972,12 +1972,12 @@ timeseries:
     anomalies:
       - position: middle
         <<: *variance-large
-  - name: rw-trend-sinus
+  - name: rw-trend-sine
     <<: *base-ts
     base-oscillation:
       <<: *rw-0
       trend:
-        <<: *sinus-low-freq
+        <<: *sine-low-freq
     anomalies:
       - position: middle
         <<: *variance-large
@@ -2196,7 +2196,7 @@ timeseries:
       - position: end
         <<: *platform
       - position: end
-        <<: *trend-anomaly-sinus
+        <<: *trend-anomaly-sine
 
   # combined
   - name: poly-combined-diff-1
@@ -2230,7 +2230,7 @@ timeseries:
         kinds:
           - kind: "trend"
             parameters:
-              kind: "sinus"
+              kind: "sine"
               frequency: 0.725
               amplitude: 0.25
               variance: 0.0
@@ -2336,12 +2336,12 @@ timeseries:
     anomalies:
       - position: middle
         <<: *variance-large
-  - name: poly-trend-sinus
+  - name: poly-trend-sine
     <<: *base-ts
     base-oscillation:
       <<: *poly-0
       trend:
-        <<: *sinus-low-freq
+        <<: *sine-low-freq
     anomalies:
       - position: middle
         <<: *variance-large

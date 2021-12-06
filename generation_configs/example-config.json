@@ -2,7 +2,7 @@
   "timeseries": [
     {
       "base-oscillation": {
-        "kind": "sinus",
+        "kind": "sine",
         "length": 1000,
         "channels": 1,
         "frequency": 20.0,

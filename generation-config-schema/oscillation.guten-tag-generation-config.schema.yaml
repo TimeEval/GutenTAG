@@ -10,7 +10,7 @@ properties:
   kind:
     type: string
     enum:
-      - sinus
+      - sine
       - random_walk
       - ecg
       - polynomial
@@ -41,7 +41,7 @@ properties:
       It will be bounded to [-amplitude, amplitude].
   freq-mod:
     type: number
-    description: Factor of time-dependent frequency modulation (modulates the sinus amplitude).
+    description: Factor of time-dependent frequency modulation (modulates the sine amplitude).
   smoothing:
     type: number
     description: |
