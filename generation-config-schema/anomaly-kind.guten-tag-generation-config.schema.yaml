@@ -20,6 +20,7 @@ properties:
       - platform
       - trend
       - variance
+      - mode_correlation
     description: Kind of the anomaly.
   parameters:
     type: object
@@ -34,6 +35,8 @@ properties:
       - $ref: "#/definitions/variance-params"
       - $ref: "#/definitions/amplitude-params"
       - $ref: oscillation.guten-tag-generation-config.schema.yaml
+      - type: object
+        maxProperties: 0
 
 definitions:
   extremum-params:
