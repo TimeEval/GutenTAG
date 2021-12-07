@@ -15,6 +15,7 @@ properties:
       - ecg
       - polynomial
       - cylinder_bell_funnel
+      - random_mode_jump
     description: Kind of the base oscillation.
   trend:
     description: Trend to add to the base oscillation
@@ -63,3 +64,9 @@ properties:
     minItems: 1
     items:
       type: number
+  channel_diff:
+    type: float
+    description: Value difference of absolute random mode values between channels.
+  channel_offset:
+    type: float
+    description: Value mean offset from 0 in both directions for the random mode jumps.
