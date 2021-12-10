@@ -16,6 +16,7 @@ properties:
       - polynomial
       - cylinder_bell_funnel
       - random_mode_jump
+      - formula
     description: Kind of the base oscillation.
   trend:
     description: Trend to add to the base oscillation
@@ -65,11 +66,14 @@ properties:
     items:
       type: number
   channel_diff:
-    type: float
+    type: number
     description: Value difference of absolute random mode values between channels.
   channel_offset:
-    type: float
+    type: number
     description: Value mean offset from 0 in both directions for the random mode jumps.
   random_seed:
     type: number
     description: Random seed that can be used for different channels to get same base (random_mode_jump)
+  formula:
+    description: Formula based on other channels
+    $ref: formula.guten-tag-generation-config.schema.yaml

@@ -25,6 +25,7 @@ class BaseOscillationInterface(ABC):
         self.channel_diff = kwargs.get("channel_diff", default_values["base_oscillations"]["channel_diff"])
         self.channel_offset = kwargs.get("channel_offset", self.amplitude)
         self.random_seed = kwargs.get("random_seed", default_values["base_oscillations"]["random_seed"])
+        self.formula = kwargs.get("formula", default_values["base_oscillations"]["formula"])
 
         self.timeseries: Optional[np.ndarray] = None
         self.noise: Optional[np.ndarray] = None
@@ -42,8 +43,8 @@ class BaseOscillationInterface(ABC):
                 trend_series = timeseries
         return trend_series
 
-    def generate_timeseries_and_variations(self, channel: int = 0):
-        self.timeseries = self.generate_only_base(channel=channel)
+    def generate_timeseries_and_variations(self, channel: int = 0, **kwargs):
+        self.timeseries = self.generate_only_base(channel=channel, **kwargs)
         self.trend_series = self._generate_trend()
         self.noise = self.generate_noise(self.variance * self.amplitude, self.length)
 

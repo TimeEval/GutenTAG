@@ -1,0 +1,51 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: formula.guten-tag-generation-config.schema.yaml
+id: formula.guten-tag-generation-config.schema.yaml
+title: GutenTAG base oscillation formula configuration
+description: Base oscillation formula configuration for a time series.
+type: object
+required:
+  - base
+properties:
+  base:
+    oneOf:
+      - type: integer
+      - $ref: "#"
+    description: Base of operation or aggregation.
+  operation:
+    type: object
+    required:
+      - kind
+      - operand
+    properties:
+      kind:
+        type: string
+        enum:
+          - "+"
+          - "-"
+          - "*"
+          - "/"
+          - "**"
+        description: Operation type
+      operand:
+        oneOf:
+          - type: number
+          - $ref: "#"
+        description: Number or formula
+  aggregation:
+    type: object
+    required:
+      - kind
+    properties:
+      kind:
+        type: string
+        enum:
+          - sum
+          - min
+          - max
+          - median
+          - std
+          - var
+      axis:
+        type: integer
+    description: Numpy ndarray function

@@ -38,7 +38,7 @@ class CylinderBellFunnel(BaseOscillationInterface):
         )
         return cbf
 
-    def generate_timeseries_and_variations(self, channel=0) -> BaseOscillationInterface:
+    def generate_timeseries_and_variations(self, channel=0, **kwargs) -> BaseOscillationInterface:
         super().generate_timeseries_and_variations()
         if self.timeseries is not None and self.noise is not None:
             self.timeseries -= self.noise

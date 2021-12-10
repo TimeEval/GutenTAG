@@ -136,7 +136,8 @@ The generator comes with the following base oscillations in [./gutenTAG/base_osc
 - cylinder_bell_funnel
 - ecg
 - polynomial
-- random mode jump
+- random_mode_jump
+- formula
 
 Base oscillations can have an underlying trend.
 This trend can be any of the above base oscillations.
@@ -144,6 +145,79 @@ This trend can be any of the above base oscillations.
 Using the `variance` property, you can add noise to the base oscillation.
 The general kind of base oscillation is always the same for all channels of a time series.
 However, noise and other random parameters differ between channels.
+
+#### Using the `formula` Base Oscillation
+
+The `formula` base oscillation is a simple math engine that can perform primitive math operations on multiple already generated channels.
+
+##### Syntax
+
+**Formula Object**
+
+The `FormulaObj` is the base to every `formula`. It consists of three fields: `base`, `operation`, and `aggregation`.
+The `base` defines the first operand. It can either be a channel id (`int`) or another `FormulaObj`. The `base` can be the only field in a `FormulaObj` and then simply copies the channel with the right id (`base:int`).
+It can also have a field `operation` or `aggregation`. However, it cannot have both at the same time.
+
+```yaml
+# FormulaObj
+base: Union[int, FormulaObj]
+operation: Optional[Operation]
+aggregation: Optional[Aggregation]
+```
+
+**Operation**
+
+The `Operation` is the vectorized math operation that is performed on the `base`. It consists of two required fields: `kind`, and `operand`.
+The `kind` field is an enum that defines which math operator to perform. The `operand` field is the operand that is calculated to the before-defined `base`. The `operand` can be a scalar value or another `FormulaObj`.
+
+```yaml
+# Operation
+kind: Enum[+, -, *, /, **]
+operand: Union[float, FormulaObj]
+```
+
+**Aggregation**
+
+The alternative to the `Operation` is the `Aggregation` field. This field defines an aggregation operation on the `base`. Its result is either a scalar or an array. It consists of two fields: `kind`, and `axis`.
+The `kind` field defines the kind of aggregation performed on a numpy array. The optional `axis` field defines the axis of the array the aggregation is performed on. If no `axis` is defined, the aggregation will return a scalar. 
+
+```yaml
+# Aggregation
+kind: Enum[sum, min, max, median, std, var]
+axis: Optional[int]
+```
+
+**Example**
+
+The following formula:
+
+```python
+import numpy as np
+a = np.arange(10)
+b = np.ones(10)
+channels = [a, b]
+
+# formula
+(channels[0] + channels[0]) * channels[1].sum()
+```
+
+can be defined as the following `FormulaObj`:
+
+```yaml
+formula:
+  base:
+    base: 0           # (channels[0]
+    operation:
+      kind: "+"       # +
+      operand:
+        base: 0       # channels[0])
+  operation:
+    kind: "*"         # *
+    operand:
+      base: 1         # channels[1]
+      aggregation:
+        kind: "sum"   # .sum()
+```
 
 ### Anomalies
 
@@ -174,26 +248,15 @@ which combinations GutenTAG does not supported.
 - `x` = Combination allowed
 - `-` = Combination not allowed
 
-|                  | Sinus | Random Walk | CBF | ECG | Polynomial | Random Mode Jump |
-|:-----------------|:-----:|:-----------:|:---:|:---:|:----------:|:----------------:|
-| amplitude        |   x   |      x      |  x  |  x  |      -     |         -        |
-| extremum         |   x   |      x      |  x  |  x  |      x     |         -        |
-| frequency        |   x   |      -      |  -  |  x  |      -     |         -        |
-| mean             |   x   |      x      |  x  |  x  |      x     |         -        |
-| pattern          |   x   |      -      |  x  |  x  |      -     |         -        |
-| pattern_shift    |   x   |      -      |  -  |  x  |      -     |         -        |
-| platform         |   x   |      x      |  x  |  x  |      x     |         -        |
-| trend            |   x   |      x      |  x  |  x  |      x     |         -        |
-| variance         |   x   |      x      |  x  |  x  |      x     |         -        |
-| mode_correlation |   -   |      -      |  -  |  -  |      -     |         x        |
-
-## TODO
-
-### Features
-
-- [ ] trend anomaly bug
-
-### Future (nice to have)
-
-- [ ] noise as variance `Union[float, List[float]]` for each channel
-- [ ] nicer plot for multivariate time series
+|                  | Sinus | Random Walk | CBF | ECG | Polynomial | Random Mode Jump | Formula |
+|:-----------------|:-----:|:-----------:|:---:|:---:|:----------:|:----------------:|:-------:|
+| amplitude        |   x   |      x      |  x  |  x  |      -     |         -        |    -    |
+| extremum         |   x   |      x      |  x  |  x  |      x     |         -        |    x    |
+| frequency        |   x   |      -      |  -  |  x  |      -     |         -        |    -    |
+| mean             |   x   |      x      |  x  |  x  |      x     |         -        |    -    |
+| pattern          |   x   |      -      |  x  |  x  |      -     |         -        |    -    |
+| pattern_shift    |   x   |      -      |  -  |  x  |      -     |         -        |    -    |
+| platform         |   x   |      x      |  x  |  x  |      x     |         -        |    x    |
+| trend            |   x   |      x      |  x  |  x  |      x     |         -        |    x    |
+| variance         |   x   |      x      |  x  |  x  |      x     |         -        |    x    |
+| mode_correlation |   -   |      -      |  -  |  -  |      -     |         x        |    -    |
