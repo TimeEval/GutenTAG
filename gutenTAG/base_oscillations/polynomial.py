@@ -16,13 +16,10 @@ class Polynomial(BaseOscillationInterface):
     def generate_only_base(self,
                            length: Optional[int] = None,
                            polynomial: Optional[List[float]] = None,
-                           channels: Optional[int] = None,
                            *args, **kwargs) -> np.ndarray:
         length = length or self.length
         polynomial = polynomial or self.polynomial
-        channels = channels or self.channels
 
-        base_ts = np.polynomial.Polynomial(polynomial).linspace(length)[1].reshape(-1, 1)
-        base_ts = np.repeat(base_ts, repeats=channels, axis=1)
+        base_ts = np.polynomial.Polynomial(polynomial).linspace(length)[1]
 
         return base_ts

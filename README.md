@@ -81,35 +81,35 @@ To generate GutenTAG time series from Python, you have multiple options. Either 
 from gutenTAG import GutenTAG
 
 config = {
-   "timeseries": [
-      {
-         "name": "test",
-         "length": 100,
-         "channels": 1,
-         "base-oscillation": {"kind": "sinus"},
-         "anomalies": [
-            {"length": 5, "types": [{"kind": "mean"}]}
-         ]
-      }
-   ]
+    "timeseries": [
+        {
+            "name": "test",
+            "length": 100,
+            "base-oscillations": [
+               {"kind": "sinus"}
+            ],
+            "anomalies": [
+                {"length": 5, "types": [{"kind": "mean"}]}
+            ]
+        }
+    ]
 }
-generators, overview = GutenTAG.from_dict(config, plot=True)
+gutentag = GutenTAG.from_dict(config, plot=True)
 
 # call generate() to create the datasets (in-memory)
-for g in generators:
-   g.generate()
+gutentag.generate()
 
 # we only defined a single time series
-assert len(generators) == 1
-gen = generators[0]
+assert len(gutentag.timeseries) == 1
+ts = gutentag.timeseries[0]
 
 # the data points are stored at
-gen.timeseries
+ts.timeseries
 # the labels are stored at
-gen.labels
+ts.labels
 
 # you can plot the results via
-gen.plot()
+ts.plot()
 ```
 
 Or you call the class and set its parameters yourself. However, this is not recommended!

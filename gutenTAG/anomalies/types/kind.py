@@ -52,19 +52,8 @@ class AnomalyKind(Enum):
         elif self == AnomalyKind.Trend:
             anomaly = AnomalyTrend(AnomalyTrend.get_parameter_class()(**parameters))
         elif self == AnomalyKind.ModeCorrelation:
-            anomaly = AnomalyModeCorrelation(AnomalyModeCorrelation.get_parameter_class()(**parameters))
+            anomaly = AnomalyModeCorrelation(AnomalyModeCorrelation.get_parameter_class()())
         else:
             raise ValueError(f"AnomalyKind {self.value} is not supported, yet! Guten Tag!")
 
         return anomaly
-
-    @staticmethod
-    def validate(anomalies: List[AnomalyKind]):
-        forbidden_pairs = [
-            (AnomalyKind.Platform, AnomalyKind.Extremum),
-            (AnomalyKind.Platform, AnomalyKind.Frequency),
-            (AnomalyKind.Platform, AnomalyKind.Pattern),
-            (AnomalyKind.Platform, AnomalyKind.Mean),
-            (AnomalyKind.Platform, AnomalyKind.PatternShift),
-        ]
-        raise ValueError("The combination of anomaly options for this anomaly is not supported. Guten Tag!")

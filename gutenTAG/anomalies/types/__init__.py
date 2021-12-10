@@ -19,7 +19,7 @@ class AnomalyProtocol:
     start: int
     end: int
     channel: int
-    base_oscillation: 'BaseOscillationInterface'
+    base_oscillation: 'BaseOscillationInterface'  # type: ignore # otherwise we have a circular import
     base_oscillation_kind: BaseOscillationKind
     labels: LabelRange
     subsequences: List[np.ndarray] = field(default_factory=lambda: [])

@@ -1,0 +1,13 @@
+timeseries:
+  - name: rw
+    length: 1000
+    base-oscillations:
+      - kind: random_walk
+    anomalies:
+      - position: middle
+        length: 20
+        channel: 0
+        kinds:
+          - kind: variance
+            parameters:
+              variance: 0.5

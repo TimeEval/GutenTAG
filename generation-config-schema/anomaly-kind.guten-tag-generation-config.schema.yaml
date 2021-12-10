@@ -72,9 +72,6 @@ definitions:
         description: Offset to shift the time series on the y axis within this anomaly region.
   pattern-params:
     type: object
-    required:
-      - sinusoid_k
-      - cbf_pattern_factor
     properties:
       sinusoid_k:
         type: number
@@ -86,6 +83,11 @@ definitions:
         description: |
           Only used for base oscillations of type 'cylinder_bell_funnel'.
           Pattern variance factor for change in CBF wave.
+    anyOf:
+      - required:
+        - sinusoid_k
+      - required:
+        - cbf_pattern_factor
   pattern-shift-params:
     type: object
     required:

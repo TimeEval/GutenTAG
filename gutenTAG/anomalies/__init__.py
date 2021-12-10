@@ -40,7 +40,7 @@ class Anomaly:
         self.anomaly_kinds.append(anomaly_kind)
         return self
 
-    def generate(self, base_oscillation: 'BaseOscillationInterface', timeseries_periods: Optional[int], base_oscillation_kind: BaseOscillationKind, positions: List[Tuple[int, int]]) -> AnomalyProtocol:
+    def generate(self, base_oscillation: 'BaseOscillationInterface', timeseries_periods: Optional[int], base_oscillation_kind: BaseOscillationKind, positions: List[Tuple[int, int]]) -> AnomalyProtocol:  # type: ignore # otherwise we have a circular import
         if self.exact_position is None:
             start, end = self._get_position_range(base_oscillation.length, timeseries_periods)
             while end > base_oscillation.length:

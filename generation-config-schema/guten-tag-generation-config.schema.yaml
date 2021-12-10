@@ -17,8 +17,6 @@ properties:
       type: object
       required:
         - length
-        - channels
-        - base-oscillation
         - anomalies
       properties:
         name:
@@ -45,3 +43,9 @@ properties:
           description: List of anomalies.
           items:
             $ref: anomaly.guten-tag-generation-config.schema.yaml
+      oneOf:
+        - required:
+            - base-oscillation
+            - channels
+        - required:
+            - base-oscillations

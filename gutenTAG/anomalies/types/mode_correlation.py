@@ -20,7 +20,7 @@ class AnomalyModeCorrelation(BaseAnomaly):
         base = anomaly_protocol.base_oscillation
         if anomaly_protocol.base_oscillation_kind == BaseOscillationKind.RandomModeJump:
             timeseries = base.timeseries
-            subsequence = timeseries[anomaly_protocol.start:anomaly_protocol.end, anomaly_protocol.channel] * -1
+            subsequence = timeseries[anomaly_protocol.start:anomaly_protocol.end] * -1
             anomaly_protocol.subsequences.append(subsequence)
         else:
             logging.warning("A `mode_correlation` anomaly can be injected in only a `random_mode_jump` base oscillation!")

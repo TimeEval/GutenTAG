@@ -22,31 +22,29 @@ class CylinderBellFunnel(BaseOscillationInterface):
                            variance: Optional[float] = None,
                            amplitude: Optional[float] = None,
                            variance_pattern_length: Optional[int] = None,
-                           channels: Optional[int] = None,
                            *args, **kwargs) -> np.ndarray:
         length = length or self.length
         variance = variance or self.variance
         amplitude = amplitude or self.amplitude
         variance_pattern_length = variance_pattern_length or self.variance_pattern_length
-        channels = channels or self.channels
 
-        ts = []
-        for channel in range(channels):
-            cbf = generate_pattern_data(
-                length=length,
-                avg_pattern_length=self.avg_pattern_length,
-                avg_amplitude=amplitude,
-                default_variance=variance,
-                variance_pattern_length=variance_pattern_length,
-                variance_amplitude=self.variance_amplitude
-            )
-            ts.append(cbf)
-        return np.column_stack(ts)
+        cbf = generate_pattern_data(
+            length=length,
+            avg_pattern_length=self.avg_pattern_length,
+            avg_amplitude=amplitude,
+            default_variance=variance,
+            variance_pattern_length=variance_pattern_length,
+            variance_amplitude=self.variance_amplitude
+        )
+        return cbf
 
-    def generate(self, with_anomalies: bool = True) -> Tuple[np.ndarray, Optional[np.ndarray]]:
-        super().generate(with_anomalies)
-        self.timeseries -= self.noise
-        return self.timeseries, self.labels
+    def generate_timeseries_and_variations(self, channel=0) -> BaseOscillationInterface:
+        super().generate_timeseries_and_variations()
+        if self.timeseries is not None and self.noise is not None:
+            self.timeseries -= self.noise
+        else:
+            raise AssertionError("`timeseries` and `noise` are None. Please, generate `timeseries` and `noise` before calling this method!")
+        return self
 
 
 # Taken from https://github.com/KDD-OpenSource/data-generation/blob/master/generation/cbf.py

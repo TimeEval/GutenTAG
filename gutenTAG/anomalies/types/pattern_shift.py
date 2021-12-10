@@ -22,7 +22,7 @@ class AnomalyPatternShift(BaseAnomaly):
 
             base = anomaly_protocol.base_oscillation
 
-            subsequence = base.timeseries[anomaly_protocol.start:anomaly_protocol.end, anomaly_protocol.channel]
+            subsequence = base.timeseries[anomaly_protocol.start:anomaly_protocol.end]
             transition_start = np.interp(np.linspace(0, self.transition_window, self.transition_window + self.shift_by),
                                          np.arange(self.transition_window), subsequence[:self.transition_window])
             shifted = subsequence[self.transition_window:-self.transition_window]

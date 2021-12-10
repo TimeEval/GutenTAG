@@ -1,0 +1,13 @@
+timeseries:
+  - name: sinusoid
+    length: 1000
+    base-oscillations:
+      - kind: sine
+    anomalies:
+      - position: end
+        length: 40
+        channel: 0
+        kinds:
+          - kind: pattern
+            parameters:
+              sinusoid_k: 10

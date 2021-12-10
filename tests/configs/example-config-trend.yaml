@@ -1,0 +1,16 @@
+timeseries:
+  - name: trend
+    length: 1000
+    base-oscillations:
+      - kind: random_walk
+        trend:
+          kind: polynomial
+          polynomial: [1,2,3]
+    anomalies:
+      - position: end
+        length: 40
+        channel: 0
+        kinds:
+          - kind: platform
+            parameters:
+              value: 0

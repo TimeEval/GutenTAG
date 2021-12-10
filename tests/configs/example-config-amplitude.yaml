@@ -1,0 +1,13 @@
+timeseries:
+  - name: amplitude
+    length: 1000
+    base-oscillations:
+      - kind: ecg
+    anomalies:
+      - position: end
+        length: 40
+        channel: 0
+        kinds:
+          - kind: amplitude
+            parameters:
+              amplitude_factor: 2.0

@@ -6,6 +6,6 @@ from gutenTAG.generator import Overview
 
 
 class BaseAddOn:
-    def process(self, overview: Overview, generators: List[GutenTAG], args: argparse.Namespace) -> Tuple[Overview, List[GutenTAG]]:
+    def process(self, overview: Overview, gutenTAG: GutenTAG, args: argparse.Namespace) -> Tuple[Overview, GutenTAG]:
         """Gets called before `process_generators`"""
-        return overview, generators
+        return overview, gutenTAG

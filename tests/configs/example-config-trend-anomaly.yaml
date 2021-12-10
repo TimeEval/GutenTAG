@@ -1,0 +1,14 @@
+timeseries:
+  - name: trend
+    length: 1000
+    base-oscillations:
+      - kind: random_walk
+    anomalies:
+      - position: end
+        length: 40
+        channel: 0
+        kinds:
+          - kind: trend
+            parameters:
+              kind: sine
+              length: 40
