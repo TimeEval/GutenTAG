@@ -7,6 +7,7 @@ from .random_walk import RandomWalk
 from .cylinder_bell_funnel import CylinderBellFunnel
 from .ecg import ECG
 from .random_mode_jump import RandomModeJump
+from .formula import Formula  # type: ignore  # mypy ends up in recursion
 
 
 def get_or_error(name: str, value: Optional[Any]) -> Any:
@@ -22,7 +23,8 @@ class BaseOscillation:
         "cylinder_bell_funnel": CylinderBellFunnel,
         "ecg": ECG,
         "polynomial": Polynomial,
-        "random_mode_jump": RandomModeJump
+        "random_mode_jump": RandomModeJump,
+        "formula": Formula
     }
 
     @staticmethod

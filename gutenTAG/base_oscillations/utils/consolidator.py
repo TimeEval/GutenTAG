@@ -23,7 +23,7 @@ class Consolidator:
     def generate(self) -> Tuple[np.ndarray, np.ndarray]:
         channels: List[np.ndarray] = []
         for c, bo in enumerate(self.consolidated_channels):
-            bo.generate_timeseries_and_variations(c)  # type: ignore  # timeseries gets set in generate_timeseries_and_variations()
+            bo.generate_timeseries_and_variations(c, prev_channels=channels)  # type: ignore  # timeseries gets set in generate_timeseries_and_variations()
             if bo.timeseries is not None:
                 channels.append(bo.timeseries)
         self.timeseries = self._stack_channels(channels)

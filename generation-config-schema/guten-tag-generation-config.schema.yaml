@@ -38,6 +38,11 @@ properties:
         base-oscillation:
           description: Base oscillation used for (all channels of) this time series.
           $ref: oscillation.guten-tag-generation-config.schema.yaml
+        base-oscillations:
+          description: List of base oscillations (each element is one channel).
+          type: array
+          items:
+            $ref: oscillation.guten-tag-generation-config.schema.yaml
         anomalies:
           type: array
           description: List of anomalies.

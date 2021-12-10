@@ -16,6 +16,7 @@ default_values = {
         "channel_diff": 0.0,
         "channel_offset": 1.0,
         "random_seed": None,
+        "formula": None
     },
     "anomalies": {
         "length": 200,

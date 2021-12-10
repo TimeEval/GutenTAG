@@ -8,3 +8,4 @@ class BaseOscillationKind(Enum):
     ECG = "ecg"
     Polynomial = "polynomial"
     RandomModeJump = "random_mode_jump"
+    Formula = "formula"
