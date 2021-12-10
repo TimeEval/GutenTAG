@@ -1,0 +1,13 @@
+timeseries:
+  - name: cbf
+    length: 1000
+    base-oscillations:
+      - kind: cylinder_bell_funnel
+    anomalies:
+      - position: middle
+        length: 20
+        channel: 0
+        kinds:
+          - kind: platform
+            parameters:
+              value: 0

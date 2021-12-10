@@ -1,0 +1,14 @@
+timeseries:
+  - name: polynomial
+    length: 1000
+    base-oscillations:
+      - kind: polynomial
+        polynomial: [1, 2, 3]
+    anomalies:
+      - position: middle
+        length: 20
+        channel: 0
+        kinds:
+          - kind: platform
+            parameters:
+              value: 0

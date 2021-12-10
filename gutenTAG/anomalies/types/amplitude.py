@@ -40,6 +40,6 @@ class AnomalyAmplitude(BaseAnomaly):
         else:
             amplitude_bell = MinMaxScaler(feature_range=(1.0, self.amplitude_factor)).fit_transform(amplitude_bell.reshape(-1, 1)).reshape(-1)
 
-        subsequence = anomaly_protocol.base_oscillation.timeseries[anomaly_protocol.start:anomaly_protocol.end, anomaly_protocol.channel] * amplitude_bell
+        subsequence = anomaly_protocol.base_oscillation.timeseries[anomaly_protocol.start:anomaly_protocol.end] * amplitude_bell
         anomaly_protocol.subsequences.append(subsequence)
         return anomaly_protocol

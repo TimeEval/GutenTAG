@@ -19,11 +19,11 @@ class AnomalyVariance(BaseAnomaly):
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
         base = anomaly_protocol.base_oscillation
         if anomaly_protocol.base_oscillation_kind == BaseOscillationKind.CylinderBellFunnel:
-            subsequence = base.generate_only_base(variance=self.variance, channels=1)[anomaly_protocol.start:anomaly_protocol.end, anomaly_protocol.channel]
+            subsequence = base.generate_only_base(variance=self.variance)[anomaly_protocol.start:anomaly_protocol.end]
             anomaly_protocol.subsequences.append(subsequence)
         else:
             length = anomaly_protocol.end - anomaly_protocol.start
-            base.noise[anomaly_protocol.start:anomaly_protocol.end, anomaly_protocol.channel] = base.generate_noise(self.variance * base.amplitude, length, channels=1).reshape(-1)
+            base.noise[anomaly_protocol.start:anomaly_protocol.end] = base.generate_noise(self.variance * base.amplitude, length)
         return anomaly_protocol
 
     @staticmethod

@@ -1,0 +1,14 @@
+timeseries:
+  - name: test-ts
+    channels: 1
+    length: 1000
+    base-oscillation:
+      kind: sine
+      frequency: 5
+    anomalies:
+      - position: beginning
+        length: 20
+        kinds:
+          - kind: frequency
+            parameters:
+              frequency_factor: 2.0

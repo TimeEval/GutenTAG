@@ -70,3 +70,6 @@ properties:
   channel_offset:
     type: float
     description: Value mean offset from 0 in both directions for the random mode jumps.
+  random_seed:
+    type: number
+    description: Random seed that can be used for different channels to get same base (random_mode_jump)

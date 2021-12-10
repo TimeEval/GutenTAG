@@ -10,7 +10,7 @@ from . import BaseAnomaly, AnomalyProtocol
 
 @dataclass
 class AnomalyTrendParameters:
-    trend: 'BaseOscillationInterface'
+    trend: 'BaseOscillationInterface'  # type: ignore # otherwise we have a circular import
 
 
 class AnomalyTrend(BaseAnomaly):
@@ -31,13 +31,13 @@ class AnomalyTrend(BaseAnomaly):
         amplitude_bell = MinMaxScaler(feature_range=(0, 1)).fit_transform(amplitude_bell.reshape(-1, 1)).reshape(-1)
 
         self.trend.length = length
-        timeseries, _ = self.trend.generate()
-        timeseries = timeseries[:, anomaly_protocol.channel]  # use only one channel
+        self.trend.generate_timeseries_and_variations()
+        timeseries = self.trend.timeseries
 
         timeseries *= amplitude_bell
         end_point = timeseries[-1]
 
-        anomaly_protocol.base_oscillation.trend_series[anomaly_protocol.start:anomaly_protocol.end, anomaly_protocol.channel] += timeseries
-        anomaly_protocol.base_oscillation.trend_series[anomaly_protocol.end:, anomaly_protocol.channel] += end_point
+        anomaly_protocol.base_oscillation.trend_series[anomaly_protocol.start:anomaly_protocol.end] += timeseries
+        anomaly_protocol.base_oscillation.trend_series[anomaly_protocol.end:] += end_point
 
         return anomaly_protocol

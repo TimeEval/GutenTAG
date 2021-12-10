@@ -24,13 +24,13 @@ class AnomalyPattern(BaseAnomaly):
                 return scaled
 
             sine = anomaly_protocol.base_oscillation
-            subsequence = sinusoid(sine.timeseries[anomaly_protocol.start:anomaly_protocol.end, anomaly_protocol.channel], self.sinusoid_k, sine.amplitude)
+            subsequence = sinusoid(sine.timeseries[anomaly_protocol.start:anomaly_protocol.end], self.sinusoid_k, sine.amplitude)
             anomaly_protocol.subsequences.append(subsequence)
         elif anomaly_protocol.base_oscillation_kind == BaseOscillationKind.RandomWalk:
             self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind.name)
         elif anomaly_protocol.base_oscillation_kind == BaseOscillationKind.CylinderBellFunnel:
             cbf = anomaly_protocol.base_oscillation
-            subsequence = cbf.generate_only_base(variance_pattern_length=cbf.variance_pattern_length * self.cbf_pattern_factor)[anomaly_protocol.start:anomaly_protocol.end, anomaly_protocol.channel]
+            subsequence = cbf.generate_only_base(variance_pattern_length=cbf.variance_pattern_length * self.cbf_pattern_factor)[anomaly_protocol.start:anomaly_protocol.end]
             anomaly_protocol.subsequences.append(subsequence)
         elif anomaly_protocol.base_oscillation_kind == BaseOscillationKind.ECG:
             ecg = anomaly_protocol.base_oscillation
@@ -38,13 +38,13 @@ class AnomalyPattern(BaseAnomaly):
             window = int(length * 0.05)
 
             for slide in range(-3, 3):
-                start = ecg.timeseries[anomaly_protocol.start+slide:anomaly_protocol.start+window, anomaly_protocol.channel]
+                start = ecg.timeseries[anomaly_protocol.start+slide:anomaly_protocol.start+window]
                 if np.argmax(start) == 0:
                     break
             else:
                 slide = 0
 
-            subsequence = ecg.timeseries[anomaly_protocol.start + slide:anomaly_protocol.end + slide, anomaly_protocol.channel][::-1]
+            subsequence = ecg.timeseries[anomaly_protocol.start + slide:anomaly_protocol.end + slide][::-1]
             anomaly_protocol.subsequences.append(subsequence)
         else:
             self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind.name)

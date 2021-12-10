@@ -1,0 +1,14 @@
+timeseries:
+  - name: extremum
+    length: 1000
+    base-oscillations:
+      - kind: sine
+    anomalies:
+      - position: beginning
+        length: 1
+        channel: 0
+        kinds:
+          - kind: extremum
+            parameters:
+              min: true
+              local: false

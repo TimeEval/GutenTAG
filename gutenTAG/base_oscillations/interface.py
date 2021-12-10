@@ -1,85 +1,51 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import List, Optional, Tuple
+from typing import Optional
 import numpy as np
 
-from ..anomalies import Anomaly, LabelRange, AnomalyProtocol
 from ..utils.types import BaseOscillationKind
+from ..utils.default_values import default_values
 
 
 class BaseOscillationInterface(ABC):
     def __init__(self, *args, **kwargs):
-        self.name = kwargs.get("name", None)
-        self.length = kwargs.get("length", 10000)
-        self.frequency = kwargs.get("frequency", 10.0)
-        self.amplitude = kwargs.get("amplitude", 1.0)
-        self.channels = kwargs.get("channels", 1)
-        self.variance = kwargs.get("variance", 0.0)
-        self.avg_pattern_length = kwargs.get("avg-pattern-length", 10)
-        self.variance_pattern_length = kwargs.get("variance-pattern-length", 0.0)
-        self.variance_amplitude = kwargs.get("variance-amplitude", 2.0)
-        self.freq_mod = kwargs.get("freq-mod", 0.0)
-        self.polynomial = kwargs.get("polynomial", [1, 1])
-        self.trend: Optional[BaseOscillationInterface] = kwargs.get("trend", None)
-        self.offset = kwargs.get("offset", 0.0)
-        self.smoothing = kwargs.get("smoothing", 0.01)
-        self.channel_diff = kwargs.get("channel_diff", 0.0)
+        self.length = kwargs.get("length", default_values["base_oscillations"]["length"])
+        self.frequency = kwargs.get("frequency", default_values["base_oscillations"]["frequency"])
+        self.amplitude = kwargs.get("amplitude", default_values["base_oscillations"]["amplitude"])
+        self.variance = kwargs.get("variance", default_values["base_oscillations"]["variance"])
+        self.avg_pattern_length = kwargs.get("avg-pattern-length", default_values["base_oscillations"]["avg-pattern-length"])
+        self.variance_pattern_length = kwargs.get("variance-pattern-length", default_values["base_oscillations"]["variance-pattern-length"])
+        self.variance_amplitude = kwargs.get("variance-amplitude", default_values["base_oscillations"]["variance-amplitude"])
+        self.freq_mod = kwargs.get("freq-mod", default_values["base_oscillations"]["freq-mod"])
+        self.polynomial = kwargs.get("polynomial", default_values["base_oscillations"]["polynomial"])
+        self.trend: Optional[BaseOscillationInterface] = kwargs.get("trend", default_values["base_oscillations"]["trend"])
+        self.offset = kwargs.get("offset", default_values["base_oscillations"]["offset"])
+        self.smoothing = kwargs.get("smoothing", default_values["base_oscillations"]["smoothing"])
+        self.channel_diff = kwargs.get("channel_diff", default_values["base_oscillations"]["channel_diff"])
         self.channel_offset = kwargs.get("channel_offset", self.amplitude)
+        self.random_seed = kwargs.get("random_seed", default_values["base_oscillations"]["random_seed"])
 
-        self.anomalies: List[Anomaly] = []
         self.timeseries: Optional[np.ndarray] = None
-        self.labels: Optional[np.ndarray] = None
         self.noise: Optional[np.ndarray] = None
         self.trend_series: Optional[np.ndarray] = None
 
-    def inject_anomalies(self, anomalies: List[Anomaly]) -> BaseOscillationInterface:
-        self.anomalies.extend(anomalies)
-        if issubclass(self.__class__, BaseOscillationInterface):
-            return self
-        raise NotImplementedError("Base class BaseOscillationInterface should not call 'inject_anomaly'. "
-                                  "This method is implemented for its subclasses. Guten Tag!")
-
-    def generate_noise(self, variance: float, length: int, channels: int) -> np.ndarray:
-        return np.random.normal(0, variance, (length, channels))
+    def generate_noise(self, variance: float, length: int) -> np.ndarray:
+        return np.random.normal(0, variance, length)
 
     def _generate_trend(self) -> np.ndarray:
-        trend_series = np.zeros((self.length, self.channels))
+        trend_series = np.zeros(self.length)
         if self.trend:
             self.trend.length = self.length
-            trend_series, _ = self.trend.generate(with_anomalies=False)
+            self.trend.generate_timeseries_and_variations()
+            if (timeseries := self.trend.timeseries) is not None:
+                trend_series = timeseries
         return trend_series
 
-    def _add_label_ranges_to_labels(self, label_ranges: List[LabelRange]):
-        for label_range in label_ranges:
-            self.labels[label_range.start:label_range.start + label_range.length] = 1
-
-    def generate(self, with_anomalies: bool = True) -> Tuple[np.ndarray, Optional[np.ndarray]]:
-        self.timeseries = self.generate_only_base()
+    def generate_timeseries_and_variations(self, channel: int = 0):
+        self.timeseries = self.generate_only_base(channel=channel)
         self.trend_series = self._generate_trend()
-        self.noise = self.generate_noise(self.variance * self.amplitude, self.length, self.channels)
-        self.labels = np.zeros(self.length, dtype=np.int8)
-
-        if with_anomalies:
-            positions: List[Tuple[int, int]] = []
-            protocols: List[Tuple[AnomalyProtocol, int]] = []
-            label_ranges: List[LabelRange] = []
-            for anomaly in self.anomalies:
-                anomaly_protocol = anomaly.generate(self, self.get_timeseries_periods(), self.get_base_oscillation_kind(),
-                                                    positions)
-                positions.append((anomaly_protocol.start, anomaly_protocol.end))
-                protocols.append((anomaly_protocol, anomaly.channel))
-
-            for protocol, channel in protocols:
-                if len(protocol.subsequences) > 0:
-                    subsequence = np.vstack(protocol.subsequences).sum(axis=0)
-                    self.timeseries[protocol.start:protocol.end, channel] = subsequence
-                label_ranges.append(protocol.labels)
-
-            self._add_label_ranges_to_labels(label_ranges)
-
-        self.timeseries += self.noise + self.trend_series + self.offset
-        return self.timeseries, self.labels
+        self.noise = self.generate_noise(self.variance * self.amplitude, self.length)
 
     @abstractmethod
     def get_timeseries_periods(self) -> Optional[int]:

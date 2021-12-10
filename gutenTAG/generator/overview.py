@@ -1,5 +1,5 @@
 import os
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Any
 import yaml
 import git
 
@@ -23,8 +23,11 @@ class Overview:
     def add_dataset(self, config: Dict):
         self.datasets.append(config)
 
+    def add_datasets(self, configs: List[Dict]):
+        self.datasets.extend(configs)
+
     def save_to_output_dir(self, path: os.PathLike):
-        overview = dict()
+        overview: Dict[str, Any] = dict()
         overview["generated-timeseries"] = []
         for i, dataset in enumerate(self.datasets):
             dataset["generation-id"] = dataset.get("base-oscillation", {}).get("title", i)

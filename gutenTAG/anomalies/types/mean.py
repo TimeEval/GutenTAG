@@ -15,7 +15,7 @@ class AnomalyMean(BaseAnomaly):
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
         base = anomaly_protocol.base_oscillation
         ts: np.ndarray = base.timeseries
-        subsequence = ts[anomaly_protocol.start:anomaly_protocol.end, anomaly_protocol.channel] + self.offset
+        subsequence = ts[anomaly_protocol.start:anomaly_protocol.end] + self.offset
         anomaly_protocol.subsequences.append(subsequence)
         return anomaly_protocol
 

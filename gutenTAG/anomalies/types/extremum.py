@@ -34,7 +34,7 @@ class AnomalyExtremum(BaseAnomaly):
             anomaly_protocol.end = anomaly_protocol.start + 1
             anomaly_protocol.labels.length = 1
 
-        base: np.ndarray = anomaly_protocol.base_oscillation.timeseries[:, anomaly_protocol.channel]
+        base: np.ndarray = anomaly_protocol.base_oscillation.timeseries
         if self.local:
             context_start = max(anomaly_protocol.start - self.context_window, 0)
             context_end = min(anomaly_protocol.end + self.context_window, base.shape[0])
