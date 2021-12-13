@@ -11,11 +11,11 @@ properties:
     type: string
     enum:
       - sine
-      - random_walk
+      - random-walk
       - ecg
       - polynomial
-      - cylinder_bell_funnel
-      - random_mode_jump
+      - cylinder-bell-funnel
+      - random-mode-jump
       - formula
     description: Kind of the base oscillation.
   trend:
@@ -65,13 +65,13 @@ properties:
     minItems: 1
     items:
       type: number
-  channel_diff:
+  channel-diff:
     type: number
     description: Value difference of absolute random mode values between channels.
-  channel_offset:
+  channel-offset:
     type: number
     description: Value mean offset from 0 in both directions for the random mode jumps.
-  random_seed:
+  random-seed:
     type: number
     description: Random seed that can be used for different channels to get same base (random_mode_jump)
   formula:

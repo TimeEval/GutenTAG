@@ -15,15 +15,15 @@ base:
     amplitude: 1.0
     variance: 0.05
 
-random_mode_jump:
+random-mode-jump:
   - &rmj0
     <<: *base-osc
-    kind: "random_mode_jump"
+    kind: "random-mode-jump"
 
 anomaly_kinds:
   - &base-mode-correlation
     kinds:
-      - kind: "mode_correlation"
+      - kind: "mode-correlation"
 
   - &short-mode-correlation
     <<: *base-mode-correlation
@@ -40,7 +40,7 @@ anomaly_kinds:
 timeseries_templates:
   - &rmj-short-mode-correlation-on-different-number-of-channels
     <<: *base-ts
-    base-oscillation:
+    base_oscillation:
       *rmj0
     anomalies:
       - position: beginning
@@ -48,7 +48,7 @@ timeseries_templates:
 
   - &rmj-medium-mode-correlation-on-different-number-of-channels
     <<: *base-ts
-    base-oscillation:
+    base_oscillation:
       *rmj0
     anomalies:
       - position: beginning
@@ -56,7 +56,7 @@ timeseries_templates:
 
   - &rmj-large-mode-correlation-on-different-number-of-channels
     <<: *base-ts
-    base-oscillation:
+    base_oscillation:
       *rmj0
     anomalies:
       - position: beginning
@@ -105,7 +105,7 @@ timeseries:
 
   - name: rmj-2-short-anomalies-on-2-same-channel
     <<: *base-ts
-    base-oscillation:
+    base_oscillation:
       *rmj0
     anomalies:
       - position: beginning
@@ -115,7 +115,7 @@ timeseries:
 
   - name: rmj-2-short-anomalies-on-2-different-channel
     <<: *base-ts
-    base-oscillation:
+    base_oscillation:
       *rmj0
     anomalies:
       - position: beginning
@@ -128,7 +128,7 @@ timeseries:
   - name: rmj-3-short-anomalies-on-3-same-channel
     <<: *base-ts
     channels: 3
-    base-oscillation:
+    base_oscillation:
       *rmj0
     anomalies:
       - position: beginning
@@ -141,7 +141,7 @@ timeseries:
   - name: rmj-3-short-anomalies-on-3-different-channel
     <<: *base-ts
     channels: 3
-    base-oscillation:
+    base_oscillation:
       *rmj0
     anomalies:
       - position: beginning

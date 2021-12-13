@@ -6,26 +6,27 @@ import numpy as np
 
 from ..utils.types import BaseOscillationKind
 from ..utils.default_values import default_values
+from ..utils.global_variables import PARAMETERS, BASE_OSCILLATIONS
 
 
 class BaseOscillationInterface(ABC):
     def __init__(self, *args, **kwargs):
-        self.length = kwargs.get("length", default_values["base_oscillations"]["length"])
-        self.frequency = kwargs.get("frequency", default_values["base_oscillations"]["frequency"])
-        self.amplitude = kwargs.get("amplitude", default_values["base_oscillations"]["amplitude"])
-        self.variance = kwargs.get("variance", default_values["base_oscillations"]["variance"])
-        self.avg_pattern_length = kwargs.get("avg-pattern-length", default_values["base_oscillations"]["avg-pattern-length"])
-        self.variance_pattern_length = kwargs.get("variance-pattern-length", default_values["base_oscillations"]["variance-pattern-length"])
-        self.variance_amplitude = kwargs.get("variance-amplitude", default_values["base_oscillations"]["variance-amplitude"])
-        self.freq_mod = kwargs.get("freq-mod", default_values["base_oscillations"]["freq-mod"])
-        self.polynomial = kwargs.get("polynomial", default_values["base_oscillations"]["polynomial"])
-        self.trend: Optional[BaseOscillationInterface] = kwargs.get("trend", default_values["base_oscillations"]["trend"])
-        self.offset = kwargs.get("offset", default_values["base_oscillations"]["offset"])
-        self.smoothing = kwargs.get("smoothing", default_values["base_oscillations"]["smoothing"])
-        self.channel_diff = kwargs.get("channel_diff", default_values["base_oscillations"]["channel_diff"])
-        self.channel_offset = kwargs.get("channel_offset", self.amplitude)
-        self.random_seed = kwargs.get("random_seed", default_values["base_oscillations"]["random_seed"])
-        self.formula = kwargs.get("formula", default_values["base_oscillations"]["formula"])
+        self.length = kwargs.get(PARAMETERS.LENGTH, default_values[BASE_OSCILLATIONS][PARAMETERS.LENGTH])
+        self.frequency = kwargs.get(PARAMETERS.FREQUENCY, default_values[BASE_OSCILLATIONS][PARAMETERS.FREQUENCY])
+        self.amplitude = kwargs.get(PARAMETERS.AMPLITUDE, default_values[BASE_OSCILLATIONS][PARAMETERS.AMPLITUDE])
+        self.variance = kwargs.get(PARAMETERS.VARIANCE, default_values[BASE_OSCILLATIONS][PARAMETERS.VARIANCE])
+        self.avg_pattern_length = kwargs.get(PARAMETERS.AVG_PATTERN_LENGTH, default_values[BASE_OSCILLATIONS][PARAMETERS.AVG_PATTERN_LENGTH])
+        self.variance_pattern_length = kwargs.get(PARAMETERS.VARIANCE_PATTERN_LENGTH, default_values[BASE_OSCILLATIONS][PARAMETERS.VARIANCE_PATTERN_LENGTH])
+        self.variance_amplitude = kwargs.get(PARAMETERS.VARIANCE_AMPLITUDE, default_values[BASE_OSCILLATIONS][PARAMETERS.VARIANCE_AMPLITUDE])
+        self.freq_mod = kwargs.get(PARAMETERS.FREQ_MOD, default_values[BASE_OSCILLATIONS][PARAMETERS.FREQ_MOD])
+        self.polynomial = kwargs.get(PARAMETERS.POLYNOMIAL, default_values[BASE_OSCILLATIONS][PARAMETERS.POLYNOMIAL])
+        self.trend: Optional[BaseOscillationInterface] = kwargs.get(PARAMETERS.TREND, default_values[BASE_OSCILLATIONS][PARAMETERS.TREND])
+        self.offset = kwargs.get(PARAMETERS.OFFSET, default_values[BASE_OSCILLATIONS][PARAMETERS.OFFSET])
+        self.smoothing = kwargs.get(PARAMETERS.SMOOTHING, default_values[BASE_OSCILLATIONS][PARAMETERS.SMOOTHING])
+        self.channel_diff = kwargs.get(PARAMETERS.CHANNEL_DIFF, default_values[BASE_OSCILLATIONS][PARAMETERS.CHANNEL_DIFF])
+        self.channel_offset = kwargs.get(PARAMETERS.CHANNEL_OFFSET, self.amplitude)
+        self.random_seed = kwargs.get(PARAMETERS.RANDOM_SEED, default_values[BASE_OSCILLATIONS][PARAMETERS.RANDOM_SEED])
+        self.formula = kwargs.get(PARAMETERS.FORMULA, default_values[BASE_OSCILLATIONS][PARAMETERS.FORMULA])
 
         self.timeseries: Optional[np.ndarray] = None
         self.noise: Optional[np.ndarray] = None

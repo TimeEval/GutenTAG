@@ -2,7 +2,7 @@ timeseries:
   - name: trend
     length: 1000
     base-oscillations:
-      - kind: random_walk
+      - kind: random-walk
     anomalies:
       - position: end
         length: 40
