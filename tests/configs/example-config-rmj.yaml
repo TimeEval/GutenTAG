@@ -2,15 +2,15 @@ timeseries:
   - name: rmj
     length: 1000
     base-oscillations:
-      - kind: random_mode_jump
+      - kind: random-mode-jump
         frequency: 50
-        random_seed: 92
-      - kind: random_mode_jump
+        random-seed: 92
+      - kind: random-mode-jump
         frequency: 50
-        random_seed: 92
+        random-seed: 92
     anomalies:
       - position: middle
         length: 20
         channel: 0
         kinds:
-          - kind: mode_correlation
+          - kind: mode-correlation

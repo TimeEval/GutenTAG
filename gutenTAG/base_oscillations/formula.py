@@ -9,6 +9,14 @@ from .interface import BaseOscillationInterface
 from ..utils.types import BaseOscillationKind
 
 
+BASE = "base"
+OPERATION = "operation"
+OPERAND = "operand"
+AGGREGATION = "aggregation"
+KIND = "kind"
+AXIS = "axis"
+
+
 class Formula(BaseOscillationInterface):
     def get_timeseries_periods(self) -> Optional[int]:
         return None
@@ -62,8 +70,8 @@ class Operation(NamedTuple):
 
     @staticmethod
     def from_dict(d: Dict, prev_channels: List[np.ndarray]) -> Operation:
-        kind = OperationType(d.get("kind"))
-        operand = d.get("operand")
+        kind = OperationType(d.get(KIND))
+        operand = d.get(OPERAND)
 
         if type(operand) == float:
             operand = operand
@@ -86,8 +94,8 @@ class Aggregation(NamedTuple):
 
     @staticmethod
     def from_dict(d: Dict) -> Aggregation:
-        kind = AggregationType(d.get("kind"))
-        axis = d.get("axis", None)
+        kind = AggregationType(d.get(KIND))
+        axis = d.get(AXIS, None)
         return Aggregation(
             kind=kind,
             axis=axis
@@ -117,9 +125,9 @@ class FormulaObj(NamedTuple):
 
     @staticmethod
     def from_dict(d: Dict, prev_channels: List[np.ndarray]) -> FormulaObj:
-        base = d.get("base")
-        operation = d.get("operation", None)
-        aggregation = d.get("aggregation", None)
+        base = d.get(BASE)
+        operation = d.get(OPERATION, None)
+        aggregation = d.get(AGGREGATION, None)
         assert operation is None or aggregation is None, "Only one `operation` or `aggregation` can be set, not both!"
 
         if type(base) == dict:

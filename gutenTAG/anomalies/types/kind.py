@@ -14,6 +14,7 @@ from .platform import AnomalyPlatform
 from .trend import AnomalyTrend
 from .variance import AnomalyVariance
 from .. import BaseAnomaly
+from ...utils.global_variables import ANOMALY_TYPE_NAMES
 
 
 def exist_together(list_optionals: List[Optional[AnomalyKind]]) -> bool:
@@ -21,16 +22,16 @@ def exist_together(list_optionals: List[Optional[AnomalyKind]]) -> bool:
 
 
 class AnomalyKind(Enum):
-    Extremum = "extremum"
-    Frequency = "frequency"
-    Mean = "mean"
-    Pattern = "pattern"
-    PatternShift = "pattern-shift"
-    Platform = "platform"
-    Variance = "variance"
-    Amplitude = "amplitude"
-    Trend = "trend"
-    ModeCorrelation = "mode_correlation"
+    Extremum = ANOMALY_TYPE_NAMES.EXTREMUM
+    Frequency = ANOMALY_TYPE_NAMES.FREQUENCY
+    Mean = ANOMALY_TYPE_NAMES.MEAN
+    Pattern = ANOMALY_TYPE_NAMES.PATTERN
+    PatternShift = ANOMALY_TYPE_NAMES.PATTERN_SHIFT
+    Platform = ANOMALY_TYPE_NAMES.PLATFORM
+    Variance = ANOMALY_TYPE_NAMES.VARIANCE
+    Amplitude = ANOMALY_TYPE_NAMES.AMPLITUDE
+    Trend = ANOMALY_TYPE_NAMES.TREND
+    ModeCorrelation = ANOMALY_TYPE_NAMES.MODE_CORRELATION
 
     def create(self, parameters: Dict) -> 'BaseAnomaly':
         if self == AnomalyKind.Platform:

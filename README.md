@@ -131,12 +131,12 @@ For a more detailled look at the structure of GutenTAG, please consider the [Wik
 
 The generator comes with the following base oscillations in [./gutenTAG/base_oscillations](./gutenTAG/base_oscillations):
 
-- sinus
-- random_walk
-- cylinder_bell_funnel
+- sine
+- random-walk
+- cylinder-bell-funnel
 - ecg
 - polynomial
-- random_mode_jump
+- random-mode-jump
 - formula
 
 Base oscillations can have an underlying trend.
@@ -228,11 +228,11 @@ The generator comes with the following anomaly types in [./gutenTAG/anomalies/ty
 - frequency
 - mean
 - pattern
-- pattern_shift
+- pattern-shift
 - platform
 - trend
 - variance
-- mode correlation
+- mode-correlation
 
 ## Adding a new Anomaly Type
 
@@ -248,15 +248,15 @@ which combinations GutenTAG does not supported.
 - `x` = Combination allowed
 - `-` = Combination not allowed
 
-|                  | Sinus | Random Walk | CBF | ECG | Polynomial | Random Mode Jump | Formula |
-|:-----------------|:-----:|:-----------:|:---:|:---:|:----------:|:----------------:|:-------:|
-| amplitude        |   x   |      x      |  x  |  x  |      -     |         -        |    -    |
-| extremum         |   x   |      x      |  x  |  x  |      x     |         -        |    x    |
-| frequency        |   x   |      -      |  -  |  x  |      -     |         -        |    -    |
-| mean             |   x   |      x      |  x  |  x  |      x     |         -        |    -    |
-| pattern          |   x   |      -      |  x  |  x  |      -     |         -        |    -    |
-| pattern_shift    |   x   |      -      |  -  |  x  |      -     |         -        |    -    |
-| platform         |   x   |      x      |  x  |  x  |      x     |         -        |    x    |
-| trend            |   x   |      x      |  x  |  x  |      x     |         -        |    x    |
-| variance         |   x   |      x      |  x  |  x  |      x     |         -        |    x    |
-| mode_correlation |   -   |      -      |  -  |  -  |      -     |         x        |    -    |
+|                  | sine | random-walk | cylinder-bell-funnel | ecg | polynomial | random-mode-jump | formula  |
+|:-----------------|:----:|:-----------:|:--------------------:|:---:|:----------:|:----------------:|:--------:|
+| amplitude        |  x   |      x      |          x           |  x  |      -     |        -         |    -     |
+| extremum         |  x   |      x      |          x           |  x  |      x     |        -         |    x     |
+| frequency        |  x   |      -      |          -           |  x  |      -     |        -         |    -     |
+| mean             |  x   |      x      |          x           |  x  |      x     |        -         |    -     |
+| pattern          |  x   |      -      |          x           |  x  |      -     |        -         |    -     |
+| pattern_shift    |  x   |      -      |          -           |  x  |      -     |        -         |    -     |
+| platform         |  x   |      x      |          x           |  x  |      x     |        -         |    x     |
+| trend            |  x   |      x      |          x           |  x  |      x     |        -         |    x     |
+| variance         |  x   |      x      |          x           |  x  |      x     |        -         |    x     |
+| mode_correlation |  -   |      -      |          -           |  -  |      -     |        x         |    -     |

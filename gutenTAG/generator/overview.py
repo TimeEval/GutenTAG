@@ -30,7 +30,7 @@ class Overview:
         overview: Dict[str, Any] = dict()
         overview["generated-timeseries"] = []
         for i, dataset in enumerate(self.datasets):
-            dataset["generation-id"] = dataset.get("base-oscillation", {}).get("title", i)
+            dataset["generation-id"] = dataset.get("base_oscillation", {}).get("title", i)
             overview["generated-timeseries"].append(dataset)
 
         overview["meta"] = {}

@@ -8,7 +8,8 @@ import pandas as pd
 from . import BaseAddOn
 from .. import GutenTAG
 from ..generator import Overview, TimeSeries
-from ..utils.global_variables import SUPERVISED_FILENAME, UNSUPERVISED_FILENAME, SEMI_SUPERVISED_FILENAME
+from ..utils.global_variables import SUPERVISED_FILENAME, UNSUPERVISED_FILENAME, SEMI_SUPERVISED_FILENAME, \
+    BASE_OSCILLATIONS, ANOMALIES, PARAMETERS, BASE_OSCILLATION, BASE_OSCILLATION_NAMES
 from ..utils.default_values import default_values
 
 columns = [
@@ -87,25 +88,25 @@ class TimeEvalAddOn(BaseAddOn):
         dataset["dataset_name"] = f"{dataset_name}.{tpe.value}"
         dataset["test_path"] = f"{dataset_name}/{UNSUPERVISED_FILENAME}"
         dataset["input_type"] = "univariate" if ts.shape[1] == 1 else "multivariate"
-        dataset["length"] = config.get("length", 10000)
+        dataset["length"] = config.get(PARAMETERS.LENGTH, 10000)
         dataset["dimensions"] = ts.shape[1]
-        dataset["contamination"] = self._calc_contamination(config.get("anomalies", []), dataset["length"])
-        dataset["num_anomalies"] = len(config.get("anomalies", []))
-        dataset["min_anomaly_length"] = min([anomaly.get("length") for anomaly in config.get("anomalies", [])])
-        dataset["median_anomaly_length"] = np.median([anomaly.get("length") for anomaly in config.get("anomalies", [])])
-        dataset["max_anomaly_length"] = max([anomaly.get("length") for anomaly in config.get("anomalies", [])])
+        dataset["contamination"] = self._calc_contamination(config.get(ANOMALIES, []), dataset[PARAMETERS.LENGTH])
+        dataset["num_anomalies"] = len(config.get(ANOMALIES, []))
+        dataset["min_anomaly_length"] = min([anomaly.get("length") for anomaly in config.get(ANOMALIES, [])])
+        dataset["median_anomaly_length"] = np.median([anomaly.get(PARAMETERS.LENGTH) for anomaly in config.get(ANOMALIES, [])])
+        dataset["max_anomaly_length"] = max([anomaly.get(PARAMETERS.LENGTH) for anomaly in config.get(ANOMALIES, [])])
         dataset["train_type"] = tpe.value
         dataset["mean"] = None if ts is None else ts.mean()
         dataset["stddev"] = None if ts is None else ts.std(axis=1).mean()
-        dataset["trend"] = config.get("base-oscillation", {}).get("trend", {}).get("kind", np.NAN)
-        dataset["period_size"] = TimeEvalAddOn._calc_period_size(config.get("base-oscillation", config.get("base-oscillations", [{}])), dataset["length"])
+        dataset["trend"] = config.get(BASE_OSCILLATION, {}).get(PARAMETERS.TREND, {}).get(PARAMETERS.KIND, np.NAN)
+        dataset["period_size"] = TimeEvalAddOn._calc_period_size(config.get(BASE_OSCILLATION, config.get(BASE_OSCILLATIONS, [{}])), dataset[PARAMETERS.LENGTH])
 
         self.df: pd.DataFrame = self.df.append(dataset, ignore_index=True)
 
     @staticmethod
     def _calc_contamination(anomalies: Iterable[Dict], ts_length: int) -> float:
 
-        anomaly_lengths = [anomaly.get("length", default_values["anomalies"]["length"]) for anomaly in anomalies]
+        anomaly_lengths = [anomaly.get(PARAMETERS.LENGTH, default_values[ANOMALIES][PARAMETERS.LENGTH]) for anomaly in anomalies]
         if len(anomaly_lengths) > 0:
             return sum(anomaly_lengths) / ts_length
         return 0
@@ -121,9 +122,9 @@ class TimeEvalAddOn(BaseAddOn):
         periods = []
 
         for dim in bases:
-            frequency = dim.get("frequency")
-            kind = dim.get("kind")
-            if frequency is None or kind not in ["sine", "ecg", "random_mode_jump"]:
+            frequency = dim.get(PARAMETERS.FREQUENCY)
+            kind = dim.get(PARAMETERS.KIND)
+            if frequency is None or kind not in [BASE_OSCILLATION_NAMES.SINE, BASE_OSCILLATION_NAMES.ECG, BASE_OSCILLATION_NAMES.RANDOM_MODE_JUMP]:
                 return np.NAN
             periods.append(int(length / frequency))
         return np.median(periods).item()

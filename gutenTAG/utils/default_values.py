@@ -1,26 +1,29 @@
+from .global_variables import BASE_OSCILLATIONS, ANOMALIES, PARAMETERS
+
+
 default_values = {
-    "base_oscillations": {
-        "length": 10000,
-        "kind": "sine",
-        "frequency": 10.0,
-        "amplitude": 1.0,
-        "variance": 0.0,
-        "avg-pattern-length": 10,
-        "variance-pattern-length": 0.0,
-        "variance-amplitude": 2.0,
-        "freq-mod": 0.0,
-        "polynomial": [1, 1],
-        "trend": None,
-        "offset": 0.0,
-        "smoothing": 0.01,
-        "channel_diff": 0.0,
-        "channel_offset": 1.0,
-        "random_seed": None,
-        "formula": None
+    BASE_OSCILLATIONS: {
+        PARAMETERS.LENGTH: 10000,
+        PARAMETERS.KIND: "sine",
+        PARAMETERS.FREQUENCY: 10.0,
+        PARAMETERS.AMPLITUDE: 1.0,
+        PARAMETERS.VARIANCE: 0.0,
+        PARAMETERS.AVG_PATTERN_LENGTH: 10,
+        PARAMETERS.VARIANCE_PATTERN_LENGTH: 0.0,
+        PARAMETERS.VARIANCE_AMPLITUDE: 2.0,
+        PARAMETERS.FREQ_MOD: 0.0,
+        PARAMETERS.POLYNOMIAL: [1, 1],
+        PARAMETERS.TREND: None,
+        PARAMETERS.OFFSET: 0.0,
+        PARAMETERS.SMOOTHING: 0.01,
+        PARAMETERS.CHANNEL_DIFF: 0.0,
+        PARAMETERS.CHANNEL_OFFSET: 1.0,
+        PARAMETERS.RANDOM_SEED: None,
+        PARAMETERS.FORMULA: None
     },
-    "anomalies": {
-        "length": 200,
-        "position": "middle",
-        "channel": 0
+    ANOMALIES: {
+        PARAMETERS.LENGTH: 200,
+        PARAMETERS.POSITION: "middle",
+        PARAMETERS.CHANNEL: 0
     }
 }

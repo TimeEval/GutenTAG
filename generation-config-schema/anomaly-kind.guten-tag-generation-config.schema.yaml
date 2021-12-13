@@ -20,7 +20,7 @@ properties:
       - platform
       - trend
       - variance
-      - mode_correlation
+      - mode-correlation
     description: Kind of the anomaly.
   parameters:
     type: object
