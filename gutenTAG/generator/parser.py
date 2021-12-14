@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+import logging
 from copy import deepcopy
 from typing import Dict, Optional, Tuple, List
 from dataclasses import dataclass, asdict
 
 from ..anomalies import Anomaly, Position, AnomalyKind, BaseAnomaly
 from ..base_oscillations import BaseOscillation, BaseOscillationInterface
+from ..utils.compatibility import Compatibility
 from ..utils.default_values import default_values
 from ..utils.global_variables import BASE_OSCILLATION, BASE_OSCILLATIONS, TIMESERIES, PARAMETERS, ANOMALIES, \
     ANOMALY_TYPE_NAMES
@@ -41,11 +43,12 @@ def decode_trend_obj(trend: Dict, length_overwrite: int) -> Optional[BaseOscilla
 
 
 class ConfigParser:
-    def __init__(self, plot: bool = False, only: Optional[str] = None):
+    def __init__(self, plot: bool = False, only: Optional[str] = None, skip_errors: bool = False):
         self.result: ResultType = []
         self.plot = plot
         self.only = only
         self.raw_ts: List[Dict] = []
+        self.skip_errors = skip_errors
 
     def parse(self, config: Dict) -> ResultType:
         for t, ts in enumerate(config.get(TIMESERIES, [])):
@@ -53,7 +56,7 @@ class ConfigParser:
 
             name = ts.get(PARAMETERS.NAME, f"ts_{t}")
 
-            if self._skip_name(name):
+            if self._skip_name(name) or not self._check_compatibility(ts):
                 continue
 
             generation_options = GenerationOptions.from_dict(ts)
@@ -68,6 +71,21 @@ class ConfigParser:
             )
 
         return self.result
+
+    def _check_compatibility(self, ts: Dict) -> bool:
+        base_oscillations = ts.get(BASE_OSCILLATIONS, [ts.get(BASE_OSCILLATION)] * ts.get(PARAMETERS.CHANNELS, 0))
+        anomalies = ts.get(ANOMALIES, [])
+        for anomaly in anomalies:
+            base_oscillation = base_oscillations[anomaly.get(PARAMETERS.CHANNEL, default_values[ANOMALIES][PARAMETERS.CHANNEL])].get(PARAMETERS.KIND, default_values[BASE_OSCILLATIONS][PARAMETERS.KIND])
+            for anomaly_kind in anomaly.get(PARAMETERS.KINDS, []):
+                anomaly_kind = anomaly_kind.get(PARAMETERS.KIND)
+                if not Compatibility.check(anomaly_kind, base_oscillation):
+                    if self.skip_errors:
+                        logging.warning(f"Skip generation of time series {ts.get('name', '')} due to incompatible types: {anomaly_kind} -> {base_oscillation}")
+                        return False
+                    else:
+                        raise ValueError(f"Incompatible types: {anomaly_kind} -> {base_oscillation}")
+        return True
 
     def _skip_name(self, name: str) -> bool:
         return self.only is not None and name != self.only

@@ -3,7 +3,7 @@ $schema: "generation-config-schema/guten-tag-generation-config.schema.yaml"
 timeseries:
   - name: bleed_air
     length: 10000
-    base_oscillations:
+    base-oscillations:
       - kind: sine
         variance: 0.05
       - kind: correlation
@@ -29,7 +29,7 @@ timeseries:
 #    channels: 1
 #    semi-supervised: true
 #    supervised: true
-#    base_oscillation:
+#    base-oscillation:
 #      kind: sine
 #      frequency: 4.0
 #      amplitude: 1.0
