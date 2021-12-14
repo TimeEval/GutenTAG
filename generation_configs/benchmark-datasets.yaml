@@ -250,35 +250,35 @@ timeseries:
   # noise
   - name: sine-noise-00%
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *sine-0
       variance: 0
     anomalies:
       - *platform
   - name: sine-noise-01%
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *sine-0
       variance: 0.01
     anomalies:
       - *platform
   - name: sine-noise-10%
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *sine-0
       variance: 0.1
     anomalies:
       - *platform
   - name: sine-noise-30%
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *sine-0
       variance: 0.3
     anomalies:
       - *platform
   - name: sine-noise-50%
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *sine-0
       variance: 0.5
     anomalies:
@@ -286,35 +286,35 @@ timeseries:
 
   - name: ecg-noise-00%
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *ecg-trend
       variance: 0
     anomalies:
       - *pattern
   - name: ecg-noise-01%
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *ecg-trend
       variance: 0.01
     anomalies:
       - *pattern
   - name: ecg-noise-10%
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *ecg-trend
       variance: 0.1
     anomalies:
       - *pattern
   - name: ecg-noise-30%
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *ecg-trend
       variance: 0.3
     anomalies:
       - *pattern
   - name: ecg-noise-50%
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *ecg-trend
       variance: 0.5
     anomalies:
@@ -323,21 +323,21 @@ timeseries:
   # position
   - name: cbf-position-beginning
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *cbf-linear-trend
     anomalies:
       - position: beginning
         <<: *variance-large
   - name: cbf-position-middle
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *cbf-linear-trend
     anomalies:
       - position: middle
         <<: *variance-large
   - name: cbf-position-end
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *cbf-linear-trend
     anomalies:
       - position: end
@@ -345,21 +345,21 @@ timeseries:
 
   - name: sine-position-beginning
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *sine-other-trend
     anomalies:
       - position: beginning
         <<: *mean
   - name: sine-position-middle
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *sine-other-trend
     anomalies:
       - position: middle
         <<: *mean
   - name: sine-position-end
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *sine-other-trend
     anomalies:
       - position: end
@@ -370,14 +370,14 @@ timeseries:
   # same-count
   - name: sine-same-count-1
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *sine-2
     anomalies:
       - position: middle
         <<: *frequency
   - name: sine-same-count-2
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *sine-2
     anomalies:
       - position: middle
@@ -386,7 +386,7 @@ timeseries:
         <<: *frequency
   - name: sine-same-count-5
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *sine-2
     anomalies:
       - position: middle
@@ -401,7 +401,7 @@ timeseries:
         <<: *frequency
   - name: sine-same-count-10
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *sine-2
     anomalies:
       - position: middle
@@ -428,14 +428,14 @@ timeseries:
   # diff-count
   - name: sine-diff-count-1
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *sine-1
     anomalies:
       - position: middle
         <<: *frequency
   - name: sine-diff-count-2
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *sine-1
     anomalies:
       - position: middle
@@ -444,7 +444,7 @@ timeseries:
         <<: *pattern
   - name: sine-diff-count-3
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *sine-1
     anomalies:
       - position: beginning
@@ -455,7 +455,7 @@ timeseries:
         <<: *pattern
   - name: sine-diff-count-4
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *sine-1
     anomalies:
       - position: beginning
@@ -468,7 +468,7 @@ timeseries:
         <<: *local-extremum
   - name: sine-diff-count-5
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *sine-1
     anomalies:
       - position: beginning
@@ -483,7 +483,7 @@ timeseries:
         <<: *variance-large
   - name: sine-diff-count-6
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *sine-1
     anomalies:
       - position: beginning
@@ -500,7 +500,7 @@ timeseries:
         <<: *variance-large
   - name: sine-diff-count-7
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *sine-1
     anomalies:
       - position: beginning
@@ -519,7 +519,7 @@ timeseries:
         <<: *platform
   - name: sine-diff-count-8
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *sine-1
     anomalies:
       - position: beginning
@@ -540,7 +540,7 @@ timeseries:
         <<: *platform
   - name: sine-diff-count-9
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *sine-1
     anomalies:
       - position: beginning
@@ -565,7 +565,7 @@ timeseries:
   # combined
   - name: sine-combined-diff-1
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *sine-1
     anomalies:
       - position: beginning
@@ -582,7 +582,7 @@ timeseries:
         <<: *variance-large
   - name: sine-combined-diff-2
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *sine-2
     anomalies:
       - position: beginning
@@ -606,7 +606,7 @@ timeseries:
         <<: *frequency
   - name: sine-combined-diff-3
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *sine-0
     anomalies:
       - position: beginning
@@ -635,14 +635,14 @@ timeseries:
   # length
   - name: sine-length-1
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *sine-0
     anomalies:
       - position: middle
         <<: *global-extremum
   - name: sine-length-10
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *sine-0
     anomalies:
       - position: middle
@@ -650,7 +650,7 @@ timeseries:
         length: 10
   - name: sine-length-50
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *sine-0
     anomalies:
       - position: middle
@@ -658,7 +658,7 @@ timeseries:
         length: 50
   - name: sine-length-100
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *sine-0
     anomalies:
       - position: middle
@@ -666,7 +666,7 @@ timeseries:
         length: 100
   - name: sine-length-500
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *sine-0
     anomalies:
       - position: middle
@@ -674,7 +674,7 @@ timeseries:
         length: 500
   - name: sine-length-1000
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *sine-0
     anomalies:
       - position: middle
@@ -684,7 +684,7 @@ timeseries:
   # trend
   - name: sine-trend-linear
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *sine-1
       trend:
         <<: *poly-linear
@@ -693,7 +693,7 @@ timeseries:
         <<: *variance-large
   - name: sine-trend-quadratic
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *sine-1
       trend:
         <<: *poly-quadratic
@@ -702,7 +702,7 @@ timeseries:
         <<: *variance-large
   - name: sine-trend-sine
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *sine-1
       trend:
         <<: *sine-low-freq
@@ -713,14 +713,14 @@ timeseries:
   # anomaly-type
   - name: sine-type-amplitude
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *sine-0
     anomalies:
       - position: middle
         <<: *amplitude-larger
   - name: sine-type-extremum
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *sine-0
     anomalies:
       - position: middle
@@ -728,49 +728,49 @@ timeseries:
         <<: *global-extremum
   - name: sine-type-frequency
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *sine-0
     anomalies:
       - position: middle
         <<: *frequency
   - name: sine-type-mean
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *sine-0
     anomalies:
       - position: middle
         <<: *mean
   - name: sine-type-pattern
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *sine-0
     anomalies:
       - position: middle
         <<: *pattern
   - name: sine-type-pattern-shift
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *sine-0
     anomalies:
       - position: middle
         <<: *pattern-shift
   - name: sine-type-platform
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *sine-0
     anomalies:
       - position: middle
         <<: *platform
   - name: sine-type-trend
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *sine-0
     anomalies:
       - position: middle
         <<: *trend-anomaly-linear
   - name: sine-type-variance
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *sine-0
     anomalies:
       - position: middle
@@ -780,7 +780,7 @@ timeseries:
   - name: sine-channels-all-of-3
     <<: *base-ts
     channels: 3
-    base_oscillation:
+    base-oscillation:
       *sine-2
     anomalies:
       - exact-position: 5000
@@ -795,7 +795,7 @@ timeseries:
   - name: sine-channels-single-of-2
     <<: *base-ts
     channels: 2
-    base_oscillation:
+    base-oscillation:
       *sine-2
     anomalies:
       - position: middle
@@ -804,7 +804,7 @@ timeseries:
   - name: sine-channels-single-of-5
     <<: *base-ts
     channels: 5
-    base_oscillation:
+    base-oscillation:
       *sine-2
     anomalies:
       - position: middle
@@ -813,7 +813,7 @@ timeseries:
   - name: sine-channels-single-of-10
     <<: *base-ts
     channels: 10
-    base_oscillation:
+    base-oscillation:
       *sine-2
     anomalies:
       - position: middle
@@ -822,7 +822,7 @@ timeseries:
   - name: sine-channels-single-of-20
     <<: *base-ts
     channels: 20
-    base_oscillation:
+    base-oscillation:
       *sine-2
     anomalies:
       - position: middle
@@ -834,14 +834,14 @@ timeseries:
   # same-count
   - name: ecg-same-count-1
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *ecg-1
     anomalies:
       - position: middle
         <<: *frequency
   - name: ecg-same-count-2
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *ecg-1
     anomalies:
       - position: middle
@@ -850,7 +850,7 @@ timeseries:
         <<: *frequency
   - name: ecg-same-count-5
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *ecg-1
     anomalies:
       - position: middle
@@ -865,7 +865,7 @@ timeseries:
         <<: *frequency
   - name: ecg-same-count-10
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *ecg-1
     anomalies:
       - position: middle
@@ -891,14 +891,14 @@ timeseries:
   # diff-count
   - name: ecg-diff-count-1
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *ecg-0
     anomalies:
       - position: middle
         <<: *frequency
   - name: ecg-diff-count-2
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *ecg-0
     anomalies:
       - position: middle
@@ -907,7 +907,7 @@ timeseries:
         <<: *pattern
   - name: ecg-diff-count-3
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *ecg-0
     anomalies:
       - position: beginning
@@ -918,7 +918,7 @@ timeseries:
         <<: *pattern
   - name: ecg-diff-count-4
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *ecg-0
     anomalies:
       - position: beginning
@@ -931,7 +931,7 @@ timeseries:
         <<: *local-extremum
   - name: ecg-diff-count-5
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *ecg-0
     anomalies:
       - position: beginning
@@ -946,7 +946,7 @@ timeseries:
         <<: *variance-large
   - name: ecg-diff-count-6
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *ecg-0
     anomalies:
       - position: beginning
@@ -963,7 +963,7 @@ timeseries:
         <<: *variance-large
   - name: ecg-diff-count-7
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *ecg-0
     anomalies:
       - position: beginning
@@ -982,7 +982,7 @@ timeseries:
         <<: *platform
   - name: ecg-diff-count-8
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *ecg-0
     anomalies:
       - position: beginning
@@ -1003,7 +1003,7 @@ timeseries:
         <<: *platform
   - name: ecg-diff-count-9
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *ecg-0
     anomalies:
       - position: beginning
@@ -1028,7 +1028,7 @@ timeseries:
   # combined
   - name: ecg-combined-diff-1
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *ecg-trend
     anomalies:
       - position: beginning
@@ -1045,7 +1045,7 @@ timeseries:
         <<: *variance-large
   - name: ecg-combined-diff-2
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *ecg-1
     anomalies:
       - position: beginning
@@ -1069,7 +1069,7 @@ timeseries:
         <<: *frequency
   - name: ecg-combined-diff-3
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *ecg-0
     anomalies:
       - position: beginning
@@ -1098,14 +1098,14 @@ timeseries:
   # length
   - name: ecg-length-1
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *ecg-0
     anomalies:
       - position: middle
         <<: *global-extremum
   - name: ecg-length-10
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *ecg-0
     anomalies:
       - position: middle
@@ -1113,7 +1113,7 @@ timeseries:
         length: 10
   - name: ecg-length-50
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *ecg-0
     anomalies:
       - position: middle
@@ -1121,7 +1121,7 @@ timeseries:
         length: 50
   - name: ecg-length-100
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *ecg-0
     anomalies:
       - position: middle
@@ -1129,7 +1129,7 @@ timeseries:
         length: 100
   - name: ecg-length-500
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *ecg-0
     anomalies:
       - position: middle
@@ -1137,7 +1137,7 @@ timeseries:
         length: 500
   - name: ecg-length-1000
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *ecg-0
     anomalies:
       - position: middle
@@ -1147,7 +1147,7 @@ timeseries:
   # trend
   - name: ecg-trend-linear
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *ecg-0
       trend:
         <<: *poly-linear-strong
@@ -1156,7 +1156,7 @@ timeseries:
         <<: *variance-large
   - name: ecg-trend-quadratic
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *ecg-0
       trend:
         <<: *poly-quadratic
@@ -1165,7 +1165,7 @@ timeseries:
         <<: *variance-large
   - name: ecg-trend-sine
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *ecg-0
       trend:
         <<: *sine-low-freq
@@ -1176,14 +1176,14 @@ timeseries:
   # anomaly-type
   - name: ecg-type-amplitude
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *ecg-1
     anomalies:
       - position: middle
         <<: *amplitude-larger
   - name: ecg-type-extremum
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *ecg-1
     anomalies:
       - position: middle
@@ -1191,49 +1191,49 @@ timeseries:
         <<: *global-extremum
   - name: ecg-type-frequency
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *ecg-1
     anomalies:
       - position: middle
         <<: *frequency
   - name: ecg-type-mean
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *ecg-1
     anomalies:
       - position: middle
         <<: *mean
   - name: ecg-type-pattern
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *ecg-1
     anomalies:
       - position: middle
         <<: *pattern
   - name: ecg-type-pattern-shift
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *ecg-1
     anomalies:
       - position: middle
         <<: *pattern-shift
   - name: ecg-type-platform
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *ecg-1
     anomalies:
       - position: middle
         <<: *platform
   - name: ecg-type-trend
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *ecg-1
     anomalies:
       - position: middle
         <<: *trend-anomaly-linear
   - name: ecg-type-variance
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *ecg-1
     anomalies:
       - position: middle
@@ -1243,7 +1243,7 @@ timeseries:
   - name: ecg-channels-all-of-3
     <<: *base-ts
     channels: 3
-    base_oscillation:
+    base-oscillation:
       *ecg-0
     anomalies:
       - exact-position: 5000
@@ -1258,7 +1258,7 @@ timeseries:
   - name: ecg-channels-single-of-2
     <<: *base-ts
     channels: 2
-    base_oscillation:
+    base-oscillation:
       *ecg-0
     anomalies:
       - position: middle
@@ -1267,7 +1267,7 @@ timeseries:
   - name: ecg-channels-single-of-5
     <<: *base-ts
     channels: 5
-    base_oscillation:
+    base-oscillation:
       *ecg-0
     anomalies:
       - position: middle
@@ -1276,7 +1276,7 @@ timeseries:
   - name: ecg-channels-single-of-10
     <<: *base-ts
     channels: 10
-    base_oscillation:
+    base-oscillation:
       *ecg-0
     anomalies:
       - position: middle
@@ -1285,7 +1285,7 @@ timeseries:
   - name: ecg-channels-single-of-20
     <<: *base-ts
     channels: 20
-    base_oscillation:
+    base-oscillation:
       *ecg-0
     anomalies:
       - position: middle
@@ -1298,14 +1298,14 @@ timeseries:
   # same-count
   - name: cbf-same-count-1
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *cbf-1
     anomalies:
       - position: middle
         <<: *variance-large
   - name: cbf-same-count-2
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *cbf-1
     anomalies:
       - position: middle
@@ -1314,7 +1314,7 @@ timeseries:
         <<: *variance-large
   - name: cbf-same-count-5
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *cbf-1
     anomalies:
       - position: middle
@@ -1329,7 +1329,7 @@ timeseries:
         <<: *variance-large
   - name: cbf-same-count-10
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *cbf-1
     anomalies:
       - position: middle
@@ -1356,14 +1356,14 @@ timeseries:
   # diff-count
   - name: cbf-diff-count-1
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *cbf-1
     anomalies:
       - position: end
         <<: *pattern
   - name: cbf-diff-count-2
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *cbf-1
     anomalies:
       - position: beginning
@@ -1372,7 +1372,7 @@ timeseries:
         <<: *pattern
   - name: cbf-diff-count-3
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *cbf-1
     anomalies:
       - position: beginning
@@ -1383,7 +1383,7 @@ timeseries:
         <<: *variance-large
   - name: cbf-diff-count-4
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *cbf-1
     anomalies:
       - position: beginning
@@ -1396,7 +1396,7 @@ timeseries:
         <<: *variance-large
   - name: cbf-diff-count-5
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *cbf-1
     anomalies:
       - position: beginning
@@ -1411,7 +1411,7 @@ timeseries:
         <<: *platform
   - name: cbf-diff-count-6
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *cbf-1
     anomalies:
       - position: beginning
@@ -1428,7 +1428,7 @@ timeseries:
         <<: *platform
   - name: cbf-diff-count-7
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *cbf-1
     anomalies:
       - position: beginning
@@ -1449,7 +1449,7 @@ timeseries:
   # combined
   - name: cbf-combined-diff-1
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *cbf-1
     anomalies:
       - position: beginning
@@ -1466,7 +1466,7 @@ timeseries:
         <<: *variance-large
   - name: cbf-combined-diff-2
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *cbf-1
     anomalies:
       - position: beginning
@@ -1490,7 +1490,7 @@ timeseries:
         <<: *platform
   - name: cbf-combined-diff-3
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *cbf-0
     anomalies:
       - position: beginning
@@ -1519,14 +1519,14 @@ timeseries:
   # length
   - name: cbf-length-1
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *cbf-0
     anomalies:
       - position: middle
         <<: *global-extremum
   - name: cbf-length-10
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *cbf-0
     anomalies:
       - position: middle
@@ -1534,7 +1534,7 @@ timeseries:
         length: 10
   - name: cbf-length-50
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *cbf-0
     anomalies:
       - position: middle
@@ -1542,7 +1542,7 @@ timeseries:
         length: 50
   - name: cbf-length-100
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *cbf-0
     anomalies:
       - position: middle
@@ -1550,7 +1550,7 @@ timeseries:
         length: 100
   - name: cbf-length-500
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *cbf-0
     anomalies:
       - position: middle
@@ -1558,7 +1558,7 @@ timeseries:
         length: 500
   - name: cbf-length-1000
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *cbf-0
     anomalies:
       - position: middle
@@ -1568,7 +1568,7 @@ timeseries:
   # trend
   - name: cbf-trend-linear
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *cbf-0
       trend:
         <<: *poly-linear
@@ -1577,7 +1577,7 @@ timeseries:
         <<: *variance-large
   - name: cbf-trend-quadratic
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *cbf-0
       trend:
         <<: *poly-quadratic
@@ -1586,7 +1586,7 @@ timeseries:
         <<: *variance-large
   - name: cbf-trend-sine
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *cbf-0
       trend:
         <<: *sine-low-freq
@@ -1597,14 +1597,14 @@ timeseries:
   # anomaly-type
   - name: cbf-type-amplitude
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *cbf-0
     anomalies:
       - position: middle
         <<: *amplitude-larger
   - name: cbf-type-extremum
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *cbf-0
     anomalies:
       - position: middle
@@ -1612,35 +1612,35 @@ timeseries:
         <<: *global-extremum
   - name: cbf-type-mean
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *cbf-0
     anomalies:
       - position: middle
         <<: *mean
   - name: cbf-type-pattern
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *cbf-0
     anomalies:
       - position: middle
         <<: *pattern
   - name: cbf-type-platform
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *cbf-0
     anomalies:
       - position: middle
         <<: *platform
   - name: cbf-type-trend
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *cbf-0
     anomalies:
       - position: middle
         <<: *trend-anomaly-linear
   - name: cbf-type-variance
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *cbf-0
     anomalies:
       - position: middle
@@ -1650,7 +1650,7 @@ timeseries:
   - name: cbf-channels-all-of-3
     <<: *base-ts
     channels: 3
-    base_oscillation:
+    base-oscillation:
       *cbf-1
     anomalies:
       - exact-position: 5000
@@ -1665,7 +1665,7 @@ timeseries:
   - name: cbf-channels-single-of-2
     <<: *base-ts
     channels: 2
-    base_oscillation:
+    base-oscillation:
       *cbf-1
     anomalies:
       - position: middle
@@ -1674,7 +1674,7 @@ timeseries:
   - name: cbf-channels-single-of-5
     <<: *base-ts
     channels: 5
-    base_oscillation:
+    base-oscillation:
       *cbf-1
     anomalies:
       - position: middle
@@ -1683,7 +1683,7 @@ timeseries:
   - name: cbf-channels-single-of-10
     <<: *base-ts
     channels: 10
-    base_oscillation:
+    base-oscillation:
       *cbf-1
     anomalies:
       - position: middle
@@ -1692,7 +1692,7 @@ timeseries:
   - name: cbf-channels-single-of-20
     <<: *base-ts
     channels: 20
-    base_oscillation:
+    base-oscillation:
       *cbf-1
     anomalies:
       - position: middle
@@ -1705,14 +1705,14 @@ timeseries:
   # same-count
   - name: rw-same-count-1
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *rw-1
     anomalies:
       - position: middle
         <<: *variance-large
   - name: rw-same-count-2
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *rw-1
     anomalies:
       - position: middle
@@ -1721,7 +1721,7 @@ timeseries:
         <<: *variance-large
   - name: rw-same-count-5
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *rw-1
     anomalies:
       - position: middle
@@ -1736,7 +1736,7 @@ timeseries:
         <<: *variance-large
   - name: rw-same-count-10
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *rw-1
     anomalies:
       - position: middle
@@ -1763,14 +1763,14 @@ timeseries:
   # diff-count
   - name: rw-diff-count-1
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *rw-1
     anomalies:
       - position: middle
         <<: *global-extremum
   - name: rw-diff-count-2
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *rw-1
     anomalies:
       - position: middle
@@ -1779,7 +1779,7 @@ timeseries:
         <<: *variance-large
   - name: rw-diff-count-3
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *rw-1
     anomalies:
       - position: beginning
@@ -1790,7 +1790,7 @@ timeseries:
         <<: *variance-large
   - name: rw-diff-count-4
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *rw-1
     anomalies:
       - position: beginning
@@ -1803,7 +1803,7 @@ timeseries:
         <<: *platform
   - name: rw-diff-count-5
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *rw-1
     anomalies:
       - position: beginning
@@ -1818,7 +1818,7 @@ timeseries:
         <<: *platform
   - name: rw-diff-count-6
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *rw-1
     anomalies:
       - position: beginning
@@ -1837,7 +1837,7 @@ timeseries:
   # combined
   - name: rw-combined-diff-1
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *rw-1
     anomalies:
       - position: beginning
@@ -1854,7 +1854,7 @@ timeseries:
         <<: *variance-large
   - name: rw-combined-diff-2
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *rw-1
     anomalies:
       - position: beginning
@@ -1878,7 +1878,7 @@ timeseries:
         <<: *platform
   - name: rw-combined-diff-3
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *rw-0
     anomalies:
       - position: beginning
@@ -1907,14 +1907,14 @@ timeseries:
   # length
   - name: rw-length-1
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *rw-0
     anomalies:
       - position: middle
         <<: *global-extremum
   - name: rw-length-10
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *rw-0
     anomalies:
       - position: middle
@@ -1922,7 +1922,7 @@ timeseries:
         length: 10
   - name: rw-length-50
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *rw-0
     anomalies:
       - position: middle
@@ -1930,7 +1930,7 @@ timeseries:
         length: 50
   - name: rw-length-100
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *rw-0
     anomalies:
       - position: middle
@@ -1938,7 +1938,7 @@ timeseries:
         length: 100
   - name: rw-length-500
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *rw-0
     anomalies:
       - position: middle
@@ -1946,7 +1946,7 @@ timeseries:
         length: 500
   - name: rw-length-1000
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *rw-0
     anomalies:
       - position: middle
@@ -1956,7 +1956,7 @@ timeseries:
   # trend
   - name: rw-trend-linear
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *rw-0
       trend:
         <<: *poly-linear
@@ -1965,7 +1965,7 @@ timeseries:
         <<: *variance-large
   - name: rw-trend-quadratic
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *rw-0
       trend:
         <<: *poly-quadratic
@@ -1974,7 +1974,7 @@ timeseries:
         <<: *variance-large
   - name: rw-trend-sine
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *rw-0
       trend:
         <<: *sine-low-freq
@@ -1985,14 +1985,14 @@ timeseries:
   # anomaly-type
   - name: rw-type-amplitude
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *rw-0
     anomalies:
       - position: middle
         <<: *amplitude-larger
   - name: rw-type-extremum
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *rw-0
     anomalies:
       - position: middle
@@ -2000,28 +2000,28 @@ timeseries:
         <<: *global-extremum
   - name: rw-type-mean
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *rw-0
     anomalies:
       - position: middle
         <<: *mean
   - name: rw-type-platform
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *rw-0
     anomalies:
       - position: middle
         <<: *platform
   - name: rw-type-trend
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *rw-0
     anomalies:
       - position: middle
         <<: *trend-anomaly-linear
   - name: rw-type-variance
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *rw-0
     anomalies:
       - position: middle
@@ -2031,7 +2031,7 @@ timeseries:
   - name: rw-channels-all-of-3
     <<: *base-ts
     channels: 3
-    base_oscillation:
+    base-oscillation:
       *rw-1
     anomalies:
       - exact-position: 5000
@@ -2046,7 +2046,7 @@ timeseries:
   - name: rw-channels-single-of-2
     <<: *base-ts
     channels: 2
-    base_oscillation:
+    base-oscillation:
       *rw-1
     anomalies:
       - position: middle
@@ -2055,7 +2055,7 @@ timeseries:
   - name: rw-channels-single-of-5
     <<: *base-ts
     channels: 5
-    base_oscillation:
+    base-oscillation:
       *rw-1
     anomalies:
       - position: middle
@@ -2064,7 +2064,7 @@ timeseries:
   - name: rw-channels-single-of-10
     <<: *base-ts
     channels: 10
-    base_oscillation:
+    base-oscillation:
       *rw-1
     anomalies:
       - position: middle
@@ -2073,7 +2073,7 @@ timeseries:
   - name: rw-channels-single-of-20
     <<: *base-ts
     channels: 20
-    base_oscillation:
+    base-oscillation:
       *rw-1
     anomalies:
       - position: middle
@@ -2086,14 +2086,14 @@ timeseries:
   # same-count
   - name: poly-same-count-1
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *poly-1
     anomalies:
       - position: middle
         <<: *variance-large
   - name: poly-same-count-2
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *poly-1
     anomalies:
       - position: middle
@@ -2102,7 +2102,7 @@ timeseries:
         <<: *variance-large
   - name: poly-same-count-5
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *poly-1
     anomalies:
       - position: middle
@@ -2117,7 +2117,7 @@ timeseries:
         <<: *variance-large
   - name: poly-same-count-10
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *poly-1
     anomalies:
       - position: middle
@@ -2144,14 +2144,14 @@ timeseries:
   # diff-count
   - name: poly-diff-count-1
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *poly-1
     anomalies:
       - position: middle
         <<: *global-extremum
   - name: poly-diff-count-2
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *poly-1
     anomalies:
       - position: middle
@@ -2160,7 +2160,7 @@ timeseries:
         <<: *variance-large
   - name: poly-diff-count-3
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *poly-1
     anomalies:
       - position: beginning
@@ -2171,7 +2171,7 @@ timeseries:
         <<: *variance-large
   - name: poly-diff-count-4
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *poly-1
     anomalies:
       - position: beginning
@@ -2184,7 +2184,7 @@ timeseries:
         <<: *platform
   - name: poly-diff-count-5
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *poly-1
     anomalies:
       - position: beginning
@@ -2201,7 +2201,7 @@ timeseries:
   # combined
   - name: poly-combined-diff-1
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *poly-1
     anomalies:
       - position: beginning
@@ -2218,7 +2218,7 @@ timeseries:
         <<: *variance-large
   - name: poly-combined-diff-2
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *poly-1
     anomalies:
       - position: beginning
@@ -2242,7 +2242,7 @@ timeseries:
         <<: *platform
   - name: poly-combined-diff-3
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *poly-0
     anomalies:
       - position: beginning
@@ -2271,14 +2271,14 @@ timeseries:
   # length
   - name: poly-length-1
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *poly-0
     anomalies:
       - position: middle
         <<: *global-extremum
   - name: poly-length-10
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *poly-0
     anomalies:
       - position: middle
@@ -2286,7 +2286,7 @@ timeseries:
         length: 10
   - name: poly-length-50
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *poly-0
     anomalies:
       - position: middle
@@ -2294,7 +2294,7 @@ timeseries:
         length: 50
   - name: poly-length-100
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *poly-0
     anomalies:
       - position: middle
@@ -2302,7 +2302,7 @@ timeseries:
         length: 100
   - name: poly-length-500
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *poly-0
     anomalies:
       - position: middle
@@ -2310,7 +2310,7 @@ timeseries:
         length: 500
   - name: poly-length-1000
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *poly-0
     anomalies:
       - position: middle
@@ -2320,7 +2320,7 @@ timeseries:
   # trend
   - name: poly-trend-linear
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *poly-0
       trend:
         <<: *poly-linear
@@ -2329,7 +2329,7 @@ timeseries:
         <<: *variance-large
   - name: poly-trend-quadratic
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *poly-0
       trend:
         <<: *poly-quadratic
@@ -2338,7 +2338,7 @@ timeseries:
         <<: *variance-large
   - name: poly-trend-sine
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       <<: *poly-0
       trend:
         <<: *sine-low-freq
@@ -2349,7 +2349,7 @@ timeseries:
   # anomaly-type
   - name: poly-type-extremum
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *poly-0
     anomalies:
       - position: middle
@@ -2357,28 +2357,28 @@ timeseries:
         <<: *global-extremum
   - name: poly-type-mean
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *poly-0
     anomalies:
       - position: middle
         <<: *mean
   - name: poly-type-platform
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *poly-0
     anomalies:
       - position: middle
         <<: *platform
   - name: poly-type-trend
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *poly-0
     anomalies:
       - position: middle
         <<: *trend-anomaly-linear
   - name: poly-type-variance
     <<: *base-ts
-    base_oscillation:
+    base-oscillation:
       *poly-0
     anomalies:
       - position: middle
@@ -2388,7 +2388,7 @@ timeseries:
   - name: poly-channels-all-of-3
     <<: *base-ts
     channels: 3
-    base_oscillation:
+    base-oscillation:
       *poly-1
     anomalies:
       - exact-position: 5000
@@ -2403,7 +2403,7 @@ timeseries:
   - name: poly-channels-single-of-2
     <<: *base-ts
     channels: 2
-    base_oscillation:
+    base-oscillation:
       *poly-1
     anomalies:
       - position: middle
@@ -2412,7 +2412,7 @@ timeseries:
   - name: poly-channels-single-of-5
     <<: *base-ts
     channels: 5
-    base_oscillation:
+    base-oscillation:
       *poly-1
     anomalies:
       - position: middle
@@ -2421,7 +2421,7 @@ timeseries:
   - name: poly-channels-single-of-10
     <<: *base-ts
     channels: 10
-    base_oscillation:
+    base-oscillation:
       *poly-1
     anomalies:
       - position: middle
@@ -2430,7 +2430,7 @@ timeseries:
   - name: poly-channels-single-of-20
     <<: *base-ts
     channels: 20
-    base_oscillation:
+    base-oscillation:
       *poly-1
     anomalies:
       - position: middle

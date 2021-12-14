@@ -1,7 +1,7 @@
 {
   "timeseries": [
     {
-      "base_oscillation": {
+      "base-oscillation": {
         "kind": "sine",
         "length": 1000,
         "channels": 1,

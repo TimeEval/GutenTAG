@@ -6,7 +6,7 @@ timeseries:
     channels: 1
     semi-supervised: true
     supervised: true
-    base_oscillation:
+    base-oscillation:
       kind: sine
       frequency: 4.0
       amplitude: 1.0
