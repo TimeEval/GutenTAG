@@ -29,6 +29,10 @@ properties:
     type: integer
     minimum: 1
     description: Length of the anomaly region. For extrema, this must be 1.
+  creep-length:
+    type: integer
+    minimum: 0
+    description: Length of the transition region before the anomaly.
   channel:
     type: integer
     description: Channel identifier, where this anomaly should be applied to.

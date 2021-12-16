@@ -1,0 +1,14 @@
+timeseries:
+  - name: amplitude
+    length: 1000
+    base-oscillations:
+      - kind: sine
+    anomalies:
+      - position: end
+        length: 140
+        creep-length: 100
+        channel: 0
+        kinds:
+          - kind: amplitude
+            parameters:
+              amplitude_factor: 2.0

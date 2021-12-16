@@ -1,0 +1,14 @@
+timeseries:
+  - name: mean
+    length: 1000
+    base-oscillations:
+      - kind: sine
+    anomalies:
+      - position: middle
+        length: 340
+        creep-length: 300
+        channel: 0
+        kinds:
+          - kind: mean
+            parameters:
+              offset: 1.0

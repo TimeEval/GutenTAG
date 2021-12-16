@@ -1,0 +1,16 @@
+timeseries:
+  - name: variance
+    length: 1000
+    base-oscillations:
+      - kind: sine
+        frequency: 2
+        variance: 0.1
+    anomalies:
+      - exact-position: 460
+        length: 540
+        creep-length: 500
+        channel: 0
+        kinds:
+          - kind: variance
+            parameters:
+              variance: 1.0
