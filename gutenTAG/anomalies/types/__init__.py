@@ -50,6 +50,9 @@ class BaseAnomaly(ABC):
             np.ones(anomaly_length)           # anomaly
         ])
 
+    def turn_off_trend(self, anomaly_protocol):
+        anomaly_protocol.base_oscillation.trend_series[anomaly_protocol.start:anomaly_protocol.end] = 0
+
     @staticmethod
     @abstractmethod
     def get_parameter_class():

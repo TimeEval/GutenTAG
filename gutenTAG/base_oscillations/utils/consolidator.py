@@ -30,8 +30,8 @@ class Consolidator:
         self.labels = np.zeros(self.timeseries.shape[0], dtype=np.int8)
         self.generate_anomalies()
 
-        self.apply_variations()
         self.apply_anomalies()
+        self.apply_variations()
         return self.timeseries, self.labels
 
     def apply_variations(self):
