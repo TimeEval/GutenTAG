@@ -23,4 +23,5 @@ class AnomalyPlatform(BaseAnomaly):
         length = anomaly_protocol.end - anomaly_protocol.start
         values = np.zeros(length) + self.value
         anomaly_protocol.subsequences.append(values)
+        self.turn_off_trend(anomaly_protocol)
         return anomaly_protocol
