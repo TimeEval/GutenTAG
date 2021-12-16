@@ -23,7 +23,11 @@ class AnomalyVariance(BaseAnomaly):
             anomaly_protocol.subsequences.append(subsequence)
         else:
             length = anomaly_protocol.end - anomaly_protocol.start
-            base.noise[anomaly_protocol.start:anomaly_protocol.end] = base.generate_noise(self.variance * base.amplitude, length)
+            variance_diff = self.variance - base.variance
+            creep = self.generate_creep(anomaly_protocol) * variance_diff  # from 0 to variance_diff
+            creep /= self.variance * base.amplitude  # get relative transition from base variance to anomaly variance
+            subsequence_noise = base.generate_noise(self.variance * base.amplitude, length)
+            base.noise[anomaly_protocol.start:anomaly_protocol.end] = subsequence_noise * creep
         return anomaly_protocol
 
     @staticmethod

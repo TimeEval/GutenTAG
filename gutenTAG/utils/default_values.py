@@ -24,6 +24,7 @@ default_values = {
     ANOMALIES: {
         PARAMETERS.LENGTH: 200,
         PARAMETERS.POSITION: "middle",
-        PARAMETERS.CHANNEL: 0
+        PARAMETERS.CHANNEL: 0,
+        PARAMETERS.CREEP_LENGTH: 0
     }
 }

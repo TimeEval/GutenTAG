@@ -1,6 +1,6 @@
 __pycache__
 .idea
-generated
+./generated
 generated-timeseries
 gutenTAG.egg-info
 dist

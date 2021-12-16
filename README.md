@@ -260,3 +260,32 @@ which combinations GutenTAG does not supported.
 | trend            |  x   |      x      |          x           |  x  |      x     |        -         |    x     |
 | variance         |  x   |      x      |          x           |  x  |      x     |        -         |    x     |
 | mode_correlation |  -   |      -      |          -           |  -  |      -     |        x         |    -     |
+
+
+## Creepy Anomaly
+
+Some anomaly types (`amplitude`, `mean`, and `variance`) allow for a transition into the anomaly - a creep. 
+Therefore, the additional parameter `creep-length` for an anomaly is introduced. It takes `creep-length` points 
+from the overall `length` anomaly points and creates a linear transition into the `length - creep-length` anomaly. 
+
+### Example
+
+```yaml
+timeseries:
+  - name: variance
+    length: 1000
+    base-oscillations:
+      - kind: sine
+        frequency: 2
+        variance: 0.1
+    anomalies:
+      - exact-position: 460
+        length: 540
+        creep-length: 500
+        channel: 0
+        kinds:
+          - kind: variance
+            parameters:
+              variance: 1.0
+```
+![example-anomaly-creep.png](example-anomaly-creep.png)

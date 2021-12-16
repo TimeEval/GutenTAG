@@ -57,3 +57,4 @@ class PARAMETERS:
     CHANNEL = "channel"
     POSITION = "position"
     EXACT_POSITION = "exact-position"
+    CREEP_LENGTH = "creep-length"
