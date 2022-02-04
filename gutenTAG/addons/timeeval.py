@@ -125,9 +125,12 @@ class TimeEvalAddOn(BaseAddOn):
             frequency = dim.get(PARAMETERS.FREQUENCY)
             kind = dim.get(PARAMETERS.KIND)
             if frequency is None or kind not in [BASE_OSCILLATION_NAMES.SINE, BASE_OSCILLATION_NAMES.ECG, BASE_OSCILLATION_NAMES.RANDOM_MODE_JUMP]:
-                return np.NAN
-            periods.append(int(length / frequency))
-        return np.median(periods).item()
+                periods.append(np.NAN)
+            elif kind in [BASE_OSCILLATION_NAMES.SINE, BASE_OSCILLATION_NAMES.ECG]:
+                periods.append(int(100 / frequency))
+            elif kind == BASE_OSCILLATION_NAMES.RANDOM_MODE_JUMP:
+                periods.append(int(length / frequency))
+        return np.nanmedian(periods).item()
 
     def __init__(self):
         self.df = pd.DataFrame(columns=columns)
