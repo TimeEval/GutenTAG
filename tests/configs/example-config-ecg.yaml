@@ -3,6 +3,7 @@ timeseries:
     length: 1000
     base-oscillations:
       - kind: ecg
+        frequency: 10
     anomalies:
       - position: middle
         length: 40

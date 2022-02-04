@@ -289,3 +289,8 @@ timeseries:
               variance: 1.0
 ```
 ![example-anomaly-creep.png](example-anomaly-creep.png)
+
+
+# TODO
+
+- [ ] negation anomaly (does a pattern not appear)
