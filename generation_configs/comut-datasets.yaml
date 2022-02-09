@@ -19,6 +19,7 @@ random-mode-jump:
   - &rmj0
     <<: *base-osc
     kind: "random-mode-jump"
+    random-seed: 42
 
 anomaly_kinds:
   - &base-mode-correlation
