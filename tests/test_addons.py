@@ -63,3 +63,14 @@ class TestAddons(unittest.TestCase):
         self.assertAlmostEqual(df["stddev"][0], 0, 1)
         self.assertTrue(np.isnan(df["trend"][0]))
         self.assertEqual(df["period_size"][0], 10)
+
+    def test_timeeval_addon_without_period(self):
+        with open("tests/configs/example-config-rw.yaml", "r") as f:
+            config = yaml.load(f, Loader=yaml.FullLoader)
+        args = parse_args(["--config-yaml", "", "--no-save"])
+        gutentag = GutenTAG.from_dict(config)
+        gutentag.generate()
+        addon = TimeEvalAddOn()
+        addon.process(overview=gutentag.overview, gutenTAG=gutentag, args=args)
+        df = addon.df
+        self.assertTrue(np.isnan(df["period_size"][0]))
