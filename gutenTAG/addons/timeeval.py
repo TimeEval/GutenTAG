@@ -130,7 +130,7 @@ class TimeEvalAddOn(BaseAddOn):
                 periods.append(int(100 / frequency))
             elif kind == BASE_OSCILLATION_NAMES.RANDOM_MODE_JUMP:
                 periods.append(int(length / frequency))
-        return np.nanmedian(periods).item()
+        return float(np.nanmedian(periods))
 
     def __init__(self):
         self.df = pd.DataFrame(columns=columns)
