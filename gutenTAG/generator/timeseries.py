@@ -81,6 +81,16 @@ class TimeSeries:
         axs[1, 0].legend()
         plt.show()
 
+    def build_figure_base_oscillation(self) -> plt.Figure:
+        assert self.timeseries is not None, "TimeSeries is not generated. Please, do so before building a figure!"
+
+        channels = self.timeseries.shape[1]
+        name = list(map(lambda j: f"channel-{j}", range(channels))) if channels > 1 else "time series"
+
+        fig, ax = plt.subplots()
+        ax.plot(self.timeseries, label=name)
+        return fig
+
     def to_dataframe(self, training_type: TrainingType = TrainingType.TEST) -> pd.DataFrame:
         if training_type == TrainingType.TEST:
             ts, labels = self.timeseries, self.labels
