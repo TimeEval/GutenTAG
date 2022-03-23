@@ -8,8 +8,15 @@ from pathlib import Path
 
 from setuptools import setup, find_packages
 
+
 DOC_NAME = "GutenTAG"
 PYTHON_NAME = "gutenTAG"
+
+HERE = Path(os.path.dirname(__file__)).absolute()
+# get __version__ from gutenTAG/_version.py
+with open(HERE / "gutenTAG" / "_version.py") as f:
+    exec(f.read())
+VERSION: str = __version__  # noqa
 
 
 class PyTestCommand(Command):
@@ -92,7 +99,7 @@ with open('requirements.txt') as f:
 
 setup(
     name=PYTHON_NAME,
-    version='0.1.0',
+    version=VERSION,
     packages=find_packages(exclude=("tests",)),
     url='https://gitlab.hpi.de/akita/guten-tag',
     license='MIT',
