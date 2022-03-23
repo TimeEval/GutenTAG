@@ -9,14 +9,14 @@ from pathlib import Path
 from setuptools import setup, find_packages
 
 
-DOC_NAME = "GutenTAG"
-PYTHON_NAME = "gutenTAG"
-
 HERE = Path(os.path.dirname(__file__)).absolute()
 # get __version__ from gutenTAG/_version.py
 with open(HERE / "gutenTAG" / "_version.py") as f:
     exec(f.read())
 VERSION: str = __version__  # noqa
+README = (HERE / "README.md").read_text(encoding="UTF-8")
+DOC_NAME = "GutenTAG"
+PYTHON_NAME = "gutenTAG"
 
 
 class PyTestCommand(Command):
@@ -49,7 +49,7 @@ class PyTestCommand(Command):
 
 
 class MyPyCheckCommand(Command):
-    description = f'run MyPy for {DOC_NAME}; performs static type checking'
+    description = f"run MyPy for {DOC_NAME}; performs static type checking"
     user_options = []
 
     def initialize_options(self) -> None:
@@ -94,24 +94,36 @@ class CleanCommand(Command):
                     pass
 
 
-with open('requirements.txt') as f:
-    required = f.read().splitlines()
+if __name__ == "__main__":
+    with open('requirements.txt') as fh:
+        required = fh.read().splitlines()
 
-setup(
-    name=PYTHON_NAME,
-    version=VERSION,
-    packages=find_packages(exclude=("tests",)),
-    url='https://gitlab.hpi.de/akita/guten-tag',
-    license='MIT',
-    author='Phillip Wenig',
-    author_email='phillip.wenig@hpi.de',
-    description='A good Timeseries Anomaly Generator.',
-    install_requires=required,
-    python_requires=">=3.8",
-    cmdclass={
-        "test": PyTestCommand,
-        "typecheck": MyPyCheckCommand,
-        "clean": CleanCommand
-    },
-    zip_safe=False
-)
+    setup(
+        name=PYTHON_NAME,
+        version=VERSION,
+        description="A good Timeseries Anomaly Generator.",
+        long_description=README,
+        long_description_content_type="text/markdown",
+        author="Phillip Wenig and Sebastian Schmidl",
+        author_email="phillip.wenig@hpi.de",
+        url="https://gitlab.hpi.de/akita/guten-tag",
+        license="MIT",
+        classifiers=[
+            "License :: OSI Approved :: MIT License",
+            "Programming Language :: Python :: 3",
+            # "Programming Language :: Python :: 3.7",
+            "Programming Language :: Python :: 3.8",
+            # "Programming Language :: Python :: 3.9"
+        ],
+        packages=find_packages(exclude=("tests",)),
+        package_data={"gutenTAG": ["py.typed"]},
+        install_requires=required,
+        python_requires=">=3.8",
+        test_suite="tests",
+        cmdclass={
+            "test": PyTestCommand,
+            "typecheck": MyPyCheckCommand,
+            "clean": CleanCommand
+        },
+        zip_safe=False
+    )
