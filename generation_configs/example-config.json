@@ -1,26 +1,28 @@
 {
+  "$schema": "../generation-config-schema/guten-tag-generation-config.schema.yaml",
   "timeseries": [
     {
+      "name": "demo",
+      "length": 1000,
+      "channels": 1,
+      "semi-supervised": true,
+      "supervised": true,
       "base-oscillation": {
         "kind": "sine",
-        "length": 1000,
-        "channels": 1,
-        "frequency": 20.0,
+        "frequency": 4.0,
         "amplitude": 1.0,
-        "variance": 1.0,
-        "avg-pattern-length": 10,
-        "variance-pattern-length": 10,
-        "heart-rate": 60
+        "variance": 0.05
       },
       "anomalies": [
         {
-          "position": "beginning",
-          "length": 200,
+          "position": "middle",
+          "length": 50,
           "kinds": [
             {
-              "name": "frequency",
+              "kind": "pattern",
               "parameters": {
-                "factor": 2.0
+                "sinusoid_k": 10.0,
+                "cbf_pattern_factor": 1.0
               }
             }
           ]
@@ -30,10 +32,9 @@
           "length": 10,
           "kinds": [
             {
-              "name": "extremum",
+              "kind": "amplitude",
               "parameters": {
-                "min": true,
-                "local": true
+                "amplitude_factor": 1.5
               }
             }
           ]

@@ -1,4 +1,4 @@
-$schema: "generation-config-schema/guten-tag-generation-config.schema.yaml"
+$schema: "../generation-config-schema/guten-tag-generation-config.schema.yaml"
 
 timeseries:
   - name: demo
