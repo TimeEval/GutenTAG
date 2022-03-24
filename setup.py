@@ -99,7 +99,7 @@ if __name__ == "__main__":
         required = fh.read().splitlines()
 
     setup(
-        name=PYTHON_NAME,
+        name=f"timeeval-{PYTHON_NAME}",
         version=VERSION,
         description="A good Timeseries Anomaly Generator.",
         long_description=README,

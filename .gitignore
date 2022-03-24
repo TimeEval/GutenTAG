@@ -2,7 +2,7 @@ __pycache__
 .idea
 ./generated
 generated-timeseries
-gutenTAG.egg-info
+*.egg-info
 dist
 build
 .mypy_cache
