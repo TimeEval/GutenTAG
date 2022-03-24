@@ -27,7 +27,7 @@ default:
   before_script:
     - export PIP_CACHE_DIR="/opt/cache/pip"
     - echo "Setting up conda environment and installing dependencies"
-    - conda create -y -n gutentag python=${PYTHON_VERSION:-3.8}
+    - conda create -y -n gutentag python=${PYTHON_VERSION:-3.7}
     - source activate gutentag
     - pip install -r requirements.txt
     - python --version
@@ -43,7 +43,7 @@ test:
       cobertura: coverage.xml
   parallel:
     matrix:
-      - PYTHON_VERSION: ["3.8", "3.9"]
+      - PYTHON_VERSION: ["3.7", "3.8", "3.9"]
 
 build:
   stage: build

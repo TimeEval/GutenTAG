@@ -79,7 +79,8 @@ class TimeEvalAddOn(BaseAddOn):
         dataset: Dict[str, Any] = dict()
 
         dataset_name = generator.dataset_name or i
-        if filename := tpe.get_filename():
+        filename = tpe.get_filename()
+        if filename is not None:
             dataset["train_path"] = f"{dataset_name}/{filename}"
 
         ts = generator.timeseries

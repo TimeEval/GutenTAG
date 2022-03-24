@@ -111,14 +111,14 @@ if __name__ == "__main__":
         classifiers=[
             "License :: OSI Approved :: MIT License",
             "Programming Language :: Python :: 3",
-            # "Programming Language :: Python :: 3.7",
+            "Programming Language :: Python :: 3.7",
             "Programming Language :: Python :: 3.8",
-            # "Programming Language :: Python :: 3.9"
+            "Programming Language :: Python :: 3.9"
         ],
         packages=find_packages(exclude=("tests",)),
         package_data={"gutenTAG": ["py.typed"]},
         install_requires=required,
-        python_requires=">=3.8",
+        python_requires=">=3.7",
         test_suite="tests",
         cmdclass={
             "test": PyTestCommand,

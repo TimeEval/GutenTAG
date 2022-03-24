@@ -40,8 +40,8 @@ class BaseOscillationInterface(ABC):
         if self.trend:
             self.trend.length = self.length
             self.trend.generate_timeseries_and_variations()
-            if (timeseries := self.trend.timeseries) is not None:
-                trend_series = timeseries
+            if self.trend.timeseries is not None:
+                trend_series = self.trend.timeseries
         return trend_series
 
     def generate_timeseries_and_variations(self, channel: int = 0, **kwargs):
