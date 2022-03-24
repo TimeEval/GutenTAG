@@ -115,7 +115,7 @@ if __name__ == "__main__":
             "Programming Language :: Python :: 3.8",
             "Programming Language :: Python :: 3.9"
         ],
-        packages=find_packages(exclude=("tests",)),
+        packages=find_packages(exclude=("tests", "tests.*")),
         package_data={"gutenTAG": ["py.typed"]},
         install_requires=required,
         python_requires=">=3.7",
@@ -125,5 +125,11 @@ if __name__ == "__main__":
             "typecheck": MyPyCheckCommand,
             "clean": CleanCommand
         },
-        zip_safe=False
+        zip_safe=False,
+        # provides="gutenTAG",
+        entry_points={
+            "console_scripts": [
+                "gutenTAG=gutenTAG.__main__:cli"
+            ]
+        }
     )

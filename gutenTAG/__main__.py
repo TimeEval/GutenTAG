@@ -95,5 +95,9 @@ def main(sys_args: List[str]) -> None:
         addon().process(overview=gutentag.overview, gutenTAG=gutentag, args=args)
 
 
+def cli() -> None:
+    main(sys.argv[1:])
+
+
 if __name__ == "__main__":
     main(sys.argv[1:])
