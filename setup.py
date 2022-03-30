@@ -2,11 +2,10 @@ import glob
 import os
 import shutil
 import sys
-from distutils.cmd import Command
-from distutils.errors import DistutilsError
+from setuptools.errors import DistutilsError
 from pathlib import Path
 
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, Command
 
 
 HERE = Path(os.path.dirname(__file__)).absolute()
@@ -17,6 +16,8 @@ VERSION: str = __version__  # noqa
 README = (HERE / "README.md").read_text(encoding="UTF-8")
 DOC_NAME = "GutenTAG"
 PYTHON_NAME = "gutenTAG"
+with open(HERE / "requirements.txt") as fh:
+    REQUIRED = fh.read().splitlines()
 
 
 class PyTestCommand(Command):
@@ -95,9 +96,6 @@ class CleanCommand(Command):
 
 
 if __name__ == "__main__":
-    with open('requirements.txt') as fh:
-        required = fh.read().splitlines()
-
     setup(
         name=f"timeeval-{PYTHON_NAME}",
         version=VERSION,
@@ -113,11 +111,12 @@ if __name__ == "__main__":
             "Programming Language :: Python :: 3",
             "Programming Language :: Python :: 3.7",
             "Programming Language :: Python :: 3.8",
-            "Programming Language :: Python :: 3.9"
+            "Programming Language :: Python :: 3.9",
+            "Programming Language :: Python :: 3.10"
         ],
         packages=find_packages(exclude=("tests", "tests.*")),
         package_data={"gutenTAG": ["py.typed"]},
-        install_requires=required,
+        install_requires=REQUIRED,
         python_requires=">=3.7",
         test_suite="tests",
         cmdclass={
