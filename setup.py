@@ -106,7 +106,7 @@ if __name__ == "__main__":
         long_description_content_type="text/markdown",
         author="Phillip Wenig and Sebastian Schmidl",
         author_email="phillip.wenig@hpi.de",
-        url="https://gitlab.hpi.de/akita/guten-tag",
+        url="https://github.com/HPI-Information-Systems/gutentag",
         license="MIT",
         classifiers=[
             "License :: OSI Approved :: MIT License",
