@@ -1,20 +1,19 @@
 <div align="center">
-    <img width="400px" src="./logo_transparent.png" alt="TimeEval logo"/>
+    <img width="400px" src="https://github.com/HPI-Information-Systems/gutentag/raw/main/logo_transparent.png" alt="TimeEval logo"/>
     <p>
     A good <strong>T</strong>imeseries <strong>A</strong>nomaly <strong>G</strong>enerator.
     </p>
 
 [![pipeline status](https://gitlab.hpi.de/akita/guten-tag/badges/main/pipeline.svg)](https://gitlab.hpi.de/akita/guten-tag/-/commits/main)
 [![coverage report](https://gitlab.hpi.de/akita/guten-tag/badges/main/coverage.svg)](https://gitlab.hpi.de/akita/guten-tag/-/commits/main)
-
-[![Git tag](https://img.shields.io/badge/tag-0.2.0-blue)](setup.py)
+[![PyPI version](https://badge.fury.io/py/timeeval-gutenTAG.svg)](https://badge.fury.io/py/timeeval-gutenTAG)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![python version 3.8](https://img.shields.io/badge/python-3.8-blue)](setup.py)
+![python version 3.7|3.8|3.9](https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9-blue)
 
 </div>
 
 GutenTAG is an extensible tool to generate time series datasets with and without anomalies.
-A GutenTAG time series consists of a single (univariate) or multiple (multivariate) channels containing a base osciallation with different anomalies at different positions and of different kinds.
+A GutenTAG time series consists of a single (univariate) or multiple (multivariate) channels containing a base oscillation with different anomalies at different positions and of different kinds.
 
 ## tl;dr
 
@@ -30,7 +29,7 @@ The following call uses the [`example-config.yaml`](generation_configs/example-c
 python -m gutenTAG --config-yaml generation_configs/example-config.yaml --seed 11 --no-save --plot
 ```
 
-![Example unsupervised time series with two anomalies](example-ts.png)
+![Example unsupervised time series with two anomalies](https://github.com/HPI-Information-Systems/gutentag/raw/main/example-ts.png)
 
 ## Documentation
 
