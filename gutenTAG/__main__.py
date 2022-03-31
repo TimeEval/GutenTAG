@@ -1,24 +1,22 @@
 import argparse
 import importlib
-import os
 import sys
 import warnings
 from pathlib import Path
-from typing import List, Type, Tuple
+from typing import List, Type
 
 import numpy as np
-from joblib import Parallel, delayed
 from tqdm import tqdm
 
 from gutenTAG import GutenTAG
 from gutenTAG.addons import BaseAddOn
-from gutenTAG.generator import Overview
-from gutenTAG.utils.tqdm_joblib import tqdm_joblib
+from ._version import __version__
 
 
 def parse_args(args: List[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="GutenTAG! A good Time series Anomaly Generator.")
 
+    parser.add_argument("--version", action="store_true", help="Display GutenTAG version and exit.")
     parser.add_argument("--config-yaml", type=Path, required=True, help="Path to config YAML")
     parser.add_argument("--output-dir", type=Path, default=Path("./generated-timeseries"), help="Path to output directory")
     parser.add_argument("--plot", action="store_true", help="Plot every generated time series.")
@@ -61,22 +59,27 @@ def generate_all(args: argparse.Namespace) -> GutenTAG:
 
 
 def main(sys_args: List[str]) -> None:
-    print("""
+    print(f"""
 
                       Welcome to
 
        _____       _          _______       _____ _
-      / ____|     | |        |__   __|/\   / ____| |
-     | |  __ _   _| |_ ___ _ __ | |  /  \ | |  __| |
-     | | |_ | | | | __/ _ \ '_ \| | / /\ \| | |_ | |
-     | |__| | |_| | ||  __/ | | | |/ ____ \ |__| |_|
-      \_____|\__,_|\__\___|_| |_|_/_/    \_\_____(_)
+      / ____|     | |        |__   __|/\\   / ____| |
+     | |  __ _   _| |_ ___ _ __ | |  /  \\ | |  __| |
+     | | |_ | | | | __/ _ \\ '_ \\| | / /\\ \\| | |_ | |
+     | |__| | |_| | ||  __/ | | | |/ ____ \\ |__| |_|
+      \\_____|\\__,_|\\__\\___|_| |_|_/_/    \\_\\_____(_)
+
+                     Version {__version__}
 
 "Good day!" wishes your friendly Timeseries Anomaly Generator.
 
 
-"""
-    )
+""")
+
+    if "--version" in sys_args:
+        return
+
     args = parse_args(sys_args)
     addons = import_addons(args.addons)
     if args.seed is not None:
@@ -90,6 +93,10 @@ def main(sys_args: List[str]) -> None:
 
     for addon in tqdm(addons, desc="Executing addons"):
         addon().process(overview=gutentag.overview, gutenTAG=gutentag, args=args)
+
+
+def cli() -> None:
+    main(sys.argv[1:])
 
 
 if __name__ == "__main__":

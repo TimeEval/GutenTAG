@@ -20,46 +20,46 @@ workflow:
     - if: '$CI_COMMIT_BRANCH =~ /^doc\//'
       when: never
 
-before_script:
-  - export PIP_CACHE_DIR="/opt/cache/pip"
-  - echo "Setting up conda environment and installing dependencies"
-  - conda create -n gutentag python=3.8
-  - source activate gutentag
-  - pip install -r requirements.txt
+default:
+  tags:
+    - akita
+    - conda
+  before_script:
+    - export PIP_CACHE_DIR="/opt/cache/pip"
+    - echo "Setting up conda environment and installing dependencies"
+    - conda create -y -n gutentag python=${PYTHON_VERSION:-3.7}
+    - source activate gutentag
+    - pip install -r requirements.dev
+    - python --version
 
 test:
   stage: test
   interruptible: true
-  tags:
-    - akita
-    - conda
   script:
     - python setup.py typecheck
     - python setup.py test
   artifacts:
     reports:
       cobertura: coverage.xml
+  parallel:
+    matrix:
+      - PYTHON_VERSION: ["3.7", "3.8", "3.9", "3.10"]
 
 build:
   stage: build
-  tags:
-    - akita
-    - conda
   only:
     - tags
   script:
     - python setup.py sdist bdist_wheel
   artifacts:
     paths:
-      - dist/*.whl
       - dist/*.tar.gz
+      - dist/*.whl
 
 deploy:
   stage: deploy
-  tags:
-    - akita
-    - conda
   only:
     - tags
   script:
     - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url https://gitlab.hpi.de/api/v4/projects/${CI_PROJECT_ID}/packages/pypi dist/*
+    - TWINE_PASSWORD="${PYPI_API_TOKEN}" TWINE_USERNAME="__token__" python -m twine upload --repository pypi dist/*

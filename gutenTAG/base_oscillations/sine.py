@@ -19,17 +19,18 @@ class Sine(BaseOscillationInterface):
                            amplitude: Optional[float] = None,
                            freq_mod: Optional[float] = None,
                            *args, **kwargs) -> np.ndarray:
-        length = length or self.length
-        frequency = frequency or self.frequency
-        amplitude = amplitude or self.amplitude
-        freq_mod = freq_mod or self.freq_mod
+        v_length: int = length or self.length
+        v_frequency: float = frequency or self.frequency
+        v_amplitude: float = amplitude or self.amplitude
+        v_freq_mod: float = freq_mod or self.freq_mod
 
-        periods = (length / 100) * frequency
+        periods = (v_length / 100) * v_frequency
 
         end = 2 * np.pi * periods
-        base_ts = np.linspace(0, end, length)
+        base_ts = np.linspace(0, end, v_length)
 
-        if freq_mod:
-            amplitude = (np.sin(np.linspace(0, end * freq_mod, length)) * amplitude)
+        arr_amplitude: np.ndarray = np.array(v_amplitude)
+        if v_freq_mod:
+            arr_amplitude = np.sin(np.linspace(0, end * v_freq_mod, v_length)) * v_amplitude
 
-        return np.sin(base_ts) * amplitude
+        return np.sin(base_ts) * arr_amplitude

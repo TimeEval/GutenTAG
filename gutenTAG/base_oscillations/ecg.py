@@ -28,6 +28,6 @@ class ECG(BaseOscillationInterface):
         ecg = nk.ecg_simulate(duration=10,
                               sampling_rate=sampling_rate,
                               heart_rate=periods * 6,
-                              random_state=np.random.get_state()[1][0],
+                              random_state=np.random.get_state()[1][0],  # type: ignore
                               method='simple')[:length]
         return ecg
