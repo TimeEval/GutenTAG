@@ -38,27 +38,26 @@ A GutenTAG time series consists of a single (univariate) or multiple (multivaria
    timeseries:
    - name: demo
      length: 1000
-     channels: 1
-     semi-supervised: true
-     supervised: true
-     base-oscillation:
-       kind: sine
+     base-oscillations:
+     - kind: sine
        frequency: 4.0
        amplitude: 1.0
        variance: 0.05
-       anomalies:
-       - position: middle
-         length: 50
-         kinds:
-         - kind: pattern
-           parameters:
+     anomalies:
+     - position: middle
+       length: 50
+       channel: 0
+       kinds:
+       - kind: pattern
+         parameters:
            sinusoid_k: 10.0
            cbf_pattern_factor: 1.0
-       - position: end
-         length: 10
-         kinds:
-         - kind: amplitude
-           parameters:
+     - position: end
+       length: 10
+       channel: 0
+       kinds:
+       - kind: amplitude
+         parameters:
            amplitude_factor: 1.5
    ```
 

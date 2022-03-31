@@ -4,15 +4,16 @@
     {
       "name": "demo",
       "length": 1000,
-      "channels": 1,
-      "semi-supervised": true,
-      "supervised": true,
-      "base-oscillation": {
-        "kind": "sine",
-        "frequency": 4.0,
-        "amplitude": 1.0,
-        "variance": 0.05
-      },
+      "semi-supervised": false,
+      "supervised": false,
+      "base-oscillations": [
+        {
+          "kind": "sine",
+          "frequency": 4.0,
+          "amplitude": 1.0,
+          "variance": 0.05
+        }
+      ],
       "anomalies": [
         {
           "position": "middle",
