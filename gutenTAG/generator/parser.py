@@ -42,6 +42,16 @@ def decode_trend_obj(trend: Dict, length_overwrite: int) -> Optional[BaseOscilla
     return BaseOscillation.from_key(trend_key, **trend) if trend_key else None
 
 
+class GutenTAGParseError(BaseException):
+    def __init__(self, prefix: str = "", msg: Optional[str] = None):
+        if msg is None:
+            msg = prefix
+            prefix = ""
+        if prefix:
+            prefix = f" {prefix}"
+        super(GutenTAGParseError, self).__init__(f"Error in parsing generation configuration{prefix}: {msg}")
+
+
 class ConfigParser:
     def __init__(self, plot: bool = False, only: Optional[str] = None, skip_errors: bool = False):
         self.result: ResultType = []
@@ -51,10 +61,32 @@ class ConfigParser:
         self.skip_errors = skip_errors
 
     def parse(self, config: Dict) -> ResultType:
-        for t, ts in enumerate(config.get(TIMESERIES, [])):
-            self.raw_ts.append(deepcopy(ts))
+        if TIMESERIES not in config:
+            self._raise_or_log(GutenTAGParseError(f"Key '{TIMESERIES}' not found in root object."))
 
+        for t, ts in enumerate(config.get(TIMESERIES, [])):
             name = ts.get(PARAMETERS.NAME, f"ts_{t}")
+            log_prefix = f"TS {name}"
+
+            # if PARAMETERS.LENGTH not in ts:
+            #     self._raise_or_log(GutenTAGParseError(f"Time series {name} misses the '{PARAMETERS.LENGTH}' property."))
+            if ANOMALIES not in ts:
+                self._raise_or_log(GutenTAGParseError(log_prefix, f"Missing '{ANOMALIES}' property."))
+
+            if BASE_OSCILLATION not in ts and BASE_OSCILLATIONS not in ts:
+                self._raise_or_log(GutenTAGParseError(log_prefix, f"Missing '{BASE_OSCILLATIONS}' property."))
+
+            if BASE_OSCILLATION in ts and PARAMETERS.CHANNELS not in ts:
+                self._raise_or_log(GutenTAGParseError(log_prefix, f"If a single '{BASE_OSCILLATION}' is defined, the property '{PARAMETERS.CHANNELS}' is required."))
+
+            # TODO:
+            # if PARAMETERS.KIND not in ts[BASE_OSCILLATION]:
+            #     self._raise_or_log(GutenTAGParseError(log_prefix, f"Missing required property '{PARAMETERS.KIND}'."))
+            #
+            # if bo_kind not in BaseOscillation.key_mapping:
+            #     self._raise_or_log(GutenTAGParseError(log_prefix, f"Anomaly kind '{bo_kind}' is not supported!"))
+
+            self.raw_ts.append(deepcopy(ts))
 
             if self._skip_name(name) or not self._check_compatibility(ts):
                 continue
@@ -72,6 +104,12 @@ class ConfigParser:
 
         return self.result
 
+    def _raise_or_log(self, ex: GutenTAGParseError) -> None:
+        if self.skip_errors:
+            logging.warning(ex)
+        else:
+            raise ex
+
     def _check_compatibility(self, ts: Dict) -> bool:
         base_oscillations = ts.get(BASE_OSCILLATIONS, [ts.get(BASE_OSCILLATION)] * ts.get(PARAMETERS.CHANNELS, 0))
         anomalies = ts.get(ANOMALIES, [])
@@ -81,10 +119,10 @@ class ConfigParser:
                 anomaly_kind = anomaly_kind.get(PARAMETERS.KIND)
                 if not Compatibility.check(anomaly_kind, base_oscillation):
                     if self.skip_errors:
-                        logging.warning(f"Skip generation of time series {ts.get('name', '')} due to incompatible types: {anomaly_kind} -> {base_oscillation}")
+                        logging.warning(f"Skip generation of time series {ts.get('name', '')} due to incompatible types: {anomaly_kind} -> {base_oscillation}.")
                         return False
                     else:
-                        raise ValueError(f"Incompatible types: {anomaly_kind} -> {base_oscillation}")
+                        raise ValueError(f"Incompatible types: {anomaly_kind} -> {base_oscillation}.")
         return True
 
     def _skip_name(self, name: str) -> bool:
@@ -94,8 +132,8 @@ class ConfigParser:
         length = d.get(PARAMETERS.LENGTH, default_values[BASE_OSCILLATIONS][PARAMETERS.LENGTH])
         channels = d.get(PARAMETERS.CHANNELS, None)
         if channels:
-            return [self._build_single_base_oscillation(d.get(BASE_OSCILLATION, {}), length) for _ in range(channels)]
-        return [self._build_single_base_oscillation(bo, length) for bo in d.get(BASE_OSCILLATIONS, [])]
+            return [self._build_single_base_oscillation(d.get(BASE_OSCILLATION, {}), length) for i in range(channels)]
+        return [self._build_single_base_oscillation(bo, length) for i, bo in enumerate(d.get(BASE_OSCILLATIONS, []))]
 
     def _build_single_base_oscillation(self, d: Dict, length: int) -> BaseOscillationInterface:
         base_oscillation_configs = deepcopy(d)
