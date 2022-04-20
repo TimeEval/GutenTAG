@@ -93,7 +93,7 @@ config = {
                {"kind": "sine"}
             ],
             "anomalies": [
-                {"length": 5, "channel": 0, "types": [{"kind": "mean"}]}
+                {"length": 5, "channel": 0, "types": [{"kind": "mean", "parameters": {"offset": .5}}]}
             ]
         }
     ]
