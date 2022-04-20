@@ -58,3 +58,8 @@ class AnomalyKind(Enum):
             raise ValueError(f"AnomalyKind {self.value} is not supported, yet! Guten Tag!")
 
         return anomaly
+
+    @classmethod
+    def has_value(cls, v: str) -> bool:
+        values = set(item.value for item in cls)
+        return v in values

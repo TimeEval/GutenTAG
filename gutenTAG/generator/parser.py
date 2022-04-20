@@ -2,15 +2,14 @@ from __future__ import annotations
 
 import logging
 from copy import deepcopy
-from typing import Dict, Optional, Tuple, List
 from dataclasses import dataclass, asdict
+from typing import Dict, Optional, Tuple, List
 
 from ..anomalies import Anomaly, Position, AnomalyKind, BaseAnomaly
 from ..base_oscillations import BaseOscillation, BaseOscillationInterface
 from ..utils.compatibility import Compatibility
 from ..utils.default_values import default_values
-from ..utils.global_variables import BASE_OSCILLATION, BASE_OSCILLATIONS, TIMESERIES, PARAMETERS, ANOMALIES, \
-    ANOMALY_TYPE_NAMES
+from ..utils.global_variables import BASE_OSCILLATION, BASE_OSCILLATIONS, TIMESERIES, PARAMETERS, ANOMALIES
 
 
 @dataclass
@@ -66,25 +65,7 @@ class ConfigParser:
 
         for t, ts in enumerate(config.get(TIMESERIES, [])):
             name = ts.get(PARAMETERS.NAME, f"ts_{t}")
-            log_prefix = f"TS {name}"
-
-            # if PARAMETERS.LENGTH not in ts:
-            #     self._raise_or_log(GutenTAGParseError(f"Time series {name} misses the '{PARAMETERS.LENGTH}' property."))
-            if ANOMALIES not in ts:
-                self._raise_or_log(GutenTAGParseError(log_prefix, f"Missing '{ANOMALIES}' property."))
-
-            if BASE_OSCILLATION not in ts and BASE_OSCILLATIONS not in ts:
-                self._raise_or_log(GutenTAGParseError(log_prefix, f"Missing '{BASE_OSCILLATIONS}' property."))
-
-            if BASE_OSCILLATION in ts and PARAMETERS.CHANNELS not in ts:
-                self._raise_or_log(GutenTAGParseError(log_prefix, f"If a single '{BASE_OSCILLATION}' is defined, the property '{PARAMETERS.CHANNELS}' is required."))
-
-            # TODO:
-            # if PARAMETERS.KIND not in ts[BASE_OSCILLATION]:
-            #     self._raise_or_log(GutenTAGParseError(log_prefix, f"Missing required property '{PARAMETERS.KIND}'."))
-            #
-            # if bo_kind not in BaseOscillation.key_mapping:
-            #     self._raise_or_log(GutenTAGParseError(log_prefix, f"Anomaly kind '{bo_kind}' is not supported!"))
+            self._check_ts_definition(ts, name)
 
             self.raw_ts.append(deepcopy(ts))
 
@@ -110,13 +91,71 @@ class ConfigParser:
         else:
             raise ex
 
+    def _check_ts_definition(self, ts: Dict, name: str) -> None:
+        log_prefix = f"TS {name}"
+
+        # length is optional
+        # if PARAMETERS.LENGTH not in ts:
+        #     self._raise_or_log(GutenTAGParseError(f"Time series {name} misses the '{PARAMETERS.LENGTH}' property."))
+
+        if ANOMALIES not in ts:
+            self._raise_or_log(GutenTAGParseError(log_prefix, f"Missing '{ANOMALIES}' property."))
+
+        if BASE_OSCILLATION not in ts and BASE_OSCILLATIONS not in ts:
+            self._raise_or_log(GutenTAGParseError(log_prefix, f"Missing '{BASE_OSCILLATIONS}' property."))
+
+        if BASE_OSCILLATION in ts and PARAMETERS.CHANNELS not in ts:
+            self._raise_or_log(GutenTAGParseError(
+                log_prefix,
+                f"If a single '{BASE_OSCILLATION}' is defined, the property '{PARAMETERS.CHANNELS}' is required."
+            ))
+
+        # check base oscillations
+        bos = ts.get(BASE_OSCILLATIONS, [ts.get(BASE_OSCILLATION)] * ts.get(PARAMETERS.CHANNELS, 0))
+        for i, bo in enumerate(bos):
+            log_prefix_bo = f"{log_prefix} BO {i}"
+            if PARAMETERS.KIND not in bo:
+                self._raise_or_log(
+                    GutenTAGParseError(log_prefix_bo, f"Missing required property '{PARAMETERS.KIND}'."))
+            bo_kind = bo[PARAMETERS.KIND]
+            if bo_kind not in BaseOscillation.key_mapping:
+                self._raise_or_log(
+                    GutenTAGParseError(log_prefix_bo, f"Base oscillation kind '{bo_kind}' is not supported!"))
+
+        # check anomaly definitions
+        anoms = ts.get(ANOMALIES, [])
+        for i, anom in enumerate(anoms):
+            log_prefix_anom = f"{log_prefix} Anom {i}"
+            if PARAMETERS.KINDS not in anom:
+                self._raise_or_log(
+                    GutenTAGParseError(log_prefix_anom, f"Missing required property '{PARAMETERS.KINDS}'."))
+            if PARAMETERS.LENGTH not in anom:
+                self._raise_or_log(
+                    GutenTAGParseError(log_prefix_anom, f"Missing required property '{PARAMETERS.LENGTH}'."))
+
+            kinds = anom.get(PARAMETERS.KINDS, [])
+            for j, anom_kind in enumerate(kinds):
+                log_prefix_kind = f"{log_prefix_anom} Kind {j}"
+                if PARAMETERS.KIND not in anom_kind:
+                    self._raise_or_log(
+                        GutenTAGParseError(log_prefix_kind, f"Missing required property '{PARAMETERS.KIND}'."))
+                if not AnomalyKind.has_value(anom_kind[PARAMETERS.KIND]):
+                    self._raise_or_log(GutenTAGParseError(
+                        log_prefix_kind,
+                        f"Anomaly kind '{anom_kind[PARAMETERS.KIND]}' is not supported!")
+                    )
+                if PARAMETERS.PARAMETERS not in anom_kind:
+                    self._raise_or_log(
+                        GutenTAGParseError(log_prefix_kind, f"Missing required property '{PARAMETERS.PARAMETERS}'.")
+                    )
+
     def _check_compatibility(self, ts: Dict) -> bool:
         base_oscillations = ts.get(BASE_OSCILLATIONS, [ts.get(BASE_OSCILLATION)] * ts.get(PARAMETERS.CHANNELS, 0))
         anomalies = ts.get(ANOMALIES, [])
         for anomaly in anomalies:
-            base_oscillation = base_oscillations[anomaly.get(PARAMETERS.CHANNEL, default_values[ANOMALIES][PARAMETERS.CHANNEL])].get(PARAMETERS.KIND, default_values[BASE_OSCILLATIONS][PARAMETERS.KIND])
+            base_oscillation = base_oscillations[anomaly.get(PARAMETERS.CHANNEL, default_values[ANOMALIES][PARAMETERS.CHANNEL])][PARAMETERS.KIND]
             for anomaly_kind in anomaly.get(PARAMETERS.KINDS, []):
-                anomaly_kind = anomaly_kind.get(PARAMETERS.KIND)
+                anomaly_kind = anomaly_kind[PARAMETERS.KIND]
                 if not Compatibility.check(anomaly_kind, base_oscillation):
                     if self.skip_errors:
                         logging.warning(f"Skip generation of time series {ts.get('name', '')} due to incompatible types: {anomaly_kind} -> {base_oscillation}.")
@@ -130,18 +169,16 @@ class ConfigParser:
 
     def _build_base_oscillations(self, d: Dict) -> List[BaseOscillationInterface]:
         length = d.get(PARAMETERS.LENGTH, default_values[BASE_OSCILLATIONS][PARAMETERS.LENGTH])
-        channels = d.get(PARAMETERS.CHANNELS, None)
-        if channels:
-            return [self._build_single_base_oscillation(d.get(BASE_OSCILLATION, {}), length) for i in range(channels)]
-        return [self._build_single_base_oscillation(bo, length) for i, bo in enumerate(d.get(BASE_OSCILLATIONS, []))]
+        bos = d.get(BASE_OSCILLATIONS, [d.get(BASE_OSCILLATION)] * d.get(PARAMETERS.CHANNELS, 0))
+        return [self._build_single_base_oscillation(bo, length) for bo in bos]
 
     def _build_single_base_oscillation(self, d: Dict, length: int) -> BaseOscillationInterface:
-        base_oscillation_configs = deepcopy(d)
-        base_oscillation_configs[PARAMETERS.LENGTH] = length
-        trend = base_oscillation_configs.get(PARAMETERS.TREND, {})
-        base_oscillation_configs[PARAMETERS.TREND] = decode_trend_obj(trend, length)
-        key = base_oscillation_configs.get(PARAMETERS.KIND, default_values[BASE_OSCILLATIONS][PARAMETERS.KIND])
-        return BaseOscillation.from_key(key, **base_oscillation_configs)
+        base_oscillation_config = deepcopy(d)
+        base_oscillation_config[PARAMETERS.LENGTH] = length
+        trend = base_oscillation_config.get(PARAMETERS.TREND, {})
+        base_oscillation_config[PARAMETERS.TREND] = decode_trend_obj(trend, length)
+        key = base_oscillation_config[PARAMETERS.KIND]
+        return BaseOscillation.from_key(key, **base_oscillation_config)
 
     def _build_anomalies(self, d: Dict) -> List[Anomaly]:
         return [self._build_single_anomaly(anomaly_config) for anomaly_config in d.get(ANOMALIES, [])]
@@ -150,7 +187,7 @@ class ConfigParser:
         anomaly = Anomaly(
             Position(d.get(PARAMETERS.POSITION, default_values[ANOMALIES][PARAMETERS.POSITION])),
             d.get(PARAMETERS.EXACT_POSITION, None),
-            d.get(PARAMETERS.LENGTH, default_values[ANOMALIES][PARAMETERS.LENGTH]),
+            d[PARAMETERS.LENGTH],
             d.get(PARAMETERS.CHANNEL, default_values[ANOMALIES][PARAMETERS.CHANNEL]),
             d.get(PARAMETERS.CREEP_LENGTH, default_values[ANOMALIES][PARAMETERS.CREEP_LENGTH])
         )
@@ -165,11 +202,18 @@ class ConfigParser:
         return [self._build_single_anomaly_kind(anomaly_kind, length) for anomaly_kind in d.get(PARAMETERS.KINDS, [])]
 
     def _build_single_anomaly_kind(self, d: Dict, length: int) -> BaseAnomaly:
-        kind = d.get(PARAMETERS.KIND, ANOMALY_TYPE_NAMES.PLATFORM)
+        kind = d[PARAMETERS.KIND]
         if kind == PARAMETERS.TREND:
             parameters = {
-                PARAMETERS.TREND: decode_trend_obj(d.get(PARAMETERS.PARAMETERS, {}), length)
+                PARAMETERS.TREND: decode_trend_obj(d[PARAMETERS.PARAMETERS], length)
             }
         else:
-            parameters = d.get(PARAMETERS.PARAMETERS, {})
-        return AnomalyKind(kind).create(deepcopy(parameters))
+            parameters = d[PARAMETERS.PARAMETERS]
+        try:
+            return AnomalyKind(kind).create(deepcopy(parameters))
+        except TypeError as ex:
+            if "unexpected keyword argument" in str(ex):
+                parameter = str(ex).split("'")[-2]
+                raise GutenTAGParseError(f"Anomaly kind '{kind}' does not support parameter '{parameter}'") from ex
+            else:
+                raise ex
