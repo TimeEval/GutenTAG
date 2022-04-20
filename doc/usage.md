@@ -10,21 +10,24 @@ timeseries:
     length: Int
     [semi-supervised: Bool]
     [supervised: Bool]
-    base-oscillation:
-      - kind: Enum[cylinder_bell_funnel,ecg,random_walk,sine,polynomial]
+    base-oscillations:
+      - kind: Enum[cylinder-bell-funnel,ecg,random-walk,sine,polynomial,random-mode-jump,formula]
+        [trend: object]
         # parameters from [Introduction -> Base Oscillations](introduction#base-oscillations)
     anomalies:
-      - [position: Enum[beginning,middle,end]]
-        [exact-position: Int]
-        length: Int
+      - length: Int
         [channel: Int]
+        [position: Enum[beginning,middle,end]]
+        [exact-position: Int]
+        [creep-length: Int]
         kinds:
-          - name: Enum[extremum,frequency,mean,pattern,pattern-shift,platform,variance,amplitude,trend]
+          - kind: Enum[extremum,frequency,mean,pattern,pattern-shift,platform,variance,amplitude,trend,mode-correlation]
             parameters:
               # corresponding parameters from [Introduction -> Anomaly Types](introduction#anomaly-types)
 ```
 
-As seen in the YAML schema, in one config file multiple time series with multiple anomalies can be defined. Each anomaly can furthermore be a combination of multiple anomaly types (e.g. platform and variance).
+As seen in the YAML schema, in one config file multiple time series with multiple anomalies can be defined.
+Each anomaly can furthermore be a combination of multiple anomaly types (e.g., platform and variance).
 
 We also provide a [JSON schema definition](../generation-config-schema/README.md) that also works with YAML files.
 
@@ -33,7 +36,7 @@ We also provide a [JSON schema definition](../generation-config-schema/README.md
 Once `GutenTAG` is installed and a desired config file is written, the user can call the following command to generate time series:
 
 ```shell
-python -m gutenTAG --config-yaml CONFIG_YAML \ 
+python -m gutenTAG [-h] [--version] --config-yaml CONFIG_YAML \
                   [--output-dir OUTPUT_DIR] \
                   [--plot] \
                   [--no-save] \
@@ -87,10 +90,10 @@ config = {
             "name": "test",
             "length": 100,
             "base-oscillations": [
-               {"kind": "sinus"}
+               {"kind": "sine"}
             ],
             "anomalies": [
-                {"length": 5, "types": [{"kind": "mean"}]}
+                {"length": 5, "channel": 0, "types": [{"kind": "mean", "parameters": {"offset": .5}}]}
             ]
         }
     ]

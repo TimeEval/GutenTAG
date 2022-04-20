@@ -15,9 +15,6 @@ properties:
     description: Array of time series configurations to generate.
     items:
       type: object
-      required:
-        - length
-        - anomalies
       properties:
         name:
           type: string
@@ -50,7 +47,9 @@ properties:
             $ref: anomaly.guten-tag-generation-config.schema.yaml
       oneOf:
         - required:
+            - anomalies
             - base-oscillation
             - channels
         - required:
+            - anomalies
             - base-oscillations
