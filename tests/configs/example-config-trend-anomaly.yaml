@@ -11,4 +11,3 @@ timeseries:
           - kind: trend
             oscillation:
               kind: sine
-              length: 40

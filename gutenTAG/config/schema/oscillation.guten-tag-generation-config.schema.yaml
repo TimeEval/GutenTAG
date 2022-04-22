@@ -18,24 +18,20 @@ properties:
       - random-mode-jump
       - formula
     description: Kind of the base oscillation.
-  trend:
-    description: Trend to add to the base oscillation
-    $ref: "#"
-#    $ref: trend.guten-tag-generation-config.schema.yaml
-  offset:
-    type: number
-    description: Constant offset added to the base oscillation.
-  variance:
-    type: number
-    description: |
-      Variance of the signal relative to signal value.
-      This is also called white noise.
-      If set to 0, there is no noise.
 oneOf:
   - properties:
       trend:
+        description: Trend to add to the base oscillation
+        $ref: "#"
       offset:
+        type: number
+        description: Constant offset added to the base oscillation.
       variance:
+        type: number
+        description: |
+          Variance of the signal relative to signal value.
+          This is also called white noise.
+          If set to 0, there is no noise.
       kind:
         const: sine
       frequency:
@@ -54,8 +50,17 @@ oneOf:
     additionalProperties: false
   - properties:
       trend:
+        description: Trend to add to the base oscillation
+        $ref: "#"
       offset:
+        type: number
+        description: Constant offset added to the base oscillation.
       variance:
+        type: number
+        description: |
+          Variance of the signal relative to signal value.
+          This is also called white noise.
+          If set to 0, there is no noise.
       kind:
         const: random-walk
       amplitude:
@@ -73,8 +78,17 @@ oneOf:
     additionalProperties: false
   - properties:
       trend:
+        description: Trend to add to the base oscillation
+        $ref: "#"
       offset:
+        type: number
+        description: Constant offset added to the base oscillation.
       variance:
+        type: number
+        description: |
+          Variance of the signal relative to signal value.
+          This is also called white noise.
+          If set to 0, there is no noise.
       kind:
         const: cylinder-bell-funnel
       amplitude:
@@ -95,8 +109,17 @@ oneOf:
     additionalProperties: false
   - properties:
       trend:
+        description: Trend to add to the base oscillation
+        $ref: "#"
       offset:
+        type: number
+        description: Constant offset added to the base oscillation.
       variance:
+        type: number
+        description: |
+          Variance of the signal relative to signal value.
+          This is also called white noise.
+          If set to 0, there is no noise.
       kind:
         const: ecg
       frequency:
@@ -106,8 +129,17 @@ oneOf:
     additionalProperties: false
   - properties:
       trend:
+        description: Trend to add to the base oscillation
+        $ref: "#"
       offset:
+        type: number
+        description: Constant offset added to the base oscillation.
       variance:
+        type: number
+        description: |
+          Variance of the signal relative to signal value.
+          This is also called white noise.
+          If set to 0, there is no noise.
       kind:
         const: polynomial
       polynomial:
@@ -121,8 +153,17 @@ oneOf:
     additionalProperties: false
   - properties:
       trend:
+        description: Trend to add to the base oscillation
+        $ref: "#"
       offset:
+        type: number
+        description: Constant offset added to the base oscillation.
       variance:
+        type: number
+        description: |
+          Variance of the signal relative to signal value.
+          This is also called white noise.
+          If set to 0, there is no noise.
       kind:
         const: random-mode-jump
       frequency:
@@ -141,12 +182,22 @@ oneOf:
     additionalProperties: false
   - properties:
       trend:
+        description: Trend to add to the base oscillation
+        $ref: "#"
       offset:
+        type: number
+        description: Constant offset added to the base oscillation.
       variance:
+        type: number
+        description: |
+          Variance of the signal relative to signal value.
+          This is also called white noise.
+          If set to 0, there is no noise.
       kind:
         const: formula
       formula:
         description: Formula based on other channels
+        type: object
         $ref: formula.guten-tag-generation-config.schema.yaml
     required:
       - formula

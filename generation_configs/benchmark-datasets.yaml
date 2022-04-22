@@ -1846,7 +1846,7 @@ timeseries:
         length: 200
         kinds:
           - kind: "trend"
-            parameters:
+            oscillation:
               kind: "sine"
               frequency: 0.725
               amplitude: 0.25
@@ -1870,8 +1870,7 @@ timeseries:
         length: 100
         kinds:
           - kind: "mean"
-            parameters:
-              offset: 0.2
+            offset: 0.2
       - position: middle
         <<: *local-extremum
       - position: end
@@ -1880,10 +1879,9 @@ timeseries:
         length: 1
         kinds:
           - kind: "extremum"
-            parameters:
-              min: false
-              local: true
-              context_window: 50
+            min: false
+            local: true
+            context_window: 50
 
   # length
   - name: rw-length-1
@@ -2210,7 +2208,7 @@ timeseries:
         length: 200
         kinds:
           - kind: "trend"
-            parameters:
+            oscillation:
               kind: "sine"
               frequency: 0.725
               amplitude: 0.25
@@ -2234,8 +2232,7 @@ timeseries:
         length: 100
         kinds:
           - kind: "mean"
-            parameters:
-              offset: 0.2
+            offset: 0.2
       - position: middle
         <<: *local-extremum
       - position: end
@@ -2244,10 +2241,9 @@ timeseries:
         length: 1
         kinds:
           - kind: "extremum"
-            parameters:
-              min: false
-              local: true
-              context_window: 50
+            min: false
+            local: true
+            context_window: 50
 
   # length
   - name: poly-length-1
