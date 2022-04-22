@@ -41,16 +41,6 @@ def decode_trend_obj(trend: Dict, length_overwrite: int) -> Optional[BaseOscilla
     return BaseOscillation.from_key(trend_key, **trend) if trend_key else None
 
 
-class GutenTAGParseError(BaseException):
-    def __init__(self, prefix: str = "", msg: Optional[str] = None):
-        if msg is None:
-            msg = prefix
-            prefix = ""
-        if prefix:
-            prefix = f" {prefix}"
-        super(GutenTAGParseError, self).__init__(f"Error in parsing generation configuration{prefix}: {msg}")
-
-
 class ConfigParser:
     def __init__(self, plot: bool = False, only: Optional[str] = None, skip_errors: bool = False):
         self.result: ResultType = []
@@ -60,12 +50,8 @@ class ConfigParser:
         self.skip_errors = skip_errors
 
     def parse(self, config: Dict) -> ResultType:
-        if TIMESERIES not in config:
-            self._raise_or_log(GutenTAGParseError(f"Key '{TIMESERIES}' not found in root object."))
-
         for t, ts in enumerate(config.get(TIMESERIES, [])):
             name = ts.get(PARAMETERS.NAME, f"ts_{t}")
-            self._check_ts_definition(ts, name)
 
             self.raw_ts.append(deepcopy(ts))
 
@@ -84,70 +70,6 @@ class ConfigParser:
             )
 
         return self.result
-
-    def _raise_or_log(self, ex: GutenTAGParseError) -> None:
-        if self.skip_errors:
-            logging.warning(ex)
-        else:
-            raise ex
-
-    def _check_ts_definition(self, ts: Dict, name: str) -> None:
-        log_prefix = f"TS {name}"
-
-        # length is optional
-        # if PARAMETERS.LENGTH not in ts:
-        #     self._raise_or_log(GutenTAGParseError(f"Time series {name} misses the '{PARAMETERS.LENGTH}' property."))
-
-        if ANOMALIES not in ts:
-            self._raise_or_log(GutenTAGParseError(log_prefix, f"Missing '{ANOMALIES}' property."))
-
-        if BASE_OSCILLATION not in ts and BASE_OSCILLATIONS not in ts:
-            self._raise_or_log(GutenTAGParseError(log_prefix, f"Missing '{BASE_OSCILLATIONS}' property."))
-
-        if BASE_OSCILLATION in ts and PARAMETERS.CHANNELS not in ts:
-            self._raise_or_log(GutenTAGParseError(
-                log_prefix,
-                f"If a single '{BASE_OSCILLATION}' is defined, the property '{PARAMETERS.CHANNELS}' is required."
-            ))
-
-        # check base oscillations
-        bos = ts.get(BASE_OSCILLATIONS, [ts.get(BASE_OSCILLATION)] * ts.get(PARAMETERS.CHANNELS, 0))
-        for i, bo in enumerate(bos):
-            log_prefix_bo = f"{log_prefix} BO {i}"
-            if PARAMETERS.KIND not in bo:
-                self._raise_or_log(
-                    GutenTAGParseError(log_prefix_bo, f"Missing required property '{PARAMETERS.KIND}'."))
-            bo_kind = bo[PARAMETERS.KIND]
-            if bo_kind not in BaseOscillation.key_mapping:
-                self._raise_or_log(
-                    GutenTAGParseError(log_prefix_bo, f"Base oscillation kind '{bo_kind}' is not supported!"))
-
-        # check anomaly definitions
-        anoms = ts.get(ANOMALIES, [])
-        for i, anom in enumerate(anoms):
-            log_prefix_anom = f"{log_prefix} Anom {i}"
-            if PARAMETERS.KINDS not in anom:
-                self._raise_or_log(
-                    GutenTAGParseError(log_prefix_anom, f"Missing required property '{PARAMETERS.KINDS}'."))
-            if PARAMETERS.LENGTH not in anom:
-                self._raise_or_log(
-                    GutenTAGParseError(log_prefix_anom, f"Missing required property '{PARAMETERS.LENGTH}'."))
-
-            kinds = anom.get(PARAMETERS.KINDS, [])
-            for j, anom_kind in enumerate(kinds):
-                log_prefix_kind = f"{log_prefix_anom} Kind {j}"
-                if PARAMETERS.KIND not in anom_kind:
-                    self._raise_or_log(
-                        GutenTAGParseError(log_prefix_kind, f"Missing required property '{PARAMETERS.KIND}'."))
-                if not AnomalyKind.has_value(anom_kind[PARAMETERS.KIND]):
-                    self._raise_or_log(GutenTAGParseError(
-                        log_prefix_kind,
-                        f"Anomaly kind '{anom_kind[PARAMETERS.KIND]}' is not supported!")
-                    )
-                if PARAMETERS.PARAMETERS not in anom_kind:
-                    self._raise_or_log(
-                        GutenTAGParseError(log_prefix_kind, f"Missing required property '{PARAMETERS.PARAMETERS}'.")
-                    )
 
     def _check_compatibility(self, ts: Dict) -> bool:
         base_oscillations = ts.get(BASE_OSCILLATIONS, [ts.get(BASE_OSCILLATION)] * ts.get(PARAMETERS.CHANNELS, 0))
@@ -205,15 +127,16 @@ class ConfigParser:
         kind = d[PARAMETERS.KIND]
         if kind == PARAMETERS.TREND:
             parameters = {
-                PARAMETERS.TREND: decode_trend_obj(d[PARAMETERS.PARAMETERS], length)
+                PARAMETERS.TREND: decode_trend_obj(deepcopy(d[PARAMETERS.OSCILLATION]), length)
             }
         else:
-            parameters = d[PARAMETERS.PARAMETERS]
+            parameters = deepcopy(d)
+            del parameters[PARAMETERS.KIND]
         try:
-            return AnomalyKind(kind).create(deepcopy(parameters))
+            return AnomalyKind(kind).create(parameters)
         except TypeError as ex:
             if "unexpected keyword argument" in str(ex):
                 parameter = str(ex).split("'")[-2]
-                raise GutenTAGParseError(f"Anomaly kind '{kind}' does not support parameter '{parameter}'") from ex
+                raise ValueError(f"Anomaly kind '{kind}' does not support parameter '{parameter}'") from ex
             else:
                 raise ex

@@ -36,7 +36,7 @@ class ANOMALY_TYPE_NAMES:
 
 
 class PARAMETERS:
-    PARAMETERS = "parameters"
+    OSCILLATION = "oscillation"
     LENGTH = "length"
     FREQUENCY = "frequency"
     AMPLITUDE = "amplitude"
