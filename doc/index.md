@@ -9,5 +9,6 @@ A good **T**imeseries **A**nomaly **G**enerator.
 - [Usage](usage.md)
   - [From CLI](usage.md#from-cli)
   - [From Python](usage.md#from-python)
+  - [Configuration Schema](config-schema.md) (IDE support for GutenTAG generation configuration files)
 - [Advanced Features](advanced-features.md)
   - [Add-Ons](advanced-features.md#add-ons)
