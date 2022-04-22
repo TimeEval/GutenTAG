@@ -7,3 +7,4 @@ tqdm==4.54.*
 joblib==1.0.*
 gitpython==3.1.*
 neurokit2==0.1.2
+jsonschema>=4.4.0

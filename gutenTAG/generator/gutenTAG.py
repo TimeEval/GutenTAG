@@ -1,18 +1,19 @@
 from __future__ import annotations
-import os
-import json
-from pathlib import Path
 
-import yaml
-import pandas as pd
+import json
+import os
+from pathlib import Path
 from typing import List, Dict, Optional
 
+import pandas as pd
+import yaml
 from joblib import Parallel, delayed
 from tqdm import tqdm
 
 from .overview import Overview
 from .timeseries import TimeSeries, TrainingType
-from .parser import ConfigParser
+from ..config.parser import ConfigParser
+from ..config.validator import ConfigValidator
 from ..utils.global_variables import UNSUPERVISED_FILENAME, SUPERVISED_FILENAME, SEMI_SUPERVISED_FILENAME
 from ..utils.tqdm_joblib import tqdm_joblib
 
@@ -25,6 +26,9 @@ class GutenTAG:
 
     def add_timeseries(self, ts: TimeSeries):
         self.timeseries.append(ts)
+
+    def add_all_timeseries(self, tss: List[TimeSeries]):
+        self.timeseries.extend(tss)
 
     def add_configs_to_overview(self, configs: List[Dict]):
         self.overview.add_datasets(configs)
@@ -72,10 +76,16 @@ class GutenTAG:
 
     @staticmethod
     def from_dict(config: Dict, plot: bool = False, only: Optional[str] = None) -> GutenTAG:
-        gutentag = GutenTAG()
+        # First parse, then validate config, because our own error messages are more precise than
+        # the validator's ones.
         config_parser = ConfigParser(plot, only)
+        timeseries = []
         for base_oscillations, anomalies, options in config_parser.parse(config):
             ts = TimeSeries(base_oscillations, anomalies, **options.to_dict())
-            gutentag.add_timeseries(ts)
+            timeseries.append(ts)
+        ConfigValidator().validate(config)
+
+        gutentag = GutenTAG()
+        gutentag.add_all_timeseries(timeseries)
         gutentag.add_configs_to_overview(config_parser.raw_ts)
         return gutentag
