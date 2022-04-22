@@ -9,6 +9,5 @@ timeseries:
         channel: 0
         kinds:
           - kind: extremum
-            parameters:
-              min: true
-              local: false
+            min: true
+            local: false
