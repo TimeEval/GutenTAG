@@ -1,5 +1,5 @@
 {
-  "$schema": "../generation-config-schema/guten-tag-generation-config.schema.yaml",
+  "$schema": "../gutenTAG/config/schema/guten-tag-generation-config.schema.yaml",
   "timeseries": [
     {
       "name": "demo",
@@ -21,10 +21,7 @@
           "kinds": [
             {
               "kind": "pattern",
-              "parameters": {
-                "sinusoid_k": 10.0,
-                "cbf_pattern_factor": 1.0
-              }
+              "sinusoid_k": 10.0
             }
           ]
         },
@@ -34,9 +31,7 @@
           "kinds": [
             {
               "kind": "amplitude",
-              "parameters": {
-                "amplitude_factor": 1.5
-              }
+              "amplitude_factor": 1.5
             }
           ]
         }

@@ -1,8 +1,10 @@
-$schema: "../generation-config-schema/guten-tag-generation-config.schema.yaml"
+$schema: "../gutenTAG/config/schema/guten-tag-generation-config.schema.yaml"
 
 timeseries:
 - name: demo
   length: 1000
+  semi-supervised: false
+  supervised: false
   base-oscillations:
   - kind: sine
     frequency: 4.0
@@ -11,16 +13,11 @@ timeseries:
   anomalies:
   - position: middle
     length: 50
-    channel: 0
     kinds:
     - kind: pattern
-      parameters:
-        sinusoid_k: 10.0
-        cbf_pattern_factor: 1.0
+      sinusoid_k: 10.0
   - position: end
     length: 10
-    channel: 0
     kinds:
     - kind: amplitude
-      parameters:
-        amplitude_factor: 1.5
+      amplitude_factor: 1.5

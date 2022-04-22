@@ -1,4 +1,4 @@
-$schema: "../generation-config-schema/guten-tag-generation-config.schema.yaml"
+$schema: "../gutenTAG/config/schema/guten-tag-generation-config.schema.yaml"
 
 #############################
 # Definitions
@@ -10,15 +10,12 @@ base:
     channels: 2
     semi-supervised: true
     supervised: true
-  - &base-osc
-    frequency: 250.0 # step length = 40
-    amplitude: 1.0
-    variance: 0.05
 
 random-mode-jump:
   - &rmj0
-    <<: *base-osc
     kind: "random-mode-jump"
+    frequency: 250.0 # step length = 40
+    variance: 0.05
     random-seed: 42
 
 anomaly_kinds:

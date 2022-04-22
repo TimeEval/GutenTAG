@@ -1,4 +1,4 @@
-$schema: "../generation-config-schema/guten-tag-generation-config.schema.yaml"
+$schema: "../gutenTAG/config/schema/guten-tag-generation-config.schema.yaml"
 
 
 #############################
@@ -10,15 +10,13 @@ base:
     length: 10000
     semi-supervised: true
     supervised: true
-  - &base-osci
-    frequency: 5.0
-    amplitude: 1.0
-    variance: 0.05
 
 sine:
   - &sine-0
-    <<: *base-osci
     kind: "sine"
+    frequency: 5.0
+    amplitude: 1.0
+    variance: 0.05
   - &sine-1
     <<: *sine-0
     frequency: 2.3
@@ -46,15 +44,16 @@ sine:
       amplitude: 0.5
       variance: 0
   - &sine-low-freq
-    <<: *base-osci
     kind: "sine"
     frequency: 0.1
     amplitude: 0.5
+    variance: 0.05
 
 ecg:
   - &ecg-0
-    <<: *base-osci
     kind: "ecg"
+    frequency: 5.0
+    variance: 0.05
   - &ecg-1
     <<: *ecg-0
     frequency: 6.5
@@ -67,8 +66,8 @@ ecg:
 
 random-walk:
   - &rw-0
-    <<: *base-osci
     kind: "random-walk"
+    amplitude: 1.0
     variance: 0.0
   - &rw-1
     <<: *rw-0
@@ -101,11 +100,12 @@ random-walk:
 
 cylinder-bell-funnel:
   - &cbf-0
-    <<: *base-osci
     kind: "cylinder-bell-funnel"
     avg-pattern-length: 100
     variance-pattern-length: 0.2
     variance-amplitude: 0.1
+    amplitude: 1.0
+    variance: 0.05
     offset: -3
   - &cbf-1
     <<: *cbf-0
@@ -127,9 +127,9 @@ cylinder-bell-funnel:
 
 polynomial:
   - &poly-0
-    <<: *base-osci
     kind: "polynomial"
     polynomial: [-8, 8, 2, -10]
+    variance: 0.05
     offset: -2
   - &poly-1
     <<: *poly-0
@@ -157,35 +157,29 @@ anomaly_kinds:
   - &frequency
     kinds:
       - kind: "frequency"
-        parameters:
-          frequency_factor: 2.0
+        frequency_factor: 2.0
   - &mean
     kinds:
       - kind: "mean"
-        parameters:
-          offset: 1.0
+        offset: 1.0
   - &pattern
     kinds:
       - kind: "pattern"
-        parameters:
-          sinusoid_k: 10.0
-          cbf_pattern_factor: 2
+        sinusoid_k: 10.0
+        cbf_pattern_factor: 2
   - &pattern-shift
     kinds:
       - kind: "pattern-shift"
-        parameters:
-          shift_by: 10
-          transition_window: 10
+        shift_by: 10
+        transition_window: 10
   - &platform
     kinds:
       - kind: "platform"
-        parameters:
-          value: 0.0
+        value: 0.0
   - &variance-large
     kinds:
       - kind: "variance"
-        parameters:
-          variance: 0.3
+        variance: 0.3
   - &variance-small
     kinds:
       - kind: "variance"
@@ -194,17 +188,15 @@ anomaly_kinds:
   - &amplitude-larger
     kinds:
       - kind: "amplitude"
-        parameters:
-          amplitude_factor: 2
+        amplitude_factor: 2
   - &amplitude-smaller
     kinds:
       - kind: "amplitude"
-        parameters:
-          amplitude_factor: 0.5
+        amplitude_factor: 0.5
   - &trend-anomaly-sine
     kinds:
       - kind: "trend"
-        parameters:
+        oscillation:
           kind: "sine"
           frequency: 1
           amplitude: 1.0
@@ -212,7 +204,7 @@ anomaly_kinds:
   - &trend-anomaly-linear
     kinds:
       - kind: "trend"
-        parameters:
+        oscillation:
           kind: "polynomial"
           polynomial: [0.2, 0.2]
 

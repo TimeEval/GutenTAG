@@ -1,4 +1,4 @@
-$schema: "../generation-config-schema/guten-tag-generation-config.schema.yaml"
+$schema: "../gutenTAG/config/schema/guten-tag-generation-config.schema.yaml"
 
 #############################
 # Definitions
@@ -10,15 +10,13 @@ base:
     channels: 1
     semi-supervised: true
     supervised: true
-  - &base-osci
-    frequency: 5.0
-    amplitude: 1.0
-    variance: 0.05
 
 sine:
   - &sine-0
-    <<: *base-osci
     kind: "sine"
+    frequency: 5.0
+    amplitude: 1.0
+    variance: 0.05
   - &sine-1
     <<: *sine-0
     frequency: 2.3
@@ -46,15 +44,16 @@ sine:
       amplitude: 0.5
       variance: 0
   - &sine-low-freq
-    <<: *base-osci
     kind: "sine"
     frequency: 0.1
     amplitude: 0.5
+    variance: 0.05
 
 ecg:
   - &ecg-0
-    <<: *base-osci
     kind: "ecg"
+    frequency: 5.0
+    variance: 0.05
   - &ecg-1
     <<: *ecg-0
     frequency: 6.5
@@ -67,9 +66,9 @@ ecg:
 
 random-walk:
   - &rw-0
-    <<: *base-osci
     kind: "random-walk"
     variance: 0.0
+    amplitude: 1.0
   - &rw-1
     <<: *rw-0
     amplitude: 2.5
@@ -101,11 +100,12 @@ random-walk:
 
 cylinder-bell-funnel:
   - &cbf-0
-    <<: *base-osci
     kind: "cylinder-bell-funnel"
     avg-pattern-length: 100
     variance-pattern-length: 0.2
     variance-amplitude: 0.1
+    amplitude: 1.0
+    variance: 0.05
     offset: -3
   - &cbf-1
     <<: *cbf-0
@@ -117,19 +117,17 @@ cylinder-bell-funnel:
     trend:
       kind: "polynomial"
       polynomial: [2, 2]
-      amplitude: 2
   - &cbf-other-trend
     <<: *cbf-1
     trend:
       kind: "polynomial"
       polynomial: [-8, 8, 2, -10]
-      amplitude: 2
 
 polynomial:
   - &poly-0
-    <<: *base-osci
     kind: "polynomial"
     polynomial: [-8, 8, 2, -10]
+    variance: 0.05
     offset: -2
   - &poly-1
     <<: *poly-0
@@ -158,78 +156,67 @@ anomaly_kinds:
     length: 1
     kinds:
       - kind: "extremum"
-        parameters:
-          min: true
-          local: true
-          context_window: 50
+        min: true
+        local: true
+        context_window: 50
   - &global-extremum
     length: 1
     kinds:
       - kind: "extremum"
-        parameters:
-          min: false
-          local: false
+        min: false
+        local: false
   - &frequency
     length: 100
     kinds:
       - kind: "frequency"
-        parameters:
-          frequency_factor: 2.0
+        frequency_factor: 2.0
   - &mean
     length: 100
     kinds:
       - kind: "mean"
-        parameters:
-          offset: 1.0
+        offset: 1.0
   - &pattern
     length: 100
     kinds:
       - kind: "pattern"
-        parameters:
-          sinusoid_k: 10.0
-          cbf_pattern_factor: 2
+        sinusoid_k: 10.0
+        cbf_pattern_factor: 2
   - &pattern-shift
     length: 100
     kinds:
       - kind: "pattern-shift"
-        parameters:
-          shift_by: 10
-          transition_window: 10
+        shift_by: 10
+        transition_window: 10
   - &platform
     length: 100
     kinds:
       - kind: "platform"
-        parameters:
-          value: 0.0
+        value: 0.0
   - &variance-large
     length: 100
     kinds:
       - kind: "variance"
-        parameters:
-          variance: 0.3
+        variance: 0.3
   - &variance-small
     length: 100
     kinds:
       - kind: "variance"
-        parameters:
-          variance: 0.03
+        variance: 0.03
   - &amplitude-larger
     length: 100
     kinds:
       - kind: "amplitude"
-        parameters:
-          amplitude_factor: 2
+        amplitude_factor: 2
   - &amplitude-smaller
     length: 100
     kinds:
       - kind: "amplitude"
-        parameters:
-          amplitude_factor: 0.5
+        amplitude_factor: 0.5
   - &trend-anomaly-sine
     length: 100
     kinds:
       - kind: "trend"
-        parameters:
+        oscillation:
           kind: "sine"
           frequency: 1
           amplitude: 1.0
@@ -238,7 +225,7 @@ anomaly_kinds:
     length: 100
     kinds:
       - kind: "trend"
-        parameters:
+        oscillation:
           kind: "polynomial"
           polynomial: [0.2, 0.2]
 
@@ -593,7 +580,7 @@ timeseries:
         length: 200
         kinds:
           - kind: "trend"
-            parameters:
+            oscillation:
               kind: "sine"
               frequency: 0.725
               amplitude: 0.25
@@ -617,8 +604,7 @@ timeseries:
         length: 100
         kinds:
           - kind: "mean"
-            parameters:
-              offset: 0.2
+            offset: 0.2
       - position: middle
         <<: *local-extremum
       - position: end
@@ -627,10 +613,9 @@ timeseries:
         length: 1
         kinds:
           - kind: "extremum"
-            parameters:
-              min: false
-              local: true
-              context_window: 50
+            min: false
+            local: true
+            context_window: 50
 
   # length
   - name: sine-length-1
@@ -1056,7 +1041,7 @@ timeseries:
         length: 200
         kinds:
           - kind: "trend"
-            parameters:
+            oscillation:
               kind: "sine"
               frequency: 0.725
               amplitude: 0.25
@@ -1080,8 +1065,7 @@ timeseries:
         length: 100
         kinds:
           - kind: "mean"
-            parameters:
-              offset: 0.2
+            offset: 0.2
       - position: middle
         <<: *local-extremum
       - position: end
@@ -1090,10 +1074,9 @@ timeseries:
         length: 1
         kinds:
           - kind: "extremum"
-            parameters:
-              min: false
-              local: true
-              context_window: 50
+            min: false
+            local: true
+            context_window: 50
 
   # length
   - name: ecg-length-1
@@ -1477,7 +1460,7 @@ timeseries:
         length: 200
         kinds:
           - kind: "trend"
-            parameters:
+            oscillation:
               kind: "sine"
               frequency: 0.725
               amplitude: 0.25
@@ -1501,8 +1484,7 @@ timeseries:
         length: 100
         kinds:
           - kind: "mean"
-            parameters:
-              offset: 0.2
+            offset: 0.2
       - position: middle
         <<: *local-extremum
       - position: end
@@ -1511,10 +1493,9 @@ timeseries:
         length: 1
         kinds:
           - kind: "extremum"
-            parameters:
-              min: false
-              local: true
-              context_window: 50
+            min: false
+            local: true
+            context_window: 50
 
   # length
   - name: cbf-length-1
