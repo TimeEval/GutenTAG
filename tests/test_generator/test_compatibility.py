@@ -1,7 +1,6 @@
-from copy import deepcopy
 from unittest import TestCase
 
-from gutenTAG.generator.parser import ConfigParser
+from gutenTAG.config.parser import ConfigParser
 
 
 class TestCompatibility(TestCase):

@@ -1,12 +1,11 @@
 $schema: https://json-schema.org/draft/2020-12/schema
-$id: anomaly-kind.guten-tag-generation-config.schema.yaml
+$id: https://example.com/anomaly-kind.guten-tag-generation-config.schema.yaml
 id: anomaly-kind.guten-tag-generation-config.schema.yaml
 title: GutenTAG anomaly kind configuration
 description: Anomaly kind configuration for a time series.
 type: object
 required:
   - kind
-  - parameters
 properties:
   kind:
     type: string
@@ -22,29 +21,35 @@ properties:
       - variance
       - mode-correlation
     description: Kind of the anomaly.
-  parameters:
-    type: object
-    description: Parameters of the chosen anomaly.
-    anyOf:
-      - $ref: "#/definitions/extremum-params"
-      - $ref: "#/definitions/frequency-params"
-      - $ref: "#/definitions/mean-params"
-      - $ref: "#/definitions/pattern-params"
-      - $ref: "#/definitions/pattern-shift-params"
-      - $ref: "#/definitions/platform-params"
-      - $ref: "#/definitions/variance-params"
-      - $ref: "#/definitions/amplitude-params"
-      - $ref: oscillation.guten-tag-generation-config.schema.yaml
-      - type: object
-        maxProperties: 0
+oneOf:
+  - $ref: "#/definitions/extremum-params"
+  - $ref: "#/definitions/frequency-params"
+  - $ref: "#/definitions/mean-params"
+  - $ref: "#/definitions/pattern-params"
+  - $ref: "#/definitions/pattern-shift-params"
+  - $ref: "#/definitions/platform-params"
+  - $ref: "#/definitions/variance-params"
+  - $ref: "#/definitions/amplitude-params"
+  - $ref: "#/definitions/mode-correlation-params"
+  - properties:
+      kind:
+        const: trend
+      oscillation:
+        $ref: oscillation.guten-tag-generation-config.schema.yaml
+      required:
+        - kind
+        - oscillation
+      additionalProperties: false
 
 definitions:
   extremum-params:
-    type: object
     required:
+      - kind
       - min
       - local
     properties:
+      kind:
+        const: extremum
       min:
         type: boolean
         description: Whether a minimum (true) or a maximum (false) should be generated.
@@ -54,25 +59,35 @@ definitions:
       context_window:
         type: integer
         description: How many points to the left and right are used to calculate a LOCAL extremum.
+    additionalProperties: false
   frequency-params:
-    type: object
     required:
+      - kind
       - frequency_factor
     properties:
+      kind:
+        const: frequency
       frequency_factor:
         type: number
         description: Relative change of frequency.
+    additionalProperties: false
   mean-params:
-    type: object
     required:
+      - kind
       - offset
     properties:
+      kind:
+        const: mean
       offset:
         type: number
         description: Offset to shift the time series on the y axis within this anomaly region.
+    additionalProperties: false
   pattern-params:
-    type: object
+    required:
+      - kind
     properties:
+      kind:
+        const: pattern
       sinusoid_k:
         type: number
         description: |
@@ -83,44 +98,66 @@ definitions:
         description: |
           Only used for base oscillations of type 'cylinder_bell_funnel'.
           Pattern variance factor for change in CBF wave.
-    anyOf:
-      - required:
-        - sinusoid_k
-      - required:
-        - cbf_pattern_factor
+# use minProperties to allow having both parameters present
+#    anyOf:
+#      - required:
+#        - sinusoid_k
+#      - required:
+#        - cbf_pattern_factor
+    minProperties: 2
+    additionalProperties: false
   pattern-shift-params:
-    type: object
     required:
+      - kind
       - shift_by
       - transition_window
     properties:
+      kind:
+        const: pattern-shift
       shift_by:
         type: integer
         description: Size of the shift length to the right. Can be negative for shift to the left.
       transition_window:
         type: integer
         description: Number of points to the left and right used to interpolate a smooth transition.
+    additionalProperties: false
   platform-params:
-    type: object
     required:
+      - kind
       - value
     properties:
+      kind:
+        const: platform
       value:
         type: number
         description: Value of the platform on the y axis.
+    additionalProperties: false
   variance-params:
-    type: object
     required:
+      - kind
       - variance
     properties:
+      kind:
+        const: variance
       variance:
         type: number
         description: Value of the new variance.
+    additionalProperties: false
   amplitude-params:
-    type: object
     required:
+      - kind
       - amplitude_factor
     properties:
+      kind:
+        const: amplitude
       amplitude_factor:
         type: number
         description: Relative change of the amplitude.
+    additionalProperties: false
+  mode-correlation-params:
+    required:
+      - kind
+    properties:
+      kind:
+        const: mode-correlation
+    additionalProperties: false

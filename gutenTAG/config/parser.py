@@ -5,11 +5,11 @@ from copy import deepcopy
 from dataclasses import dataclass, asdict
 from typing import Dict, Optional, Tuple, List
 
-from ..anomalies import Anomaly, Position, AnomalyKind, BaseAnomaly
-from ..base_oscillations import BaseOscillation, BaseOscillationInterface
-from ..utils.compatibility import Compatibility
-from ..utils.default_values import default_values
-from ..utils.global_variables import BASE_OSCILLATION, BASE_OSCILLATIONS, TIMESERIES, PARAMETERS, ANOMALIES
+from gutenTAG.anomalies import Anomaly, Position, AnomalyKind, BaseAnomaly
+from gutenTAG.base_oscillations import BaseOscillation, BaseOscillationInterface
+from gutenTAG.utils.compatibility import Compatibility
+from gutenTAG.utils.default_values import default_values
+from gutenTAG.utils.global_variables import BASE_OSCILLATION, BASE_OSCILLATIONS, TIMESERIES, PARAMETERS, ANOMALIES
 
 
 @dataclass
