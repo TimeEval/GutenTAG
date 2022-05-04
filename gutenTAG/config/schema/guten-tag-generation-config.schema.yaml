@@ -1,5 +1,5 @@
 $schema: https://json-schema.org/draft/2020-12/schema
-$id: guten-tag-generation-config.schema.yaml
+$id: https://example.com/guten-tag-generation-config.schema.yaml
 id: guten-tag-generation-config.schema.yaml
 title: GutenTAG generation config schema
 description: |

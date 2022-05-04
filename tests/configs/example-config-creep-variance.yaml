@@ -11,5 +11,4 @@ timeseries:
         channel: 0
         kinds:
           - kind: variance
-            parameters:
-              variance: 1.0
+            variance: 1.0

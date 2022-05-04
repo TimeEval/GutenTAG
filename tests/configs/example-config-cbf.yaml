@@ -9,5 +9,4 @@ timeseries:
         channel: 0
         kinds:
           - kind: platform
-            parameters:
-              value: 0
+            value: 0

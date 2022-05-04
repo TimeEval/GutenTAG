@@ -9,5 +9,4 @@ timeseries:
         channel: 0
         kinds:
           - kind: variance
-            parameters:
-              variance: 0.5
+            variance: 0.5

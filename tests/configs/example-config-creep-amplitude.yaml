@@ -10,5 +10,4 @@ timeseries:
         channel: 0
         kinds:
           - kind: amplitude
-            parameters:
-              amplitude_factor: 2.0
+            amplitude_factor: 2.0

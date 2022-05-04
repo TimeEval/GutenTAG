@@ -12,5 +12,4 @@ timeseries:
         length: 20
         kinds:
           - kind: frequency
-            parameters:
-              frequency_factor: 2.0
+            frequency_factor: 2.0

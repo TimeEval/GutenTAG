@@ -114,7 +114,7 @@ if __name__ == "__main__":
             "Programming Language :: Python :: 3.10"
         ],
         packages=find_packages(exclude=("tests", "tests.*")),
-        package_data={"gutenTAG": ["py.typed"]},
+        package_data={"gutenTAG": ["py.typed", "config/schema/*"]},
         install_requires=REQUIRED,
         python_requires=">=3.7",
         test_suite="tests",

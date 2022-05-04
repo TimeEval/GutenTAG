@@ -1,5 +1,5 @@
 $schema: https://json-schema.org/draft/2020-12/schema
-$id: anomaly.guten-tag-generation-config.schema.yaml
+$id: https://example.com/anomaly.guten-tag-generation-config.schema.yaml
 id: anomaly.guten-tag-generation-config.schema.yaml
 title: GutenTAG anomaly configuration
 description: Anomaly configuration for a time series.

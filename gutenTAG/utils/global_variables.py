@@ -1,3 +1,6 @@
+from pathlib import Path
+
+
 SUPERVISED_FILENAME = "train_anomaly.csv"
 SEMI_SUPERVISED_FILENAME = "train_no_anomaly.csv"
 UNSUPERVISED_FILENAME = "test.csv"
@@ -33,7 +36,7 @@ class ANOMALY_TYPE_NAMES:
 
 
 class PARAMETERS:
-    PARAMETERS = "parameters"
+    OSCILLATION = "oscillation"
     LENGTH = "length"
     FREQUENCY = "frequency"
     AMPLITUDE = "amplitude"
@@ -58,3 +61,24 @@ class PARAMETERS:
     POSITION = "position"
     EXACT_POSITION = "exact-position"
     CREEP_LENGTH = "creep-length"
+
+
+class CONFIG_SCHEMA:
+    BASE_ID = "guten-tag-generation-config.schema.yaml"
+    SCHEMA_DOMAIN = "https://example.com"
+    SCHEMA_FOLDER_PATH = Path("generation-config-schema")
+
+    SCHEMA_PART_IDS = [
+        "anomaly.guten-tag-generation-config.schema.yaml",
+        "anomaly-kind.guten-tag-generation-config.schema.yaml",
+        "formula.guten-tag-generation-config.schema.yaml",
+        "oscillation.guten-tag-generation-config.schema.yaml"
+    ]
+
+    @staticmethod
+    def schema_path(schema_id: str, path: Path = SCHEMA_FOLDER_PATH) -> Path:
+        return path / schema_id
+
+    @staticmethod
+    def schema_name(schema_id: str, domain: str = SCHEMA_DOMAIN) -> str:
+        return f"{domain}/{schema_id}"

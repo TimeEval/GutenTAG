@@ -29,7 +29,7 @@ timeseries:
 As seen in the YAML schema, in one config file multiple time series with multiple anomalies can be defined.
 Each anomaly can furthermore be a combination of multiple anomaly types (e.g., platform and variance).
 
-We also provide a [JSON schema definition](../generation-config-schema/README.md) that also works with YAML files.
+We also provide a [JSON schema definition](config-schema.md) that also works with YAML files.
 
 ### Commands
 

@@ -10,5 +10,4 @@ timeseries:
         channel: 0
         kinds:
           - kind: mean
-            parameters:
-              offset: 1.0
+            offset: 1.0

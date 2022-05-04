@@ -1,5 +1,6 @@
 __pycache__
 .idea
+.vscode
 ./generated
 generated-timeseries
 *.egg-info

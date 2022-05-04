@@ -9,5 +9,4 @@ timeseries:
         channel: 0
         kinds:
           - kind: pattern
-            parameters:
-              sinusoid_k: 10
+            sinusoid_k: 10

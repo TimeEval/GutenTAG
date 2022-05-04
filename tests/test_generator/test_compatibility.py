@@ -1,7 +1,6 @@
-from copy import deepcopy
 from unittest import TestCase
 
-from gutenTAG.generator.parser import ConfigParser
+from gutenTAG.config.parser import ConfigParser
 
 
 class TestCompatibility(TestCase):
@@ -24,10 +23,8 @@ class TestCompatibility(TestCase):
                             "kinds": [
                                 {
                                     "kind": "pattern-shift",
-                                    "parameters": {
-                                        "shift_by": 5,
-                                        "transition_window": 10
-                                    }
+                                    "shift_by": 5,
+                                    "transition_window": 10
                                 }
                             ]
                         }
@@ -53,14 +50,11 @@ class TestCompatibility(TestCase):
                             "kinds": [
                                 {
                                     "kind": "pattern-shift",
-                                    "parameters": {
-                                        "shift_by": 5,
-                                        "transition_window": 10
-                                    }
+                                    "shift_by": 5,
+                                    "transition_window": 10
                                 },
                                 {
                                     "kind": "mode-correlation",
-                                    "parameters": {}
                                 }
                             ]
                         }

@@ -14,5 +14,3 @@ timeseries:
         channel: 0
         kinds:
           - kind: mode-correlation
-            parameters:
-              # defaults

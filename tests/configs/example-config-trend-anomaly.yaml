@@ -9,6 +9,5 @@ timeseries:
         channel: 0
         kinds:
           - kind: trend
-            parameters:
+            oscillation:
               kind: sine
-              length: 40

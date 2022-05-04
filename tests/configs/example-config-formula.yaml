@@ -16,13 +16,11 @@ timeseries:
         length: 20
         kinds:
           - kind: pattern-shift
-            parameters:
-              shift_by: 5
-              transition_window: 5
+            shift_by: 5
+            transition_window: 5
       - position: end
         channel: 1
         length: 20
         kinds:
           - kind: mean
-            parameters:
-              offset: 1.5
+            offset: 1.5
