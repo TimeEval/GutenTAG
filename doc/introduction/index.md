@@ -1,32 +1,43 @@
 # Introduction
 
-The GutenTAG is a good timeseries anomaly generator. As a user, you can choose between several [Base Oscillations](base-oscillations.md) and [Anomaly Types](anomaly-types.md) which are applied on the base oscillations. However, not all anomalies can be applied on all base oscillations. An overview can be found [here](#combinations).
+The GutenTAG is a good timeseries anomaly generator.
+As a user, you can choose between several [Base Oscillations](base-oscillations.md) and [Anomaly Types](anomaly-types.md) which are applied on the base oscillations.
+However, not all anomalies can be applied on all base oscillations.
+An overview can be found [here](#combinations).
 
 ## Installation
 
-```bash
-# clone GutenTAG repository from gitlab or extract the archive
-git clone git@gitlab.hpi.de:akita/guten-tag.git #or unzip guten-tag.zip
-# or for github:
-git clone git@github.com:HPI-Information-Systems/gutentag.git
+You can install GutenTAG from the official Python Package Index or from source.
 
-cd guten-tag
+- Installation from PyPI:
 
-# (optionally) create a new conda environment with Python 3
-conda create -n gutentag python=3.8
-conda activate gutentag
+  ```bash
+  pip install timeeval-gutenTAG
+  ```
 
-# install dependencies
-pip install -r requirements.txt
+- Installation from source:
 
-# test installation
-python -m gutenTAG
-```
+  ```bash
+  # clone GutenTAG repository from gitlab or extract the archive
+  git clone git@gitlab.hpi.de:akita/guten-tag.git #or unzip guten-tag.zip
+  # or for github:
+  git clone git@github.com:HPI-Information-Systems/gutentag.git
+
+  cd guten-tag
+
+  # (optionally) create a new conda environment with Python 3
+  conda create -n gutentag python=3.8
+  conda activate gutentag
+
+  # install dependencies
+  pip install -r requirements.txt
+  ```
 
 Test the installation with `python -m gutenTAG` and you should see the greeting and usage instructions:
 
 ```plain
 $ python -m gutenTAG
+
 
                       Welcome to
 
@@ -37,11 +48,16 @@ $ python -m gutenTAG
      | |__| | |_| | ||  __/ | | | |/ ____ \ |__| |_|
       \_____|\__,_|\__\___|_| |_|_/_/    \_\_____(_)
 
+                     Version 0.2.1
+
 "Good day!" wishes your friendly Timeseries Anomaly Generator.
 
 
 
-usage: __main__.py [-h] --config-yaml CONFIG_YAML [--output-dir OUTPUT_DIR] [--plot] [--no-save] [--seed SEED] [--addons [ADDONS ...]] [--n_jobs N_JOBS] [--only ONLY]
+usage: __main__.py [-h] [--version] --config-yaml CONFIG_YAML
+                   [--output-dir OUTPUT_DIR] [--plot] [--no-save]
+                   [--seed SEED] [--addons [ADDONS [ADDONS ...]]]
+                   [--n_jobs N_JOBS] [--only ONLY]
 __main__.py: error: the following arguments are required: --config-yaml
 ```
 Go to the [usage-page](../usage.md) for further instructions on how to call GutenTAG.
@@ -55,6 +71,7 @@ Each time series has the following properties:
 - length
 - a list of base oscillations defining the different channels
 - a list of anomalies (at different positions in the time series)
+- (some additional optional configuration options)
 
 ### Internal Process
 1. We first generate the base oscillation.
@@ -62,7 +79,7 @@ Each time series has the following properties:
     1. The location of an anomaly is defined by the given position (in time)
         1. A position can be an exact time stamp or index in the time series
         2. or an approximate region like _beginning_, _middle_, or _end_. Here, GutenTAG will randomly choose a cycle in the corresponding region and will use its start as position.
-    2. and the channel.
+    2. and the channel defined by the channel ID.
 4. Afterwards, the variations like _noise_, _trend_, and _offset_ are applied to the time series.
 
 

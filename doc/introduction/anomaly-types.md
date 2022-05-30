@@ -76,6 +76,9 @@ The generator comes with the following anomaly types in [gutenTAG/anomalies/type
 |sinusoid_k|Float|[Only for `Sine`] Ramming factor for changing sine waves|
 |cbf_pattern_factor|Float|[Only for `cylinder_bell_funnel`] Pattern variance factor for change in CBF wave.|
 
+Only one of the parameters above is necessary.
+`sinusoid_k` works with `sine` BOs, while `cbf_pattern_factor` works with `cylinder-bell-funnel` BOs.
+
 ## Pattern Shift
 
 ![pattern-shift](images/pattern-shift.png)
@@ -102,6 +105,7 @@ The generator comes with the following anomaly types in [gutenTAG/anomalies/type
 ![trend](images/trend.png)
 
 A trend anomaly can have any form of the base oscillations.
+Use the same parameters as for the base oscillations.
 
 ## Variance
 
@@ -152,7 +156,7 @@ timeseries:
         channel: 0
         kinds:
           - kind: variance
-            parameters:
-              variance: 1.0
+            variance: 1.0
 ```
+
 ![example-anomaly-creep.png](images/example-anomaly-creep.png)

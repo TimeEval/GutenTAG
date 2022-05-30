@@ -9,6 +9,13 @@ GutenTAG has a simple add-on feature which can be activated by using the [CLI](u
 An add-on can be written and defined with the help of the [`BaseAddOn`](../gutenTAG/addons/__init__.py) class. This class defines two methods, that are called after the CLI tool has already saved the time series to disk:
 
 ```python
+import argparse
+
+from typing import Tuple
+from gutenTAG import GutenTAG
+from gutenTAG.generator import Overview
+
+
 class BaseAddOn:
     def process(self, overview: Overview, gutenTAG: GutenTAG, args: argparse.Namespace) -> Tuple[Overview, GutenTAG]:
         """Gets called before `process_generators`"""
