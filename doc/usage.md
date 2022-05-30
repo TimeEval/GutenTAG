@@ -22,8 +22,7 @@ timeseries:
         [creep-length: Int]
         kinds:
           - kind: Enum[extremum,frequency,mean,pattern,pattern-shift,platform,variance,amplitude,trend,mode-correlation]
-            parameters:
-              # corresponding parameters from [Introduction -> Anomaly Types](introduction#anomaly-types)
+            # corresponding parameters from [Introduction -> Anomaly Types](introduction#anomaly-types)
 ```
 
 As seen in the YAML schema, in one config file multiple time series with multiple anomalies can be defined.
@@ -52,15 +51,15 @@ See `python -m gutenTAG --help` for the CLI usage and the explanation of the CLI
 
 ### Parameters
 
-|Name|Type| Desription                                                                                         |Default|
-|----|----|----------------------------------------------------------------------------------------------------|-------|
-|config-yaml|String| Path to config.yaml                                                                                |-|
-|output-dir|String| Path to output director                                                                            |`generated-timeseries`|
-|plot|Bool| Whether a plot should be displayed                                                                 |`False`|
-|no-save|Bool| Whether the saving should be skipped                                                               |`False`|
-|seed|Int| Random seed number for reproducibility                                                             |`None`|
-|addons|String| Python import paths (explained in [Advanced Features](advanced-features.md))                       |`[]`|
-|n_jobs|Integer| Number of parallelism to generate multiple time series in parallel                                 |`1`|
+|Name|Type| Description                                                                                          |Default|
+|----|----|------------------------------------------------------------------------------------------------------|-------|
+|config-yaml|String| Path to config.yaml                                                                         |-|
+|output-dir|String| Path to output director                                                                      |`generated-timeseries`|
+|plot|Bool| Whether a plot should be displayed                                                                   |`False`|
+|no-save|Bool| Whether the saving should be skipped                                                              |`False`|
+|seed|Int| Random seed number for reproducibility                                                                |`None`|
+|addons|String| Python import paths (explained in [Advanced Features](advanced-features.md))                     |`[]`|
+|n_jobs|Integer| Number of parallelism to generate multiple time series in parallel                              |`1`|
 |only|String| Name of a time series defined in the config.yaml that is considered while all others are excluded. |`None`|
 
 ### Outputs
@@ -93,7 +92,7 @@ config = {
                {"kind": "sine"}
             ],
             "anomalies": [
-                {"length": 5, "channel": 0, "types": [{"kind": "mean", "parameters": {"offset": .5}}]}
+                {"length": 5, "channel": 0, "types": [{"kind": "mean", "offset": .5}]}
             ]
         }
     ]

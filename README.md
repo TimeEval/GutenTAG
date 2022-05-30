@@ -31,7 +31,8 @@ A GutenTAG time series consists of a single (univariate) or multiple (multivaria
 
    GutenTAG supports Python 3.7, 3.8, 3.9, and 3.10; all other [requirements](./requirements.txt) are installed with the pip-call above.
 
-2. Create a generation configuration file [`example-config.yaml`](./generation_configs/example-config.yaml) with the instructions to generate a single time series with two anomalies in the middle and the end of the series.
+2. Create a generation configuration file [`example-config.yaml`](./generation_configs/example-config.yaml) with the instructions to generate a single time series with two anomalies:
+   A _pattern_ anomaly in the middle and an _amplitude_ anomaly at the end of the series.
    You can use the following content:
 
    ```yaml
@@ -46,19 +47,14 @@ A GutenTAG time series consists of a single (univariate) or multiple (multivaria
      anomalies:
      - position: middle
        length: 50
-       channel: 0
        kinds:
        - kind: pattern
-         parameters:
-           sinusoid_k: 10.0
-           cbf_pattern_factor: 1.0
+         sinusoid_k: 10.0
      - position: end
        length: 10
-       channel: 0
        kinds:
        - kind: amplitude
-         parameters:
-           amplitude_factor: 1.5
+         amplitude_factor: 1.5
    ```
 
 3. Execute GutenTAG with a seed and let it plot the time series:
