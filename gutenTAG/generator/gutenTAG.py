@@ -78,13 +78,16 @@ class GutenTAG:
     def from_dict(config: Dict, plot: bool = False, only: Optional[str] = None) -> GutenTAG:
         # First parse, then validate config, because our own error messages are more precise than
         # the validator's ones.
+        print("Parsing ...")
         config_parser = ConfigParser(plot, only)
         timeseries = []
         for base_oscillations, anomalies, options in config_parser.parse(config):
             ts = TimeSeries(base_oscillations, anomalies, **options.to_dict())
             timeseries.append(ts)
+        print("Validating ...")
         ConfigValidator().validate(config)
 
+        print("Constructing config ...")
         gutentag = GutenTAG()
         gutentag.add_all_timeseries(timeseries)
         gutentag.add_configs_to_overview(config_parser.raw_ts)

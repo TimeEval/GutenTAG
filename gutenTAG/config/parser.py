@@ -53,10 +53,10 @@ class ConfigParser:
         for t, ts in enumerate(config.get(TIMESERIES, [])):
             name = ts.get(PARAMETERS.NAME, f"ts_{t}")
 
-            self.raw_ts.append(deepcopy(ts))
-
             if self._skip_name(name) or not self._check_compatibility(ts):
                 continue
+
+            self.raw_ts.append(deepcopy(ts))
 
             generation_options = GenerationOptions.from_dict(ts)
             generation_options.plot = self.plot
