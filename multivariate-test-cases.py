@@ -1,35 +1,19 @@
-from itertools import permutations, combinations
-from pathlib import Path
+import argparse
 import random
-
-from gutenTAG import GutenTAG
+from itertools import combinations
+from pathlib import Path
 
 import numpy as np
-import pandas as pd
+
+from gutenTAG import GutenTAG
+from gutenTAG.addons.timeeval import TimeEvalAddOn
 
 
+GENERATE_SUPERVISED = False
+GENERATE_SEMI_SUPERVISED = False
 SEED = 42
 random.seed(SEED)
 np.random.seed(SEED)
-
-example_config = {
-    "timeseries": [
-        {
-            "name": "jonas-test",
-            "length": 10000,
-            "base-oscillations": [
-                {"kind": "ecg", "frequency": 1},
-                {"kind": "sine", "frequency": .5},
-                {"kind": "random-walk"},
-            ],
-            "anomalies": [
-                {"length": 1000, "kinds": [{"kind": "variance", "variance": 0.5}]},
-                {"length": 200, "channel": 1, "kinds": [{"kind": "mean", "offset": 3.0}]},
-            ]
-        }
-
-    ]
-}
 
 
 def random_bo(kind: str):
@@ -134,7 +118,7 @@ def random_anomaly(kind: str):
         },
         "mean": {
             "kind": "mean",
-            "offset": np.random.rand()*20 - 10
+            "offset": np.random.rand() * 20 - 10
         },
         "pattern": {
             "kind": "pattern",
@@ -144,7 +128,7 @@ def random_anomaly(kind: str):
         "pattern-shift": {
             "kind": "pattern-shift",
             "shift_by": np.random.randint(-50, 50),
-            "transition_window": 10
+            "transition_window": 50
         },
         "platform": {
             "kind": "platform",
@@ -169,8 +153,8 @@ def create_ts_def(name: str, bo_defs, anom_defs):
     return {
         "name": name,
         "length": 10000,
-        "semi-supervised": True,
-        "supervised": True,
+        "semi-supervised": GENERATE_SEMI_SUPERVISED,
+        "supervised": GENERATE_SUPERVISED,
         "base-oscillations": bo_defs,
         "anomalies": anom_defs
     }
@@ -180,8 +164,8 @@ def gen_channel_series():
     bos = ["ecg", "rw", "poly"]
     anomalies = {
         "ecg": ["frequency", "variance", "extremum"],
-        "random-walk": ["platform", "variance", "extremum"],
-        "polynomial": ["platform", "variance", "extremum"]
+        "rw": ["platform", "variance", "extremum"],
+        "poly": ["platform", "variance", "extremum"]
     }
     anomaly_lengths = [100, 200, 500, 1000]
     n_channels = [2, 5, 10, 50, 100, 500]
@@ -308,14 +292,13 @@ def gen_anomaly_appearance_series():
                 if n_kinds > n:
                     continue
                 n_times = n // n_kinds
-                times = [n_times]*n_kinds
-                remainder = n - (n_times*n_kinds)
+                times = [n_times] * n_kinds
+                remainder = n - (n_times * n_kinds)
                 i = 0
                 while remainder > 0:
                     times[i % n_kinds] += 1
                     remainder -= 1
                     i += 1
-                print(f"k={n_kinds}, n={n}: {times}")
 
                 anomaly_defs = []
                 position = np.random.randint(2500, 7500)
@@ -328,7 +311,6 @@ def gen_anomaly_appearance_series():
                             "channel": int(c),
                             "kinds": [random_anomaly(anom)]
                         })
-                print("anomaly_defs:", len(anomaly_defs))
 
                 timeseries.append(create_ts_def(
                     f"anom-appearance-{n_kinds}-diff-{n}-ANOMS={'_'.join(sorted(anom_tuple))}",
@@ -343,8 +325,8 @@ def gen_special_series():
     return [{
         "name": "sum-cancels-out-anomaly",
         "length": 10000,
-        "semi-supervised": True,
-        "supervised": True,
+        "semi-supervised": GENERATE_SEMI_SUPERVISED,
+        "supervised": GENERATE_SUPERVISED,
         "base-oscillations": [{
             "kind": "sine",
             "frequency": 0.5,
@@ -373,8 +355,8 @@ def gen_special_series():
     }, {
         "name": "3-is-sum-of-2",
         "length": 10000,
-        "semi-supervised": True,
-        "supervised": True,
+        "semi-supervised": GENERATE_SEMI_SUPERVISED,
+        "supervised": GENERATE_SUPERVISED,
         "base-oscillations": [{
             "kind": "sine",
             "frequency": 0.5,
@@ -411,10 +393,10 @@ def gen_special_series():
             "kinds": [{"kind": "extremum", "local": True, "min": False, "context_window": 200}]
         }]
     }, {
-        "name": "creepy-anomalies",
+        "name": "creeping-anomalies",
         "length": 10000,
-        "semi-supervised": True,
-        "supervised": True,
+        "semi-supervised": GENERATE_SEMI_SUPERVISED,
+        "supervised": GENERATE_SUPERVISED,
         "base-oscillations": [{
             "kind": "sine",
             "frequency": 0.5,
@@ -446,28 +428,115 @@ def gen_special_series():
             "channel": 2,
             "kinds": [{"kind": "amplitude", "amplitude_factor": 2}]
         }]
+    }, {
+        "name": "shifted-anomalies",
+        "length": 10000,
+        "semi-supervised": GENERATE_SEMI_SUPERVISED,
+        "supervised": GENERATE_SUPERVISED,
+        "base-oscillations": [{
+            "kind": "sine",
+            "frequency": 0.5,
+            "offset": 2
+        }, {
+            "kind": "polynomial",
+            "polynomial": [0, -2],
+        }, {
+            "kind": "ecg",
+            "frequency": 2,
+            "variance": 0.005
+        }],
+        "anomalies": [{
+            "exact-position": 5200,
+            "length": 200,
+            "channel": 0,
+            "kinds": [{"kind": "frequency", "frequency_factor": 2}]
+        }, {
+            "exact-position": 5300,
+            "length": 200,
+            "channel": 2,
+            "kinds": [{"kind": "frequency", "frequency_factor": .5}]
+        }]
+    }, {
+        "name": "missing-pattern-1",
+        "length": 10000,
+        "semi-supervised": GENERATE_SEMI_SUPERVISED,
+        "supervised": GENERATE_SUPERVISED,
+        "base-oscillations": [{
+            "kind": "ecg",
+            "frequency": 1,
+            "offset": 0,
+            "variance": 0.001
+        }],
+        "anomalies": [{
+            "exact-position": 1715,
+            "length": 8,
+            "channel": 0,
+            "kinds": [
+                {"kind": "platform", "value": 0.5},
+                {"kind": "variance", "variance": 0.05},
+            ]
+        }]
+    }, {
+        "name": "missing-pattern-2",
+        "length": 10000,
+        "semi-supervised": GENERATE_SEMI_SUPERVISED,
+        "supervised": GENERATE_SUPERVISED,
+        "base-oscillations": [{
+            "kind": "sine",
+            "frequency": .25,
+            "offset": 0,
+            "variance": 0
+        }, {
+            "kind": "ecg",
+            "frequency": 1,
+            "offset": 0,
+            "variance": 0
+        }, {
+            "kind": "formula",
+            "formula": {
+                "base": 0,
+                "operation": {
+                    "kind": "*",
+                    "operand": {
+                        "base": 1
+                    }
+                }
+            }
+        }],
+        "anomalies": [{
+            "exact-position": 4316,
+            "length": 7,
+            "channel": 2,
+            "kinds": [{"kind": "platform", "value": 0.3}]
+        }]
     }]
 
 
 if __name__ == '__main__':
+    path = Path("multivariate-test-cases")
     print("Generating config ...")
     config = {
-        "timeseries": gen_special_series()  # gen_channel_series()
+        "timeseries": gen_channel_series() + gen_bo_diversity_series() + gen_anomaly_appearance_series() + gen_special_series()
     }
-    print(len(config["timeseries"]))
-    gutentag = GutenTAG.from_dict(config, plot=False)  #, only="anom-appearance-3-diff-5-ANOMS=amplitude_extremum_frequency")
-    print(gutentag.overview.datasets)
-    dfs = gutentag.generate(return_dataframe=True)
+    gutentag = GutenTAG.from_dict(config, plot=False)
+    gutentag.n_jobs = -1
+    gutentag.overview.add_seed(SEED)
+    gutentag.generate()
+    # dfs = gutentag.generate(return_dataframe=True)
 
+    # df = dfs[4]
+    # # df["sum"] = df["value-0"] + df["value-1"] + df["value-2"]
+    # print(df)
+    # import matplotlib.pyplot as plt
+    # fig, axs = plt.subplots(2, 1, sharex="col")
+    # df[set(df.columns) - {"is_anomaly"}].plot(ax=axs[0])
+    # axs[0].legend()
+    # df["is_anomaly"].plot(ax=axs[1])
+    # axs[1].legend()
+    # plt.show()
 
-    df = dfs[2]
-    # df["sum"] = df["value-0"] + df["value-1"] + df["value-2"]
-    print(df)
-    import matplotlib.pyplot as plt
-    fig, axs = plt.subplots(2, 1, sharex="col")
-    df[set(df.columns) - {"is_anomaly"}].plot(ax=axs[0])
-    axs[0].legend()
-    df["is_anomaly"].plot(ax=axs[1])
-    axs[1].legend()
-    plt.show()
-    # gutentag.save_timeseries(Path("multivariate-test-cases"))
+    gutentag.save_timeseries(path)
+
+    print("Executing addons ...")
+    addon = TimeEvalAddOn()
+    addon.process(overview=gutentag.overview, gutenTAG=gutentag, args=argparse.Namespace(output_dir=path, no_save=False))
