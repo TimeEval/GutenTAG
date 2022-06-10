@@ -3,6 +3,7 @@ from __future__ import annotations
 from enum import Enum
 from pathlib import Path
 from typing import Optional, List
+from hashlib import md5
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -11,6 +12,7 @@ import pandas as pd
 from gutenTAG.anomalies import Anomaly
 from gutenTAG.base_oscillations import BaseOscillationInterface
 from gutenTAG.base_oscillations.utils.consolidator import Consolidator
+from gutenTAG.utils.types import GenerationContext
 
 
 class TrainingType(Enum):
@@ -34,24 +36,31 @@ class TimeSeries:
         self.semi_supervised = semi_supervised
         self.supervised = supervised
         self.will_plot = plot
+        self._rng_counter = 0
 
-    def generate(self):
+    def generate(self, random_seed: Optional[int] = None) -> 'TimeSeries':
         consolidator = Consolidator(self.base_oscillations, self.anomalies)
-        self.timeseries, self.labels = consolidator.generate()
+        self.timeseries, self.labels = consolidator.generate(GenerationContext(seed=self._create_new_seed(random_seed)))
 
         if self.semi_supervised:
             semi_supervised_consolidator = Consolidator(self.base_oscillations, [])
-            self.semi_supervised_timeseries, self.semi_train_labels = semi_supervised_consolidator.generate()
+            self.semi_supervised_timeseries, self.semi_train_labels = semi_supervised_consolidator.generate(
+                GenerationContext(seed=self._create_new_seed(random_seed))
+            )
 
         if self.supervised:
             supervised_consolidator = Consolidator(self.base_oscillations, self.anomalies)
-            self.supervised_timeseries, self.train_labels = supervised_consolidator.generate()
+            self.supervised_timeseries, self.train_labels = supervised_consolidator.generate(
+                GenerationContext(seed=self._create_new_seed(random_seed))
+            )
 
         if self.will_plot:
             self.plot()
 
-    def generate_with_dataframe(self) -> pd.DataFrame:
-        self.generate()
+        return self
+
+    def generate_with_dataframe(self, random_seed: Optional[int] = None) -> pd.DataFrame:
+        self.generate(random_seed)
         return self.to_dataframe()
 
     def plot(self):
@@ -111,3 +120,12 @@ class TimeSeries:
     def to_csv(self, output_dir: Path, training_type: TrainingType = TrainingType.TEST):
         df = self.to_dataframe(training_type)
         df.to_csv(output_dir, sep=",", index=True)
+
+    def _create_new_seed(self, base_seed: Optional[int]) -> int:
+        if base_seed is None:
+            base_seed = np.random.default_rng().integers(1e10)
+        seeds = [int.from_bytes(md5(self.dataset_name.encode("utf-8")).digest(), byteorder="big")]
+        if self._rng_counter > 0:
+            seeds.append(self._rng_counter)
+        self._rng_counter += 1
+        return GenerationContext.re_seed(seeds, base_seed)

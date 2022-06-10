@@ -40,10 +40,10 @@ class AnomalyExtremum(BaseAnomaly):
             context_end = min(anomaly_protocol.end + self.context_window, base.shape[0])
             context = base[context_start:context_end]
             diff = context.max() - context.min()
-            extremum = np.random.rand() * diff
+            extremum = anomaly_protocol.rng.random() * diff
         else:
             diff = base.max() - base.min()
-            extremum = (np.random.rand() + 0.5) * diff
+            extremum = (anomaly_protocol.rng.random() + 0.5) * diff
 
         # let extremum be significant enough to be distinguishable from noise
         max_noise: float = np.max(np.abs(anomaly_protocol.base_oscillation.noise))

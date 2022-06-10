@@ -5,7 +5,7 @@ import numpy as np
 
 from . import BaseAnomaly
 from .. import AnomalyProtocol
-from ...utils.types import BaseOscillationKind
+from gutenTAG.utils.base_oscillation_kind import BaseOscillationKind
 
 
 @dataclass

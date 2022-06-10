@@ -2,11 +2,13 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from typing import Optional
+
 import numpy as np
 
-from ..utils.types import BaseOscillationKind
 from ..utils.default_values import default_values
 from ..utils.global_variables import PARAMETERS, BASE_OSCILLATIONS
+from ..utils.types import BOGenerationContext
+from gutenTAG.utils.base_oscillation_kind import BaseOscillationKind
 
 
 class BaseOscillationInterface(ABC):
@@ -32,22 +34,22 @@ class BaseOscillationInterface(ABC):
         self.noise: Optional[np.ndarray] = None
         self.trend_series: Optional[np.ndarray] = None
 
-    def generate_noise(self, variance: float, length: int) -> np.ndarray:
-        return np.random.normal(0, variance, length)
+    def generate_noise(self, ctx: BOGenerationContext, variance: float, length: int) -> np.ndarray:
+        return ctx.rng.normal(0, variance, length)
 
-    def _generate_trend(self) -> np.ndarray:
+    def _generate_trend(self, ctx: BOGenerationContext) -> np.ndarray:
         trend_series = np.zeros(self.length)
         if self.trend:
             self.trend.length = self.length
-            self.trend.generate_timeseries_and_variations()
+            self.trend.generate_timeseries_and_variations(ctx)
             if self.trend.timeseries is not None:
                 trend_series = self.trend.timeseries
         return trend_series
 
-    def generate_timeseries_and_variations(self, channel: int = 0, **kwargs):
-        self.timeseries = self.generate_only_base(channel=channel, **kwargs)
-        self.trend_series = self._generate_trend()
-        self.noise = self.generate_noise(self.variance * self.amplitude, self.length)
+    def generate_timeseries_and_variations(self, ctx: BOGenerationContext, **kwargs):
+        self.timeseries = self.generate_only_base(ctx, **kwargs)
+        self.trend_series = self._generate_trend(ctx.to_trend())
+        self.noise = self.generate_noise(ctx, self.variance * self.amplitude, self.length)
 
     @abstractmethod
     def get_timeseries_periods(self) -> Optional[int]:
@@ -62,7 +64,7 @@ class BaseOscillationInterface(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def generate_only_base(self, *args, **kwargs) -> np.ndarray:
+    def generate_only_base(self, ctx: BOGenerationContext, *args, **kwargs) -> np.ndarray:
         raise NotImplementedError()
 
     @classmethod

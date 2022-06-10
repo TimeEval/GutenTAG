@@ -5,7 +5,8 @@ from typing import List, Optional
 import numpy as np
 
 from ...utils.logger import GutenTagLogger
-from ...utils.types import BaseOscillationKind
+from ...utils.types import AnomalyGenerationContext
+from gutenTAG.utils.base_oscillation_kind import BaseOscillationKind
 
 
 @dataclass
@@ -19,11 +20,22 @@ class AnomalyProtocol:
     start: int
     end: int
     channel: int
-    base_oscillation: 'BaseOscillationInterface'  # type: ignore # otherwise we have a circular import
-    base_oscillation_kind: BaseOscillationKind
+    ctx: AnomalyGenerationContext
     labels: LabelRange
     creep_length: int = 0
     subsequences: List[np.ndarray] = field(default_factory=lambda: [])
+
+    @property
+    def rng(self) -> np.random.Generator:
+        return self.ctx.rng
+
+    @property
+    def base_oscillation(self) -> 'BaseOscillationInterface':  # type: ignore # otherwise we have a circular import
+        return self.ctx.base_oscillation
+
+    @property
+    def base_oscillation_kind(self) -> BaseOscillationKind:
+        return self.ctx.base_oscillation_kind
 
     @property
     def length(self) -> int:

@@ -31,7 +31,7 @@ class AnomalyTrend(BaseAnomaly):
         amplitude_bell = MinMaxScaler(feature_range=(0, 1)).fit_transform(amplitude_bell.reshape(-1, 1)).reshape(-1)
 
         self.trend.length = length
-        self.trend.generate_timeseries_and_variations()
+        self.trend.generate_timeseries_and_variations(anomaly_protocol.ctx.to_bo())
         timeseries = self.trend.timeseries
 
         timeseries *= amplitude_bell

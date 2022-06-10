@@ -5,7 +5,8 @@ from scipy.stats import norm
 from sklearn.preprocessing import MinMaxScaler
 
 from .interface import BaseOscillationInterface
-from ..utils.types import BaseOscillationKind
+from ..utils.types import BOGenerationContext
+from gutenTAG.utils.base_oscillation_kind import BaseOscillationKind
 
 
 class RandomWalk(BaseOscillationInterface):
@@ -16,6 +17,7 @@ class RandomWalk(BaseOscillationInterface):
         return BaseOscillationKind.RandomWalk
 
     def generate_only_base(self,
+                           ctx: BOGenerationContext,
                            length: Optional[int] = None,
                            amplitude: Optional[float] = None,
                            smoothing: Optional[float] = None,
@@ -25,7 +27,7 @@ class RandomWalk(BaseOscillationInterface):
         smoothing = smoothing or self.smoothing
 
         origin = np.zeros(1)
-        steps = np.random.choice([-1., 0., 1.], size=length - 1)
+        steps = ctx.rng.choice([-1., 0., 1.], size=length - 1)
         ts = np.concatenate([origin, steps]).cumsum(0)
 
         if smoothing:

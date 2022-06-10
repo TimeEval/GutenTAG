@@ -19,10 +19,11 @@ from ..utils.tqdm_joblib import tqdm_joblib
 
 
 class GutenTAG:
-    def __init__(self, n_jobs: int = 1):
+    def __init__(self, n_jobs: int = 1, seed: Optional[int] = None):
         self.overview = Overview()
         self.timeseries: List[TimeSeries] = []
         self.n_jobs = n_jobs
+        self.seed = seed
 
     def add_timeseries(self, ts: TimeSeries):
         self.timeseries.append(ts)
@@ -35,14 +36,12 @@ class GutenTAG:
 
     def generate(self, return_dataframe: bool = False) -> Optional[List[pd.DataFrame]]:
         with tqdm_joblib(tqdm(desc="Generating datasets", total=len(self.timeseries))):
-            func = lambda ts: ts.generate_with_dataframe if return_dataframe else ts.generate
-
-            dfs = Parallel(n_jobs=self.n_jobs)(
-                delayed(func(ts))() for ts in self.timeseries
+            self.timeseries = Parallel(n_jobs=self.n_jobs)(
+                delayed(ts.generate)(self.seed) for ts in self.timeseries
             )
 
         if return_dataframe:
-            return dfs
+            return [ts.to_dataframe() for ts in self.timeseries]
         return None
 
     def save_timeseries(self, output_dir: Path):

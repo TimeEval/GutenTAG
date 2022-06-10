@@ -1,13 +1,13 @@
-from typing import Optional, Any, List, Dict, Type
+from typing import Optional, Any, Dict, Type
 
-from .interface import BaseOscillationInterface
-from .polynomial import Polynomial
-from .sine import Sine
-from .random_walk import RandomWalk
 from .cylinder_bell_funnel import CylinderBellFunnel
 from .ecg import ECG
-from .random_mode_jump import RandomModeJump
 from .formula import Formula  # type: ignore  # mypy ends up in recursion
+from .interface import BaseOscillationInterface
+from .polynomial import Polynomial
+from .random_mode_jump import RandomModeJump
+from .random_walk import RandomWalk
+from .sine import Sine
 from ..utils.global_variables import BASE_OSCILLATION_NAMES
 
 

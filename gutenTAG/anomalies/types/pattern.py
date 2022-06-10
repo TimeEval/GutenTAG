@@ -6,7 +6,7 @@ import numpy as np
 
 from . import BaseAnomaly
 from .. import AnomalyProtocol
-from ...utils.types import BaseOscillationKind
+from gutenTAG.utils.base_oscillation_kind import BaseOscillationKind
 
 
 @dataclass
@@ -26,11 +26,12 @@ class AnomalyPattern(BaseAnomaly):
             sine = anomaly_protocol.base_oscillation
             subsequence = sinusoid(sine.timeseries[anomaly_protocol.start:anomaly_protocol.end], self.sinusoid_k, sine.amplitude)
             anomaly_protocol.subsequences.append(subsequence)
-        elif anomaly_protocol.base_oscillation_kind == BaseOscillationKind.RandomWalk:
-            self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind.name)
         elif anomaly_protocol.base_oscillation_kind == BaseOscillationKind.CylinderBellFunnel:
             cbf = anomaly_protocol.base_oscillation
-            subsequence = cbf.generate_only_base(variance_pattern_length=cbf.variance_pattern_length * self.cbf_pattern_factor)[anomaly_protocol.start:anomaly_protocol.end]
+            subsequence = cbf.generate_only_base(
+                anomaly_protocol.ctx.to_bo(),
+                variance_pattern_length=cbf.variance_pattern_length * self.cbf_pattern_factor
+            )[anomaly_protocol.start:anomaly_protocol.end]
             anomaly_protocol.subsequences.append(subsequence)
         elif anomaly_protocol.base_oscillation_kind == BaseOscillationKind.ECG:
             ecg = anomaly_protocol.base_oscillation

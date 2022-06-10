@@ -6,7 +6,7 @@ from scipy.stats import norm
 from sklearn.preprocessing import MinMaxScaler
 
 from . import BaseAnomaly, AnomalyProtocol
-from ...utils.types import BaseOscillationKind
+from gutenTAG.utils.base_oscillation_kind import BaseOscillationKind
 
 
 @dataclass
