@@ -3,7 +3,8 @@ from typing import Optional
 import numpy as np
 
 from .interface import BaseOscillationInterface
-from ..utils.types import BaseOscillationKind
+from ..utils.base_oscillation_kind import BaseOscillationKind
+from ..utils.types import BOGenerationContext
 
 
 class Sine(BaseOscillationInterface):
@@ -14,6 +15,7 @@ class Sine(BaseOscillationInterface):
         return int((self.length / 100) * self.frequency)
 
     def generate_only_base(self,
+                           ctx: BOGenerationContext,
                            length: Optional[int] = None,
                            frequency: Optional[float] = None,
                            amplitude: Optional[float] = None,

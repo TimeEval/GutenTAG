@@ -3,7 +3,8 @@ from typing import Optional, List
 import numpy as np
 
 from .interface import BaseOscillationInterface
-from ..utils.types import BaseOscillationKind
+from ..utils.base_oscillation_kind import BaseOscillationKind
+from ..utils.types import BOGenerationContext
 
 
 class Polynomial(BaseOscillationInterface):
@@ -14,6 +15,7 @@ class Polynomial(BaseOscillationInterface):
         return None
 
     def generate_only_base(self,
+                           ctx: BOGenerationContext,
                            length: Optional[int] = None,
                            polynomial: Optional[List[float]] = None,
                            *args, **kwargs) -> np.ndarray:

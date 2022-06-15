@@ -1,5 +1,5 @@
 import argparse
-from typing import List, Tuple
+from typing import Tuple
 
 from gutenTAG import GutenTAG
 from gutenTAG.generator import Overview

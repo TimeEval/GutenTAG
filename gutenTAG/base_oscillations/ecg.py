@@ -1,11 +1,11 @@
-from math import ceil
 from typing import Optional
 
 import neurokit2 as nk
 import numpy as np
 
 from .interface import BaseOscillationInterface
-from ..utils.types import BaseOscillationKind
+from ..utils.base_oscillation_kind import BaseOscillationKind
+from ..utils.types import BOGenerationContext
 
 
 class ECG(BaseOscillationInterface):
@@ -16,18 +16,18 @@ class ECG(BaseOscillationInterface):
         return BaseOscillationKind.ECG
 
     def generate_only_base(self,
+                           ctx: BOGenerationContext,
                            length: Optional[int] = None,
                            frequency: Optional[float] = None,
-                           channels: Optional[int] = None,
                            *args, **kwargs) -> np.ndarray:
         length = length or self.length
         frequency = int(frequency or self.frequency)
 
         periods = (length / 100) * frequency
-        sampling_rate = ceil(length / 10.0)
+        sampling_rate = np.ceil(length / 10.0)
         ecg = nk.ecg_simulate(duration=10,
                               sampling_rate=sampling_rate,
                               heart_rate=periods * 6,
-                              random_state=np.random.get_state()[1][0],  # type: ignore
-                              method='simple')[:length]
+                              random_state=ctx.rng.integers(0, int(1e9)),
+                              method="simple")[:length]
         return ecg

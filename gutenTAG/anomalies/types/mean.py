@@ -12,6 +12,10 @@ class AnomalyMeanParameters:
 
 
 class AnomalyMean(BaseAnomaly):
+    def __init__(self, parameters: AnomalyMeanParameters):
+        super().__init__()
+        self.offset = parameters.offset
+
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
         base = anomaly_protocol.base_oscillation
         ts: np.ndarray = base.timeseries
@@ -23,7 +27,3 @@ class AnomalyMean(BaseAnomaly):
     @staticmethod
     def get_parameter_class() -> Type[AnomalyMeanParameters]:
         return AnomalyMeanParameters
-
-    def __init__(self, parameters: AnomalyMeanParameters):
-        super().__init__()
-        self.offset = parameters.offset

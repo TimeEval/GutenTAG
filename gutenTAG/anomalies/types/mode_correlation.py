@@ -1,10 +1,10 @@
+import logging
 from dataclasses import dataclass
 from typing import Type
-import logging
 
 from . import BaseAnomaly
 from .. import AnomalyProtocol
-from ...utils.types import BaseOscillationKind
+from ...utils.base_oscillation_kind import BaseOscillationKind
 
 
 @dataclass

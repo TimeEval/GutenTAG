@@ -1,12 +1,15 @@
 # type: ignore  # mypy ends up in recursion
 
 from __future__ import annotations
+
 from enum import Enum
 from typing import Optional, List, Dict, Any, NamedTuple, Union
+
 import numpy as np
 
 from .interface import BaseOscillationInterface
-from ..utils.types import BaseOscillationKind
+from ..utils.base_oscillation_kind import BaseOscillationKind
+from ..utils.types import BOGenerationContext
 
 
 BASE = "base"
@@ -24,9 +27,9 @@ class Formula(BaseOscillationInterface):
     def get_base_oscillation_kind(self) -> BaseOscillationKind:
         return BaseOscillationKind.Formula
 
-    def generate_only_base(self, prev_channels: Optional[List[np.ndarray]] = None, *args, **kwargs) -> np.ndarray:
+    def generate_only_base(self, ctx: BOGenerationContext, *args, **kwargs) -> np.ndarray:
         formula = self.formula
-        c = prev_channels if prev_channels is not None else []
+        c = ctx.previous_channels if ctx.previous_channels else []
 
         ts = FormulaParser(formula).parse(c).execute()
 

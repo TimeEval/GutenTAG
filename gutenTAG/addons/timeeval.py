@@ -1,16 +1,18 @@
-import os
 import argparse
-from typing import List, Dict, Tuple, Optional, Iterable, Any, Union
+import os
 from enum import Enum
+from typing import List, Dict, Tuple, Optional, Iterable, Any, Union
 
 import numpy as np
 import pandas as pd
-from . import BaseAddOn
-from .. import GutenTAG
-from ..generator import Overview, TimeSeries
-from ..utils.global_variables import SUPERVISED_FILENAME, UNSUPERVISED_FILENAME, SEMI_SUPERVISED_FILENAME, \
+
+from gutenTAG import GutenTAG
+from gutenTAG.generator import Overview, TimeSeries
+from gutenTAG.utils.default_values import default_values
+from gutenTAG.utils.global_variables import SUPERVISED_FILENAME, UNSUPERVISED_FILENAME, SEMI_SUPERVISED_FILENAME, \
     BASE_OSCILLATIONS, ANOMALIES, PARAMETERS, BASE_OSCILLATION, BASE_OSCILLATION_NAMES
-from ..utils.default_values import default_values
+from . import BaseAddOn
+
 
 columns = [
     "collection_name",

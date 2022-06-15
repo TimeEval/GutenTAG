@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import Type
 
@@ -17,10 +15,6 @@ class AnomalyExtremumParameters:
 
 
 class AnomalyExtremum(BaseAnomaly):
-    @staticmethod
-    def get_parameter_class() -> Type[AnomalyExtremumParameters]:
-        return AnomalyExtremumParameters
-
     def __init__(self, parameters: AnomalyExtremumParameters):
         super().__init__()
         self.min = parameters.min
@@ -40,10 +34,10 @@ class AnomalyExtremum(BaseAnomaly):
             context_end = min(anomaly_protocol.end + self.context_window, base.shape[0])
             context = base[context_start:context_end]
             diff = context.max() - context.min()
-            extremum = np.random.rand() * diff
+            extremum = anomaly_protocol.rng.random() * diff
         else:
             diff = base.max() - base.min()
-            extremum = (np.random.rand() + 0.5) * diff
+            extremum = (anomaly_protocol.rng.random() + 0.5) * diff
 
         # let extremum be significant enough to be distinguishable from noise
         max_noise: float = np.max(np.abs(anomaly_protocol.base_oscillation.noise))
@@ -56,3 +50,7 @@ class AnomalyExtremum(BaseAnomaly):
             value = base[anomaly_protocol.start] + extremum
         anomaly_protocol.subsequences.append(np.array([value]))
         return anomaly_protocol
+
+    @staticmethod
+    def get_parameter_class() -> Type[AnomalyExtremumParameters]:
+        return AnomalyExtremumParameters
