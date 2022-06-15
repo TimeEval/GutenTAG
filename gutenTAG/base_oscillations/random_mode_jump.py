@@ -29,7 +29,7 @@ class RandomModeJump(BaseOscillationInterface):
         random_seed = random_seed or self.random_seed
         step_length = int(length // frequency)
 
-        base_random_steps = self._generate_random_steps(length, step_length, random_seed)
+        base_random_steps = self._generate_random_steps(ctx, length, step_length, random_seed)
         channel_amplitude = self._generate_channel_amplitude(ctx.channel, channel_diff, channel_offset)
         ts = base_random_steps * channel_amplitude
 
