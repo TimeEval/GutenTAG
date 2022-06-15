@@ -58,7 +58,6 @@ class TestSeeding(unittest.TestCase):
         dfs1 = self._create_and_generate(self.config_multiple, seed=42)
         config2 = deepcopy(self.config_multiple)
         config2["timeseries"] = config2["timeseries"][::-1]
-        print(config2)
         dfs2 = self._create_and_generate(self.config_multiple, seed=42)
         for df1, df2 in zip(dfs1, dfs2):
             self._assert_df_equal(df1, df2)
