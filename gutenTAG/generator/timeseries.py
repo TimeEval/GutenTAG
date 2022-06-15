@@ -8,6 +8,7 @@ from hashlib import md5
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from numpy.random import SeedSequence
 
 from gutenTAG.anomalies import Anomaly
 from gutenTAG.base_oscillations import BaseOscillationInterface
@@ -121,9 +122,9 @@ class TimeSeries:
         df = self.to_dataframe(training_type)
         df.to_csv(output_dir, sep=",", index=True)
 
-    def _create_new_seed(self, base_seed: Optional[int]) -> int:
+    def _create_new_seed(self, base_seed: Optional[int]) -> SeedSequence:
         if base_seed is None:
-            base_seed = np.random.default_rng().integers(1e10)
+            base_seed = np.random.SeedSequence()
         seeds = [int.from_bytes(md5(self.dataset_name.encode("utf-8")).digest(), byteorder="big")]
         if self._rng_counter > 0:
             seeds.append(self._rng_counter)

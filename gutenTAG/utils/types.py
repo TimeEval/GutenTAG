@@ -2,15 +2,14 @@ from dataclasses import dataclass
 from typing import List, Tuple, Optional, Union
 
 import numpy as np
+from numpy.random import SeedSequence
 
 from gutenTAG.utils.base_oscillation_kind import BaseOscillationKind
 
 
 class GenerationContext:
-    SEED_PRIME: int = 59
-
-    def __init__(self, seed: int):
-        self.seed: int = seed
+    def __init__(self, seed: SeedSequence):
+        self.seed: SeedSequence = seed
         self.rng: np.random.Generator = np.random.default_rng(self.seed)
 
     def to_bo(self, channel: int = 0, previous_channels: List[np.ndarray] = ()) -> 'BOGenerationContext':
@@ -31,17 +30,23 @@ class GenerationContext:
         )
 
     @staticmethod
-    def re_seed(new_seeds: Union[int, List[int]], base_seed: int = 0) -> int:
-        if isinstance(new_seeds, int):
+    def re_seed(new_seeds: Union[int, Optional[int], List[int]], base_seed: Union[int, SeedSequence] = 0) -> SeedSequence:
+        if isinstance(base_seed, SeedSequence):
+            initial_entropy = base_seed.entropy
+            if isinstance(initial_entropy, int):
+                initial_entropy = [initial_entropy]
+        else:
+            initial_entropy = [base_seed]
+        if new_seeds is None:
+            new_seeds = [base_seed]
+        elif isinstance(new_seeds, int):
             new_seeds = [new_seeds]
-        for seed in new_seeds:
-            base_seed = (base_seed + seed) * GenerationContext.SEED_PRIME
-        return np.abs(base_seed)
+        return SeedSequence(initial_entropy + new_seeds)
 
 
 @dataclass
 class BOGenerationContext(GenerationContext):
-    seed: int
+    seed: SeedSequence
     rng: np.random.Generator
     channel: int
     previous_channels: List[np.ndarray]
@@ -59,7 +64,7 @@ class BOGenerationContext(GenerationContext):
 
 @dataclass
 class AnomalyGenerationContext(GenerationContext):
-    seed: int
+    seed: SeedSequence
     rng: np.random.Generator
     base_oscillation: 'BaseOscillationInterface'    # type: ignore  # to prevent circular import
     previous_anomaly_positions: List[Tuple[int, int]]
