@@ -67,7 +67,7 @@ def generate_pattern_data(ctx: BOGenerationContext, length, avg_pattern_length, 
     generators = (generate_bell, generate_funnel, generate_cylinder)
     data = ctx.rng.normal(0, default_variance, length)
     current_start = ctx.rng.integers(0, avg_pattern_length)
-    current_length = max(1, np.ceil(ctx.rng.normal(avg_pattern_length, variance_pattern_length)))
+    current_length = max(1, int(np.ceil(ctx.rng.normal(avg_pattern_length, variance_pattern_length))))
 
     while current_start + current_length < length:
         generator = ctx.rng.choice(generators)
@@ -83,6 +83,6 @@ def generate_pattern_data(ctx: BOGenerationContext, length, avg_pattern_length, 
         data[current_start: current_start + current_length] = pattern
 
         current_start = current_start + current_length + ctx.rng.integers(0, avg_pattern_length)
-        current_length = max(1, np.ceil(ctx.rng.normal(avg_pattern_length, variance_pattern_length)))
+        current_length = max(1, int(np.ceil(ctx.rng.normal(avg_pattern_length, variance_pattern_length))))
 
     return data
