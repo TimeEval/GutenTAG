@@ -5,7 +5,6 @@ import warnings
 from pathlib import Path
 from typing import List, Type
 
-import numpy as np
 from tqdm import tqdm
 
 from gutenTAG import GutenTAG
@@ -29,12 +28,6 @@ def parse_args(args: List[str]) -> argparse.Namespace:
     return parser.parse_args(args)
 
 
-def set_random_seed(args: argparse.Namespace):
-    import random
-    np.random.seed(args.seed)
-    random.seed(args.seed)
-
-
 def import_addons(addons: List[str]) -> List[Type[BaseAddOn]]:
     module_classes = [addon.rsplit(".", 1) for addon in addons]
 
@@ -51,6 +44,7 @@ def generate_all(args: argparse.Namespace) -> GutenTAG:
 
     gutentag = GutenTAG.from_yaml(args.config_yaml, args.plot, args.only)
     gutentag.n_jobs = n_jobs
+    gutentag.seed = args.seed
     gutentag.overview.add_seed(args.seed)
 
     gutentag.generate()
@@ -82,8 +76,6 @@ def main(sys_args: List[str]) -> None:
 
     args = parse_args(sys_args)
     addons = import_addons(args.addons)
-    if args.seed is not None:
-        set_random_seed(args)
     gutentag = generate_all(args)
 
     if args.no_save:

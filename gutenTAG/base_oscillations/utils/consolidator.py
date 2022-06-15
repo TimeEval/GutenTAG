@@ -2,17 +2,22 @@ from typing import List, Optional, Tuple
 
 import numpy as np
 
-from gutenTAG.anomalies import AnomalyProtocol, LabelRange, Anomaly
-from gutenTAG.base_oscillations.interface import BaseOscillationInterface
+from ...anomalies import AnomalyProtocol, LabelRange, Anomaly
+from ...base_oscillations.interface import BaseOscillationInterface
+from ...utils.types import GenerationContext
 
 
 class Consolidator:
-    def __init__(self, base_oscillations: List[BaseOscillationInterface], anomalies: List[Anomaly]):
+    def __init__(self,
+                 base_oscillations: List[BaseOscillationInterface],
+                 anomalies: List[Anomaly],
+                 random_seed: Optional[int] = None):
         self.consolidated_channels: List[BaseOscillationInterface] = base_oscillations
         self.anomalies: List[Anomaly] = anomalies
         self.generated_anomalies: List[Tuple[AnomalyProtocol, int]] = []
         self.timeseries: Optional[np.ndarray] = None
         self.labels: Optional[np.ndarray] = None
+        self.random_seed: Optional[int] = random_seed
 
     def add_channel(self, channel: BaseOscillationInterface):
         self.consolidated_channels.append(channel)
@@ -20,15 +25,15 @@ class Consolidator:
     def get_channel(self, channel: int) -> BaseOscillationInterface:
         return self.consolidated_channels[channel]
 
-    def generate(self) -> Tuple[np.ndarray, np.ndarray]:
+    def generate(self, ctx: GenerationContext) -> Tuple[np.ndarray, np.ndarray]:
         channels: List[np.ndarray] = []
         for c, bo in enumerate(self.consolidated_channels):
-            bo.generate_timeseries_and_variations(c, prev_channels=channels)  # type: ignore  # timeseries gets set in generate_timeseries_and_variations()
+            bo.generate_timeseries_and_variations(ctx.to_bo(c, channels))  # type: ignore  # timeseries gets set in generate_timeseries_and_variations()
             if bo.timeseries is not None:
                 channels.append(bo.timeseries)
         self.timeseries = self._stack_channels(channels)
         self.labels = np.zeros(self.timeseries.shape[0], dtype=np.int8)
-        self.generate_anomalies()
+        self.generate_anomalies(ctx)
 
         self.apply_anomalies()
         self.apply_variations()
@@ -48,17 +53,13 @@ class Consolidator:
 
         self._add_label_ranges_to_labels(label_ranges)
 
-    def generate_anomalies(self):
+    def generate_anomalies(self, ctx: GenerationContext):
         positions: List[Tuple[int, int]] = []
         for anomaly in self.anomalies:
             current_base_oscillation = self.consolidated_channels[anomaly.channel]
-            anomaly_protocol = anomaly.generate(current_base_oscillation,
-                                                current_base_oscillation.get_timeseries_periods(),
-                                                current_base_oscillation.get_base_oscillation_kind(),
-                                                positions)
+            anomaly_protocol = anomaly.generate(ctx.to_anomaly(current_base_oscillation, positions))
             positions.append((anomaly_protocol.start, anomaly_protocol.end))
             self.generated_anomalies.append((anomaly_protocol, anomaly.channel))
-
 
     def _stack_channels(self, channels: List[np.ndarray]) -> np.ndarray:
         assert all([len(x.shape) == 1 for x in channels]), "The resulting channels have the wrong shape. Correct shape: `(l, d)`."

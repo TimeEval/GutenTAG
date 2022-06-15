@@ -14,10 +14,6 @@ class AnomalyTrendParameters:
 
 
 class AnomalyTrend(BaseAnomaly):
-    @staticmethod
-    def get_parameter_class() -> Type[AnomalyTrendParameters]:
-        return AnomalyTrendParameters
-
     def __init__(self, parameters: AnomalyTrendParameters):
         super().__init__()
         self.trend = parameters.trend
@@ -31,7 +27,7 @@ class AnomalyTrend(BaseAnomaly):
         amplitude_bell = MinMaxScaler(feature_range=(0, 1)).fit_transform(amplitude_bell.reshape(-1, 1)).reshape(-1)
 
         self.trend.length = length
-        self.trend.generate_timeseries_and_variations()
+        self.trend.generate_timeseries_and_variations(anomaly_protocol.ctx.to_bo())
         timeseries = self.trend.timeseries
 
         timeseries *= amplitude_bell
@@ -41,3 +37,7 @@ class AnomalyTrend(BaseAnomaly):
         anomaly_protocol.base_oscillation.trend_series[anomaly_protocol.end:] += end_point
 
         return anomaly_protocol
+
+    @staticmethod
+    def get_parameter_class() -> Type[AnomalyTrendParameters]:
+        return AnomalyTrendParameters

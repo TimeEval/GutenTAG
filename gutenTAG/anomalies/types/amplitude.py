@@ -6,7 +6,7 @@ from scipy.stats import norm
 from sklearn.preprocessing import MinMaxScaler
 
 from . import BaseAnomaly, AnomalyProtocol
-from ...utils.types import BaseOscillationKind
+from ...utils.base_oscillation_kind import BaseOscillationKind
 
 
 @dataclass
@@ -15,16 +15,12 @@ class AnomalyAmplitudeParameters:
 
 
 class AnomalyAmplitude(BaseAnomaly):
-    @staticmethod
-    def get_parameter_class() -> Type[AnomalyAmplitudeParameters]:
-        return AnomalyAmplitudeParameters
-
     def __init__(self, parameters: AnomalyAmplitudeParameters):
         super().__init__()
         self.amplitude_factor = parameters.amplitude_factor
 
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
-        if anomaly_protocol.base_oscillation_kind == BaseOscillationKind.Polynomial:
+        if anomaly_protocol.base_oscillation_kind in [BaseOscillationKind.Polynomial, BaseOscillationKind.Formula, BaseOscillationKind.RandomModeJump]:
             self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind.name)
             return anomaly_protocol
 
@@ -49,3 +45,7 @@ class AnomalyAmplitude(BaseAnomaly):
         subsequence = anomaly_protocol.base_oscillation.timeseries[anomaly_protocol.start:anomaly_protocol.end] * amplitude_bell
         anomaly_protocol.subsequences.append(subsequence)
         return anomaly_protocol
+
+    @staticmethod
+    def get_parameter_class() -> Type[AnomalyAmplitudeParameters]:
+        return AnomalyAmplitudeParameters

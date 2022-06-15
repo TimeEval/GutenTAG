@@ -1,7 +1,6 @@
 import unittest
 import numpy as np
 import yaml
-import random
 
 from gutenTAG import GutenTAG
 from gutenTAG.addons.timeeval import TimeEvalAddOn
@@ -9,16 +8,12 @@ from gutenTAG.__main__ import parse_args
 
 
 class TestAddons(unittest.TestCase):
-    def setUp(self) -> None:
-        seed = 42
-        np.random.seed(seed)
-        random.seed(seed)
-
     def test_timeeval_addon_rmj(self):
         with open("tests/configs/example-config-rmj.yaml", "r") as f:
             config = yaml.load(f, Loader=yaml.FullLoader)
         args = parse_args(["--config-yaml", "", "--no-save"])
         gutentag = GutenTAG.from_dict(config)
+        gutentag.seed = 42
         gutentag.generate()
         addon = TimeEvalAddOn()
         addon.process(overview=gutentag.overview, gutenTAG=gutentag, args=args)
@@ -34,8 +29,8 @@ class TestAddons(unittest.TestCase):
         self.assertEqual(df["median_anomaly_length"][0], 20)
         self.assertEqual(df["max_anomaly_length"][0], 20, 2)
         self.assertEqual(df["train_type"][0], "unsupervised")
-        self.assertAlmostEqual(df["mean"][0], 0, 1)
-        self.assertAlmostEqual(df["stddev"][0], 0, 1)
+        self.assertAlmostEqual(df["mean"][0], -0.06, 2)
+        self.assertAlmostEqual(df["stddev"][0], 0.02, 2)
         self.assertTrue(np.isnan(df["trend"][0]))
         self.assertEqual(df["period_size"][0], 20)
 
@@ -44,6 +39,7 @@ class TestAddons(unittest.TestCase):
             config = yaml.load(f, Loader=yaml.FullLoader)
         args = parse_args(["--config-yaml", "", "--no-save"])
         gutentag = GutenTAG.from_dict(config)
+        gutentag.seed = 42
         gutentag.generate()
         addon = TimeEvalAddOn()
         addon.process(overview=gutentag.overview, gutenTAG=gutentag, args=args)
@@ -59,8 +55,8 @@ class TestAddons(unittest.TestCase):
         self.assertEqual(df["median_anomaly_length"][0], 40)
         self.assertEqual(df["max_anomaly_length"][0], 40, 2)
         self.assertEqual(df["train_type"][0], "unsupervised")
-        self.assertAlmostEqual(df["mean"][0], 0.5, 2)
-        self.assertAlmostEqual(df["stddev"][0], 0, 1)
+        self.assertAlmostEqual(df["mean"][0], 0.51, 2)
+        self.assertAlmostEqual(df["stddev"][0], 0.00, 2)
         self.assertTrue(np.isnan(df["trend"][0]))
         self.assertEqual(df["period_size"][0], 10)
 
@@ -69,6 +65,7 @@ class TestAddons(unittest.TestCase):
             config = yaml.load(f, Loader=yaml.FullLoader)
         args = parse_args(["--config-yaml", "", "--no-save"])
         gutentag = GutenTAG.from_dict(config)
+        gutentag.seed = 42
         gutentag.generate()
         addon = TimeEvalAddOn()
         addon.process(overview=gutentag.overview, gutenTAG=gutentag, args=args)

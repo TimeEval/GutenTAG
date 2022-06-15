@@ -5,7 +5,7 @@ from typing import Dict
 
 import yaml
 
-from gutenTAG.utils.global_variables import CONFIG_SCHEMA
+from ..utils.global_variables import CONFIG_SCHEMA
 
 
 class ConfigSchemaLoader(abc.ABC):

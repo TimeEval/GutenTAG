@@ -1,7 +1,5 @@
-from __future__ import annotations
-
 from enum import Enum
-from typing import List, Optional, Dict
+from typing import Dict
 
 from .amplitude import AnomalyAmplitude
 from .extremum import AnomalyExtremum
@@ -17,10 +15,6 @@ from .. import BaseAnomaly
 from ...utils.global_variables import ANOMALY_TYPE_NAMES
 
 
-def exist_together(list_optionals: List[Optional[AnomalyKind]]) -> bool:
-    return all(list(map(lambda x: x is not None, list_optionals)))
-
-
 class AnomalyKind(Enum):
     Extremum = ANOMALY_TYPE_NAMES.EXTREMUM
     Frequency = ANOMALY_TYPE_NAMES.FREQUENCY
@@ -33,7 +27,7 @@ class AnomalyKind(Enum):
     Trend = ANOMALY_TYPE_NAMES.TREND
     ModeCorrelation = ANOMALY_TYPE_NAMES.MODE_CORRELATION
 
-    def create(self, parameters: Dict) -> 'BaseAnomaly':
+    def create(self, parameters: Dict) -> BaseAnomaly:
         if self == AnomalyKind.Platform:
             anomaly: BaseAnomaly = AnomalyPlatform(AnomalyPlatform.get_parameter_class()(**parameters))
         elif self == AnomalyKind.Frequency:

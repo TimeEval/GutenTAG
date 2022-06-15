@@ -1,6 +1,7 @@
-import numpy as np
 from dataclasses import dataclass
 from typing import Type
+
+import numpy as np
 
 from . import BaseAnomaly, AnomalyProtocol
 
@@ -11,10 +12,6 @@ class AnomalyPlatformParameters:
 
 
 class AnomalyPlatform(BaseAnomaly):
-    @staticmethod
-    def get_parameter_class() -> Type[AnomalyPlatformParameters]:
-        return AnomalyPlatformParameters
-
     def __init__(self, parameters: AnomalyPlatformParameters):
         super().__init__()
         self.value = parameters.value
@@ -25,3 +22,7 @@ class AnomalyPlatform(BaseAnomaly):
         anomaly_protocol.subsequences.append(values)
         self.turn_off_trend(anomaly_protocol)
         return anomaly_protocol
+
+    @staticmethod
+    def get_parameter_class() -> Type[AnomalyPlatformParameters]:
+        return AnomalyPlatformParameters
