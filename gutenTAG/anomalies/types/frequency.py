@@ -1,10 +1,8 @@
-from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import Type
 
 from . import BaseAnomaly, AnomalyProtocol
-from gutenTAG.utils.base_oscillation_kind import BaseOscillationKind
+from ...utils.base_oscillation_kind import BaseOscillationKind
 
 
 @dataclass
@@ -13,10 +11,6 @@ class AnomalyFrequencyParameters:
 
 
 class AnomalyFrequency(BaseAnomaly):
-    @staticmethod
-    def get_parameter_class() -> Type[AnomalyFrequencyParameters]:
-        return AnomalyFrequencyParameters
-
     def __init__(self, parameters: AnomalyFrequencyParameters):
         super().__init__()
         self.frequency_factor = parameters.frequency_factor
@@ -34,3 +28,7 @@ class AnomalyFrequency(BaseAnomaly):
         else:
             self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind.name)
         return anomaly_protocol
+
+    @staticmethod
+    def get_parameter_class() -> Type[AnomalyFrequencyParameters]:
+        return AnomalyFrequencyParameters

@@ -1,14 +1,12 @@
-from __future__ import annotations
-
 from abc import ABC, abstractmethod
 from typing import Optional
 
 import numpy as np
 
+from ..utils.base_oscillation_kind import BaseOscillationKind
 from ..utils.default_values import default_values
 from ..utils.global_variables import PARAMETERS, BASE_OSCILLATIONS
 from ..utils.types import BOGenerationContext
-from gutenTAG.utils.base_oscillation_kind import BaseOscillationKind
 
 
 class BaseOscillationInterface(ABC):

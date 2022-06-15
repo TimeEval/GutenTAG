@@ -1,19 +1,19 @@
 from __future__ import annotations
 
 from enum import Enum
-from pathlib import Path
-from typing import Optional, List
 from hashlib import md5
+from pathlib import Path
+from typing import Optional, List, Union
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from numpy.random import SeedSequence
 
-from gutenTAG.anomalies import Anomaly
-from gutenTAG.base_oscillations import BaseOscillationInterface
-from gutenTAG.base_oscillations.utils.consolidator import Consolidator
-from gutenTAG.utils.types import GenerationContext
+from ..anomalies import Anomaly
+from ..base_oscillations import BaseOscillationInterface
+from ..base_oscillations.utils.consolidator import Consolidator
+from ..utils.types import GenerationContext
 
 
 class TrainingType(Enum):
@@ -39,7 +39,7 @@ class TimeSeries:
         self.will_plot = plot
         self._rng_counter = 0
 
-    def generate(self, random_seed: Optional[int] = None) -> 'TimeSeries':
+    def generate(self, random_seed: Optional[int] = None) -> TimeSeries:
         consolidator = Consolidator(self.base_oscillations, self.anomalies)
         self.timeseries, self.labels = consolidator.generate(GenerationContext(seed=self._create_new_seed(random_seed)))
 
@@ -64,28 +64,30 @@ class TimeSeries:
         self.generate(random_seed)
         return self.to_dataframe()
 
-    def plot(self):
+    def plot(self) -> None:
         n_series = 1 + np.sum([self.semi_supervised, self.supervised])
         fig, axs = plt.subplots(2, n_series, sharex="all", sharey="row", figsize=(10, n_series*4))
         # fix indexing, because subplots only returns a 1-dim array in this case:
         if n_series == 1:
             axs = np.array([axs]).T
 
-        names = ["test"]
-        series = [self.timeseries]
-        labels = [self.labels]
-        if self.supervised:
+        names: List[str] = ["test"]
+        assert self.timeseries is not None, "TimeSeries is not generated. Please, do so before plotting!"
+        assert self.labels is not None, "TimeSeries is not generated. Please, do so before plotting!"
+        series: List[np.ndarray] = [self.timeseries]
+        labels: List[np.ndarray] = [self.labels]
+        if self.supervised and self.supervised_timeseries is not None and self.train_labels is not None:
             names.append("train_supervised")
             series.append(self.supervised_timeseries)
             labels.append(self.train_labels)
-        if self.semi_supervised:
+        if self.semi_supervised and self.semi_supervised_timeseries is not None and self.semi_train_labels is not None:
             names.append("train_semi-supervised")
             series.append(self.semi_supervised_timeseries)
             labels.append(self.semi_train_labels)
         for i, (name, ts, label) in enumerate(zip(names, series, labels)):
             axs[0, i].set_title(name)
-            name = list(map(lambda j: f"channel-{j}", range(ts.shape[1]))) if ts.shape[1] > 1 else "time series"
-            axs[0, i].plot(ts, label=name)
+            name_list = list(map(lambda j: f"channel-{j}", range(ts.shape[1]))) if ts.shape[1] > 1 else "time series"
+            axs[0, i].plot(ts, label=name_list)
             axs[1, i].plot(label, color="orange", label="ground truth")
         axs[0, 0].legend()
         axs[1, 0].legend()
@@ -118,15 +120,17 @@ class TimeSeries:
         df["is_anomaly"] = labels
         return df
 
-    def to_csv(self, output_dir: Path, training_type: TrainingType = TrainingType.TEST):
+    def to_csv(self, output_dir: Path, training_type: TrainingType = TrainingType.TEST) -> None:
         df = self.to_dataframe(training_type)
         df.to_csv(output_dir, sep=",", index=True)
 
     def _create_new_seed(self, base_seed: Optional[int]) -> SeedSequence:
         if base_seed is None:
-            base_seed = np.random.SeedSequence()
+            base_seed1: Union[int, SeedSequence] = SeedSequence()
+        else:
+            base_seed1 = base_seed
         seeds = [int.from_bytes(md5(self.dataset_name.encode("utf-8")).digest(), byteorder="big")]
         if self._rng_counter > 0:
             seeds.append(self._rng_counter)
         self._rng_counter += 1
-        return GenerationContext.re_seed(seeds, base_seed)
+        return GenerationContext.re_seed(seeds, base_seed1)

@@ -1,10 +1,12 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
-from typing import List, Tuple, Optional, Union
+from typing import List, Tuple, Optional, Union, Sequence
 
 import numpy as np
 from numpy.random import SeedSequence
 
-from gutenTAG.utils.base_oscillation_kind import BaseOscillationKind
+from .base_oscillation_kind import BaseOscillationKind
 
 
 class GenerationContext:
@@ -12,36 +14,40 @@ class GenerationContext:
         self.seed: SeedSequence = seed
         self.rng: np.random.Generator = np.random.default_rng(self.seed)
 
-    def to_bo(self, channel: int = 0, previous_channels: List[np.ndarray] = ()) -> 'BOGenerationContext':
+    def to_bo(self, channel: int = 0, previous_channels: Sequence[np.ndarray] = ()) -> BOGenerationContext:
         return BOGenerationContext(
             seed=self.seed,
             rng=self.rng,
             channel=channel,
-            previous_channels=previous_channels
+            previous_channels=list(previous_channels)
         )
 
     def to_anomaly(self, bo: 'BaseOscillationInterface',  # type: ignore  # to prevent circular import
-                   previous_anomaly_positions: List[Tuple[int, int]]) -> 'AnomalyGenerationContext':
+                   previous_anomaly_positions: Sequence[Tuple[int, int]]) -> AnomalyGenerationContext:
         return AnomalyGenerationContext(
             seed=self.seed,
             rng=self.rng,
             base_oscillation=bo,
-            previous_anomaly_positions=previous_anomaly_positions
+            previous_anomaly_positions=list(previous_anomaly_positions)
         )
 
     @staticmethod
-    def re_seed(new_seeds: Union[int, Optional[int], List[int]], base_seed: Union[int, SeedSequence] = 0) -> SeedSequence:
+    def re_seed(new_seeds: Union[int, Optional[int], Sequence[int]],
+                base_seed: Union[int, SeedSequence] = 0) -> SeedSequence:
         if isinstance(base_seed, SeedSequence):
-            initial_entropy = base_seed.entropy
-            if isinstance(initial_entropy, int):
-                initial_entropy = [initial_entropy]
+            if isinstance(base_seed.entropy, int):
+                initial_entropy: Sequence[int] = [base_seed.entropy]
+            elif base_seed.entropy is not None:
+                initial_entropy = base_seed.entropy
+            else:
+                initial_entropy = []
         else:
             initial_entropy = [base_seed]
         if new_seeds is None:
-            new_seeds = [base_seed]
+            new_seeds = []
         elif isinstance(new_seeds, int):
             new_seeds = [new_seeds]
-        return SeedSequence(initial_entropy + new_seeds)
+        return SeedSequence(initial_entropy + new_seeds)  # type: ignore  # wrong type declaration in SeedSequence
 
 
 @dataclass
@@ -52,7 +58,7 @@ class BOGenerationContext(GenerationContext):
     previous_channels: List[np.ndarray]
     is_trend: bool = False
 
-    def to_trend(self) -> 'BOGenerationContext':
+    def to_trend(self) -> BOGenerationContext:
         return BOGenerationContext(
             seed=self.seed,
             rng=self.rng,
@@ -66,7 +72,7 @@ class BOGenerationContext(GenerationContext):
 class AnomalyGenerationContext(GenerationContext):
     seed: SeedSequence
     rng: np.random.Generator
-    base_oscillation: 'BaseOscillationInterface'    # type: ignore  # to prevent circular import
+    base_oscillation: 'BaseOscillationInterface'  # type: ignore  # to prevent circular import
     previous_anomaly_positions: List[Tuple[int, int]]
 
     @property

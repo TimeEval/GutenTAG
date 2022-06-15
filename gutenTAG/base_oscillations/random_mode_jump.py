@@ -3,8 +3,8 @@ from typing import Optional
 import numpy as np
 
 from .interface import BaseOscillationInterface
+from ..utils.base_oscillation_kind import BaseOscillationKind
 from ..utils.types import BOGenerationContext
-from gutenTAG.utils.base_oscillation_kind import BaseOscillationKind
 
 
 class RandomModeJump(BaseOscillationInterface):

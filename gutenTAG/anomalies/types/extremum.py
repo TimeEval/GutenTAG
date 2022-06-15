@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import Type
 
@@ -17,10 +15,6 @@ class AnomalyExtremumParameters:
 
 
 class AnomalyExtremum(BaseAnomaly):
-    @staticmethod
-    def get_parameter_class() -> Type[AnomalyExtremumParameters]:
-        return AnomalyExtremumParameters
-
     def __init__(self, parameters: AnomalyExtremumParameters):
         super().__init__()
         self.min = parameters.min
@@ -56,3 +50,7 @@ class AnomalyExtremum(BaseAnomaly):
             value = base[anomaly_protocol.start] + extremum
         anomaly_protocol.subsequences.append(np.array([value]))
         return anomaly_protocol
+
+    @staticmethod
+    def get_parameter_class() -> Type[AnomalyExtremumParameters]:
+        return AnomalyExtremumParameters

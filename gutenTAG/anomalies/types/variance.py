@@ -3,7 +3,7 @@ from typing import Type
 
 from . import BaseAnomaly
 from .. import AnomalyProtocol
-from gutenTAG.utils.base_oscillation_kind import BaseOscillationKind
+from ...utils.base_oscillation_kind import BaseOscillationKind
 
 
 @dataclass

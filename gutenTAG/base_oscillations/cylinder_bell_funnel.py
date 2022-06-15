@@ -1,10 +1,10 @@
-from typing import Optional
+from typing import Optional, Sequence, Callable
 
 import numpy as np
 
 from .interface import BaseOscillationInterface
+from ..utils.base_oscillation_kind import BaseOscillationKind
 from ..utils.types import BOGenerationContext
-from gutenTAG.utils.base_oscillation_kind import BaseOscillationKind
 
 
 class CylinderBellFunnel(BaseOscillationInterface):
@@ -52,25 +52,25 @@ class CylinderBellFunnel(BaseOscillationInterface):
 # cylinder bell funnel based on "Learning comprehensible descriptions of multivariate time series"
 def generate_pattern_data(ctx: BOGenerationContext, length, avg_pattern_length, avg_amplitude, default_variance=1,
                           variance_pattern_length=10, variance_amplitude=2, include_negatives=True):
-    def generate_bell(n, a, v):
+    def generate_bell(n: int, a: float, v: float) -> np.ndarray:
         bell = ctx.rng.normal(0, v, n) + a * np.arange(n) / n
         return bell
 
-    def generate_funnel(n, a, v):
+    def generate_funnel(n: int, a: float, v: float) -> np.ndarray:
         funnel = ctx.rng.normal(0, v, n) + a * np.arange(n)[::-1] / n
         return funnel
 
-    def generate_cylinder(n, a, v):
+    def generate_cylinder(n: int, a: float, v: float) -> np.ndarray:
         cylinder = ctx.rng.normal(0, v, n) + a
         return cylinder
 
-    generators = (generate_bell, generate_funnel, generate_cylinder)
+    generators: Sequence[Callable[[int, float, float], np.ndarray]] = (generate_bell, generate_funnel, generate_cylinder)
     data = ctx.rng.normal(0, default_variance, length)
     current_start = ctx.rng.integers(0, avg_pattern_length)
     current_length = max(1, int(np.ceil(ctx.rng.normal(avg_pattern_length, variance_pattern_length))))
 
     while current_start + current_length < length:
-        generator = ctx.rng.choice(generators)
+        generator: Callable[[int, float, float], np.ndarray] = ctx.rng.choice(generators)  # type: ignore  # strange numpy type prevents chosing a callable
         current_amplitude = ctx.rng.normal(avg_amplitude, variance_amplitude)
 
         while current_length <= 0:

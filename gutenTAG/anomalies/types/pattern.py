@@ -1,12 +1,12 @@
 from dataclasses import dataclass
 from typing import Type
-from sklearn.preprocessing import MinMaxScaler
 
 import numpy as np
+from sklearn.preprocessing import MinMaxScaler
 
 from . import BaseAnomaly
 from .. import AnomalyProtocol
-from gutenTAG.utils.base_oscillation_kind import BaseOscillationKind
+from ...utils.base_oscillation_kind import BaseOscillationKind
 
 
 @dataclass
@@ -16,6 +16,11 @@ class AnomalyPatternParameters:
 
 
 class AnomalyPattern(BaseAnomaly):
+    def __init__(self, parameters: AnomalyPatternParameters):
+        super().__init__()
+        self.sinusoid_k = parameters.sinusoid_k
+        self.cbf_pattern_factor = parameters.cbf_pattern_factor
+
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
         if anomaly_protocol.base_oscillation_kind == BaseOscillationKind.Sine:
             def sinusoid(t: np.ndarray, k: float, amplitude: float) -> np.ndarray:
@@ -54,8 +59,3 @@ class AnomalyPattern(BaseAnomaly):
     @staticmethod
     def get_parameter_class() -> Type[AnomalyPatternParameters]:
         return AnomalyPatternParameters
-
-    def __init__(self, parameters: AnomalyPatternParameters):
-        super().__init__()
-        self.sinusoid_k = parameters.sinusoid_k
-        self.cbf_pattern_factor = parameters.cbf_pattern_factor

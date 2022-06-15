@@ -5,8 +5,8 @@ from scipy.stats import norm
 from sklearn.preprocessing import MinMaxScaler
 
 from .interface import BaseOscillationInterface
+from ..utils.base_oscillation_kind import BaseOscillationKind
 from ..utils.types import BOGenerationContext
-from gutenTAG.utils.base_oscillation_kind import BaseOscillationKind
 
 
 class RandomWalk(BaseOscillationInterface):

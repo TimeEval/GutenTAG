@@ -2,9 +2,9 @@ from typing import List, Optional, Tuple
 
 import numpy as np
 
-from gutenTAG.anomalies import AnomalyProtocol, LabelRange, Anomaly
-from gutenTAG.base_oscillations.interface import BaseOscillationInterface
-from gutenTAG.utils.types import GenerationContext
+from ...anomalies import AnomalyProtocol, LabelRange, Anomaly
+from ...base_oscillations.interface import BaseOscillationInterface
+from ...utils.types import GenerationContext
 
 
 class Consolidator:

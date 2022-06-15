@@ -4,8 +4,8 @@ import neurokit2 as nk
 import numpy as np
 
 from .interface import BaseOscillationInterface
+from ..utils.base_oscillation_kind import BaseOscillationKind
 from ..utils.types import BOGenerationContext
-from gutenTAG.utils.base_oscillation_kind import BaseOscillationKind
 
 
 class ECG(BaseOscillationInterface):
@@ -28,6 +28,6 @@ class ECG(BaseOscillationInterface):
         ecg = nk.ecg_simulate(duration=10,
                               sampling_rate=sampling_rate,
                               heart_rate=periods * 6,
-                              random_state=ctx.rng.integers(0, 1e9),
+                              random_state=ctx.rng.integers(0, int(1e9)),
                               method="simple")[:length]
         return ecg

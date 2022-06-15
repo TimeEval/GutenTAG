@@ -14,10 +14,6 @@ class AnomalyTrendParameters:
 
 
 class AnomalyTrend(BaseAnomaly):
-    @staticmethod
-    def get_parameter_class() -> Type[AnomalyTrendParameters]:
-        return AnomalyTrendParameters
-
     def __init__(self, parameters: AnomalyTrendParameters):
         super().__init__()
         self.trend = parameters.trend
@@ -41,3 +37,7 @@ class AnomalyTrend(BaseAnomaly):
         anomaly_protocol.base_oscillation.trend_series[anomaly_protocol.end:] += end_point
 
         return anomaly_protocol
+
+    @staticmethod
+    def get_parameter_class() -> Type[AnomalyTrendParameters]:
+        return AnomalyTrendParameters
