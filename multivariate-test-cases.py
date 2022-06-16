@@ -1,4 +1,3 @@
-import argparse
 import random
 from itertools import combinations
 from pathlib import Path
@@ -6,7 +5,6 @@ from pathlib import Path
 import numpy as np
 
 from gutenTAG import GutenTAG
-from gutenTAG.addons.timeeval import TimeEvalAddOn
 
 
 GENERATE_SUPERVISED = False
@@ -48,8 +46,8 @@ def random_bo(kind: str):
             "kind": "cylinder-bell-funnel",
             "variance": noise,
             "offset": np.random.rand() * 20 - 10,
-            "amplitude": np.random.rand() * 10,
-            "avg-pattern-length": np.random.randint(200),
+            "amplitude": np.random.rand() * 10 + 0.1,
+            "avg-pattern-length": np.random.randint(10, 200),
             "variance-pattern-length": 0.2,
             "variance-amplitude": 0.5
         },
@@ -518,11 +516,11 @@ if __name__ == '__main__':
     config = {
         "timeseries": gen_channel_series() + gen_bo_diversity_series() + gen_anomaly_appearance_series() + gen_special_series()
     }
-    gutentag = GutenTAG.from_dict(config, plot=False)
-    gutentag.n_jobs = -1
-    gutentag.overview.add_seed(SEED)
-    gutentag.generate()
-    # dfs = gutentag.generate(return_dataframe=True)
+    gutentag = GutenTAG(n_jobs=-1, seed=SEED, addons=["gutenTAG.addons.timeeval.TimeEvalAddOn"])
+    gutentag.load_config_dict(config)
+    # gutentag.load_config_dict({"timeseries": gen_special_series()}, only="sum-cancels-out-anomaly")
+    gutentag.generate(output_folder=path)
+    # dfs = gutentag.generate(return_timeseries=True)
 
     # df = dfs[4]
     # # df["sum"] = df["value-0"] + df["value-1"] + df["value-2"]
@@ -534,9 +532,3 @@ if __name__ == '__main__':
     # df["is_anomaly"].plot(ax=axs[1])
     # axs[1].legend()
     # plt.show()
-
-    gutentag.save_timeseries(path)
-
-    print("Executing addons ...")
-    addon = TimeEvalAddOn()
-    addon.process(overview=gutentag.overview, gutenTAG=gutentag, args=argparse.Namespace(output_dir=path, no_save=False))
