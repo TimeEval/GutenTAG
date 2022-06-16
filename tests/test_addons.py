@@ -4,16 +4,26 @@ from pathlib import Path
 import numpy as np
 
 from gutenTAG import GutenTAG
-from gutenTAG.addons import AddOnProcessContext
+from gutenTAG.addons import AddOnProcessContext, AddOnFinalizeContext, BaseAddOn
 from gutenTAG.addons.timeeval import TimeEvalAddOn
 
 
 class TestAddons(unittest.TestCase):
+    @staticmethod
+    def _execute_addon(gutentag: GutenTAG, addon: BaseAddOn):
+        states = []
+        for ts, config in zip(gutentag._timeseries, gutentag._overview.datasets):
+            ctx = addon.process(AddOnProcessContext(timeseries=ts, config=config))
+            states.append(ctx._data_store)
+        finalize_ctx = AddOnFinalizeContext(overview=gutentag._overview)
+        finalize_ctx.fill_store(states)
+        addon.finalize(finalize_ctx)
+
     def test_timeeval_addon_rmj(self):
         gutentag = GutenTAG.from_yaml(Path("tests/configs/example-config-rmj.yaml"), seed=42)
         gutentag.generate()
         addon = TimeEvalAddOn()
-        addon.process(AddOnProcessContext(overview=gutentag._overview, datasets=gutentag._timeseries), gutentag)
+        self._execute_addon(gutentag, addon)
         df = addon.df
         self.assertEqual(df["dataset_name"][0], "rmj.unsupervised")
         self.assertEqual(df["test_path"][0], "rmj/test.csv")
@@ -35,7 +45,7 @@ class TestAddons(unittest.TestCase):
         gutentag = GutenTAG.from_yaml(Path("tests/configs/example-config-ecg.yaml"), seed=42)
         gutentag.generate()
         addon = TimeEvalAddOn()
-        addon.process(AddOnProcessContext(overview=gutentag._overview, datasets=gutentag._timeseries), gutentag)
+        self._execute_addon(gutentag, addon)
         df = addon.df
         self.assertEqual(df["dataset_name"][0], "ecg.unsupervised")
         self.assertEqual(df["test_path"][0], "ecg/test.csv")
@@ -57,6 +67,6 @@ class TestAddons(unittest.TestCase):
         gutentag = GutenTAG.from_yaml(Path("tests/configs/example-config-rw.yaml"))
         gutentag.generate()
         addon = TimeEvalAddOn()
-        addon.process(AddOnProcessContext(overview=gutentag._overview, datasets=gutentag._timeseries), gutentag)
+        self._execute_addon(gutentag, addon)
         df = addon.df
         self.assertTrue(np.isnan(df["period_size"][0]))
