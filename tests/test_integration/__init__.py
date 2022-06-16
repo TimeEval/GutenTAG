@@ -14,7 +14,7 @@ class TestIntegration(unittest.TestCase):
         gutenTAG = GutenTAG.from_yaml(Path(config_path), seed=42)
         df_generated = gutenTAG.generate(return_timeseries=True)
         assert df_generated is not None, "DataFrame should have been returned"
-        return df_generated[0]
+        return df_generated[0].timeseries
 
     def _compare_expected_and_generated(self, config_path: str, expected_path: str, columns: List[str]):
         expected_ts = pd.read_csv(expected_path, index_col="timestamp",
