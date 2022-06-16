@@ -2,7 +2,51 @@ import os
 from typing import List, Dict, Optional, Any, Callable, Union
 
 import git
+import numpy as np
 import yaml
+
+
+class DictSanitizer:
+    NUMPY_TYPES = tuple(list(np.core._type_aliases.allTypes.values()) + [np.ndarray])  # type: ignore # mypy does not find allTypes
+
+    def sanitize(self, obj: Dict) -> Dict:
+        for key, value in obj.items():
+            obj[key] = self._sanitize_value(value)
+        return obj
+
+    def _decode_numpy_types(self, obj: Any) -> Any:
+        """
+        Taken from [numpyencoder](https://github.com/hmallen/numpyencoder/blob/f8199a61ccde25f829444a9df4b21bcb2d1de8f2/numpyencoder/numpyencoder.py)
+        """
+
+        if isinstance(obj, (np.int_, np.intc, np.intp, np.int8,
+                            np.int16, np.int32, np.int64, np.uint8,
+                            np.uint16, np.uint32, np.uint64)):
+            return int(obj)
+
+        elif isinstance(obj, (np.float_, np.float16, np.float32, np.float64)):
+            return float(obj)
+
+        elif isinstance(obj, (np.complex_, np.complex64, np.complex128)):
+            return {'real': obj.real, 'imag': obj.imag}
+
+        elif isinstance(obj, (np.ndarray,)):
+            return obj.tolist()
+
+        elif isinstance(obj, (np.bool_)):
+            return bool(obj)
+
+        elif isinstance(obj, (np.void)):
+            return None
+
+    def _sanitize_value(self, obj: Any) -> Any:
+        if isinstance(obj, dict):
+            obj = self.sanitize(obj)  # type: ignore # recursive typecheck
+        elif isinstance(obj, list):
+            obj = list(map(self._sanitize_value, obj))  # type: ignore # recursive typecheck
+        elif isinstance(obj, self.NUMPY_TYPES):
+            obj = self._decode_numpy_types(obj)
+        return obj
 
 
 class Overview:
@@ -44,6 +88,8 @@ class Overview:
         overview["meta"]["seed"] = self.seed
         overview["meta"]["git_commit_sha"] = self.git_commit_sha
         overview["meta"]["download_link"] = self.GUTENTAG_LINK
+
+        overview = DictSanitizer().sanitize(overview)
 
         with open(os.path.join(path, self.FILENAME), "w") as f:
             yaml.dump(overview, f)
