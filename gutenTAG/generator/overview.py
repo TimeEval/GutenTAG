@@ -1,5 +1,5 @@
 import os
-from typing import List, Dict, Optional, Any
+from typing import List, Dict, Optional, Any, Callable, Union
 
 import git
 import yaml
@@ -18,16 +18,22 @@ class Overview:
         except git.InvalidGitRepositoryError:
             self.git_commit_sha = None
 
-    def add_seed(self, seed: int):
+    def add_seed(self, seed: Optional[int]) -> None:
         self.seed = seed
 
-    def add_dataset(self, config: Dict):
+    def add_dataset(self, config: Dict) -> None:
         self.datasets.append(config)
 
-    def add_datasets(self, configs: List[Dict]):
+    def add_datasets(self, configs: List[Dict]) -> None:
         self.datasets.extend(configs)
 
-    def save_to_output_dir(self, path: os.PathLike):
+    def remove_dataset_by_name(self, name: Union[str, Callable[[str], bool]]) -> None:
+        if isinstance(name, str):
+            self.datasets = [d for d in self.datasets if d["name"] != name]
+        else:
+            self.datasets = [d for d in self.datasets if not name(d["name"])]
+
+    def save_to_output_dir(self, path: os.PathLike) -> None:
         overview: Dict[str, Any] = dict()
         overview["generated-timeseries"] = []
         for i, dataset in enumerate(self.datasets):

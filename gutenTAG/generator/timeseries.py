@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from enum import Enum
 from hashlib import md5
 from pathlib import Path
 from typing import Optional, List, Union
@@ -13,18 +12,13 @@ from numpy.random import SeedSequence
 from ..anomalies import Anomaly
 from ..base_oscillations import BaseOscillationInterface
 from ..base_oscillations.utils.consolidator import Consolidator
+from ..timeseries import TrainingType, INDEX_COLUMN_NAME, LABEL_COLUMN_NAME, TimeSeries as ExtTimeSeries
 from ..utils.types import GenerationContext
-
-
-class TrainingType(Enum):
-    TEST = "test"
-    TRAIN_NO_ANOMALIES = "train-no-anomaly"
-    TRAIN_ANOMALIES = "train-anomaly"
 
 
 class TimeSeries:
     def __init__(self, base_oscillations: List[BaseOscillationInterface], anomalies: List[Anomaly],
-                 dataset_name: str, semi_supervised: bool = False, supervised: bool = False, plot: bool = False):
+                 dataset_name: str, semi_supervised: bool = False, supervised: bool = False):
         self.dataset_name = dataset_name
         self.base_oscillations = base_oscillations
         self.anomalies = anomalies
@@ -36,7 +30,6 @@ class TimeSeries:
         self.semi_train_labels: Optional[np.ndarray] = None
         self.semi_supervised = semi_supervised
         self.supervised = supervised
-        self.will_plot = plot
         self._rng_counter = 0
 
     def generate(self, random_seed: Optional[int] = None) -> TimeSeries:
@@ -54,9 +47,6 @@ class TimeSeries:
             self.supervised_timeseries, self.train_labels = supervised_consolidator.generate(
                 GenerationContext(seed=self._create_new_seed(random_seed))
             )
-
-        if self.will_plot:
-            self.plot()
 
         return self
 
@@ -103,6 +93,22 @@ class TimeSeries:
         ax.plot(self.timeseries, label=name)
         return fig
 
+    def to_datasets(self) -> List[ExtTimeSeries]:
+        results: List[ExtTimeSeries] = []
+        training_types = [TrainingType.TEST]
+        if self.semi_supervised:
+            training_types.append(TrainingType.TRAIN_NO_ANOMALIES)
+        if self.supervised:
+            training_types.append(TrainingType.TRAIN_ANOMALIES)
+
+        for training_type in training_types:
+            results.append(ExtTimeSeries(
+                name=self.dataset_name,
+                training_type=training_type,
+                timeseries=self.to_dataframe(training_type)
+            ))
+        return results
+
     def to_dataframe(self, training_type: TrainingType = TrainingType.TEST) -> pd.DataFrame:
         if training_type == TrainingType.TEST:
             ts, labels = self.timeseries, self.labels
@@ -116,8 +122,8 @@ class TimeSeries:
             labels = np.zeros(ts.shape[0])
         channel_names = list(map(lambda i: f"value-{i}", range(ts.shape[1])))
         df = pd.DataFrame(ts, columns=channel_names)
-        df.index.name = "timestamp"
-        df["is_anomaly"] = labels
+        df.index.name = INDEX_COLUMN_NAME
+        df[LABEL_COLUMN_NAME] = labels
         return df
 
     def to_csv(self, output_dir: Path, training_type: TrainingType = TrainingType.TEST) -> None:
