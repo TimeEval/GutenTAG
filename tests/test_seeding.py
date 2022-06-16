@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from pandas.testing import assert_series_equal
 
-from gutenTAG import GutenTAG
+from gutenTAG import GutenTAG, TimeSeries
 
 
 class TestSeeding(unittest.TestCase):
@@ -33,10 +33,9 @@ class TestSeeding(unittest.TestCase):
             "timeseries": [config_sine, config_ecg]
         }
 
-    def _create_and_generate(self, config: dict, seed: int) -> List[pd.DataFrame]:
-        gutenTAG = GutenTAG.from_dict(config)
-        gutenTAG.seed = seed
-        return gutenTAG.generate(True)  # type: ignore  # shouldn't be None and if so raise the error later on
+    def _create_and_generate(self, config: dict, seed: int) -> List[TimeSeries]:
+        gutentag = GutenTAG.from_dict(config, seed=seed)
+        return gutentag.generate(return_timeseries=True)  # type: ignore  # shouldn't be None and if so raise the error later on
 
     def _assert_df_equal(self, df1: pd.DataFrame, df2: pd.DataFrame, columns: Optional[List[str]] = None) -> None:
         if columns is None:
@@ -45,13 +44,13 @@ class TestSeeding(unittest.TestCase):
             assert_series_equal(df1[column], df2[column])
 
     def test_reproducable(self):
-        df1 = self._create_and_generate(self.config_single_sine, seed=42)[0]
-        df2 = self._create_and_generate(self.config_single_sine, seed=42)[0]
+        df1 = self._create_and_generate(self.config_single_sine, seed=42)[0].timeseries
+        df2 = self._create_and_generate(self.config_single_sine, seed=42)[0].timeseries
         self._assert_df_equal(df1, df2)
 
     def test_reproducable_diff_config(self):
-        df1 = self._create_and_generate(self.config_single_ecg, seed=42)[0]
-        df2 = self._create_and_generate(self.config_multiple, seed=42)[1]
+        df1 = self._create_and_generate(self.config_single_ecg, seed=42)[0].timeseries
+        df2 = self._create_and_generate(self.config_multiple, seed=42)[1].timeseries
         self._assert_df_equal(df1, df2)
 
     def test_independent_of_order(self):
@@ -60,11 +59,11 @@ class TestSeeding(unittest.TestCase):
         config2["timeseries"] = config2["timeseries"][::-1]
         dfs2 = self._create_and_generate(self.config_multiple, seed=42)
         for df1, df2 in zip(dfs1, dfs2):
-            self._assert_df_equal(df1, df2)
+            self._assert_df_equal(df1.timeseries, df2.timeseries)
 
     def test_diff_when_diff_seed(self):
-        df1 = self._create_and_generate(self.config_single_ecg, seed=42)[0]
-        df2 = self._create_and_generate(self.config_single_ecg, seed=1)[0]
+        df1 = self._create_and_generate(self.config_single_ecg, seed=42)[0].timeseries
+        df2 = self._create_and_generate(self.config_single_ecg, seed=1)[0].timeseries
 
         with self.assertRaises(AssertionError):
             self._assert_df_equal(df1, df2)

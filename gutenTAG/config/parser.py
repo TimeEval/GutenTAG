@@ -16,7 +16,6 @@ from ..utils.global_variables import BASE_OSCILLATION, BASE_OSCILLATIONS, TIMESE
 class GenerationOptions:
     semi_supervised: bool = False
     supervised: bool = False
-    plot: bool = False
     dataset_name: Optional[str] = None
 
     def to_dict(self):
@@ -30,7 +29,7 @@ class GenerationOptions:
         )
 
 
-ResultType = List[Tuple[List[BaseOscillationInterface], List[Anomaly], GenerationOptions]]
+ResultType = List[Tuple[List[BaseOscillationInterface], List[Anomaly], GenerationOptions, Dict]]
 
 
 def decode_trend_obj(trend: Dict, length_overwrite: int) -> Optional[BaseOscillationInterface]:
@@ -42,31 +41,30 @@ def decode_trend_obj(trend: Dict, length_overwrite: int) -> Optional[BaseOscilla
 
 
 class ConfigParser:
-    def __init__(self, plot: bool = False, only: Optional[str] = None, skip_errors: bool = False):
+    def __init__(self, only: Optional[str] = None, skip_errors: bool = False):
         self.result: ResultType = []
-        self.plot = plot
         self.only = only
-        self.raw_ts: List[Dict] = []
+        self.raw_ts_configs: List[Dict] = []
         self.skip_errors = skip_errors
 
     def parse(self, config: Dict) -> ResultType:
-        for t, ts in enumerate(config.get(TIMESERIES, [])):
-            name = ts.get(PARAMETERS.NAME, f"ts_{t}")
+        for i, ts in enumerate(config.get(TIMESERIES, [])):
+            name = ts.get(PARAMETERS.NAME, f"ts_{i}")
 
             if self._skip_name(name) or not self._check_compatibility(ts):
                 continue
 
-            self.raw_ts.append(deepcopy(ts))
+            raw_ts_config = deepcopy(ts)
+            self.raw_ts_configs.append(raw_ts_config)
 
             generation_options = GenerationOptions.from_dict(ts)
-            generation_options.plot = self.plot
             generation_options.dataset_name = name
 
             base_oscillations = self._build_base_oscillations(ts)
             anomalies = self._build_anomalies(ts)
 
             self.result.append(
-                (base_oscillations, anomalies, generation_options)
+                (base_oscillations, anomalies, generation_options, raw_ts_config)
             )
 
         return self.result
