@@ -1,22 +1,19 @@
 import unittest
+from pathlib import Path
+
 import numpy as np
-import yaml
 
 from gutenTAG import GutenTAG
+from gutenTAG.addons import AddOnProcessContext
 from gutenTAG.addons.timeeval import TimeEvalAddOn
-from gutenTAG.__main__ import parse_args
 
 
 class TestAddons(unittest.TestCase):
     def test_timeeval_addon_rmj(self):
-        with open("tests/configs/example-config-rmj.yaml", "r") as f:
-            config = yaml.load(f, Loader=yaml.FullLoader)
-        args = parse_args(["--config-yaml", "", "--no-save"])
-        gutentag = GutenTAG.from_dict(config)
-        gutentag.seed = 42
+        gutentag = GutenTAG.from_yaml(Path("tests/configs/example-config-rmj.yaml"), seed=42)
         gutentag.generate()
         addon = TimeEvalAddOn()
-        addon.process(overview=gutentag.overview, gutenTAG=gutentag, args=args)
+        addon.process(AddOnProcessContext(overview=gutentag._overview, datasets=gutentag._timeseries), gutentag)
         df = addon.df
         self.assertEqual(df["dataset_name"][0], "rmj.unsupervised")
         self.assertEqual(df["test_path"][0], "rmj/test.csv")
@@ -35,14 +32,10 @@ class TestAddons(unittest.TestCase):
         self.assertEqual(df["period_size"][0], 20)
 
     def test_timeeval_addon_sine(self):
-        with open("tests/configs/example-config-ecg.yaml", "r") as f:
-            config = yaml.load(f, Loader=yaml.FullLoader)
-        args = parse_args(["--config-yaml", "", "--no-save"])
-        gutentag = GutenTAG.from_dict(config)
-        gutentag.seed = 42
+        gutentag = GutenTAG.from_yaml(Path("tests/configs/example-config-ecg.yaml"), seed=42)
         gutentag.generate()
         addon = TimeEvalAddOn()
-        addon.process(overview=gutentag.overview, gutenTAG=gutentag, args=args)
+        addon.process(AddOnProcessContext(overview=gutentag._overview, datasets=gutentag._timeseries), gutentag)
         df = addon.df
         self.assertEqual(df["dataset_name"][0], "ecg.unsupervised")
         self.assertEqual(df["test_path"][0], "ecg/test.csv")
@@ -61,13 +54,9 @@ class TestAddons(unittest.TestCase):
         self.assertEqual(df["period_size"][0], 10)
 
     def test_timeeval_addon_without_period(self):
-        with open("tests/configs/example-config-rw.yaml", "r") as f:
-            config = yaml.load(f, Loader=yaml.FullLoader)
-        args = parse_args(["--config-yaml", "", "--no-save"])
-        gutentag = GutenTAG.from_dict(config)
-        gutentag.seed = 42
+        gutentag = GutenTAG.from_yaml(Path("tests/configs/example-config-rw.yaml"))
         gutentag.generate()
         addon = TimeEvalAddOn()
-        addon.process(overview=gutentag.overview, gutenTAG=gutentag, args=args)
+        addon.process(AddOnProcessContext(overview=gutentag._overview, datasets=gutentag._timeseries), gutentag)
         df = addon.df
         self.assertTrue(np.isnan(df["period_size"][0]))

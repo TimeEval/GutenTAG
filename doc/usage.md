@@ -81,7 +81,8 @@ The last column is the label, `0` if no anomaly else `1`. The preceding columns 
 To generate GutenTAG time series from Python, you have multiple options. Either you write a `dict()` with the same schema as in [From CLI](#from-cli) and call the following:
 
 ```python
-from gutenTAG import GutenTAG
+from gutenTAG import GutenTAG, TrainingType, LABEL_COLUMN_NAME
+
 
 config = {
     "timeseries": [
@@ -89,30 +90,29 @@ config = {
             "name": "test",
             "length": 100,
             "base-oscillations": [
-               {"kind": "sine"}
+                {"kind": "sine"}
             ],
             "anomalies": [
-                {"length": 5, "channel": 0, "types": [{"kind": "mean", "offset": .5}]}
+                {"length": 5, "channel": 0, "kinds": [{"kind": "mean", "offset": .5}]}
             ]
         }
     ]
 }
-gutentag = GutenTAG.from_dict(config, plot=True)
+gutentag = GutenTAG(seed=1)
+gutentag.load_config_dict(config)
 
 # call generate() to create the datasets (in-memory)
-gutentag.generate()
+datasets = gutentag.generate(return_timeseries=True)
 
-# we only defined a single time series
-assert len(gutentag.timeseries) == 1
-ts = gutentag.timeseries[0]
+# we only defined a single test time series
+assert len(datasets) == 1
+d = datasets[0]
+assert d.name == "test"
+assert d.training_type == TrainingType.TEST
 
 # the data points are stored at
-ts.timeseries
+df = d.timeseries
+df.iloc[:, 1:-1]
 # the labels are stored at
-ts.labels
-
-# you can plot the results via
-ts.plot()
+df[LABEL_COLUMN_NAME]
 ```
-
-Or you call the class and set its parameters yourself. However, this is not recommended!

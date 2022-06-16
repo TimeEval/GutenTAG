@@ -1,17 +1,16 @@
-import argparse
 import os
 from enum import Enum
-from typing import List, Dict, Tuple, Optional, Iterable, Any, Union
+from typing import List, Dict, Optional, Iterable, Any, Union
 
 import numpy as np
 import pandas as pd
 
 from gutenTAG import GutenTAG
-from gutenTAG.generator import Overview, TimeSeries
+from gutenTAG.generator import TimeSeries
 from gutenTAG.utils.default_values import default_values
 from gutenTAG.utils.global_variables import SUPERVISED_FILENAME, UNSUPERVISED_FILENAME, SEMI_SUPERVISED_FILENAME, \
     BASE_OSCILLATIONS, ANOMALIES, PARAMETERS, BASE_OSCILLATION, BASE_OSCILLATION_NAMES
-from . import BaseAddOn
+from . import BaseAddOn, AddOnProcessContext
 
 
 columns = [
@@ -54,8 +53,11 @@ class LearningType(Enum):
 
 
 class TimeEvalAddOn(BaseAddOn):
-    def process(self, overview: Overview, gutenTAG: GutenTAG, args: argparse.Namespace) -> Tuple[Overview, GutenTAG]:
-        for i, (generator, config) in enumerate(zip(gutenTAG.timeseries, overview.datasets)):
+    def __init__(self):
+        self.df = pd.DataFrame(columns=columns)
+
+    def process(self, ctx: AddOnProcessContext, gutenTAG: GutenTAG) -> AddOnProcessContext:
+        for i, (generator, config) in enumerate(zip(ctx.datasets, ctx.overview.datasets)):
             self._process_timeseries(config, i, generator, LearningType.Unsupervised)
             if generator.supervised:
                 self._process_timeseries(config, i, generator, LearningType.Supervised)
@@ -63,18 +65,16 @@ class TimeEvalAddOn(BaseAddOn):
                 self._process_timeseries(config, i, generator, LearningType.SemiSupervised)
         self._set_global_vals()
 
-        if args.no_save:
-            return overview, gutenTAG
-
-        self.df.to_csv(os.path.join(args.output_dir, "datasets.csv"), index=False)
-        return overview, gutenTAG
+        if ctx.should_save and ctx.output_folder is not None:
+            filename = os.path.join(ctx.output_folder, "datasets.csv")
+            self.df.to_csv(filename, index=False)
+        return ctx
 
     def _set_global_vals(self):
         self.df["collection_name"] = "GutenTAG"
         self.df["dataset_type"] = "synthetic"
         self.df["datetime_index"] = False
         self.df["split_at"] = np.NAN
-        self.df["train_is_normal"] = True
         self.df["stationarity"] = np.NAN
 
     def _process_timeseries(self, config: Dict, i: int, generator: TimeSeries, tpe: LearningType):
@@ -99,16 +99,16 @@ class TimeEvalAddOn(BaseAddOn):
         dataset["median_anomaly_length"] = np.median([anomaly.get(PARAMETERS.LENGTH) for anomaly in config.get(ANOMALIES, [])])
         dataset["max_anomaly_length"] = max([anomaly.get(PARAMETERS.LENGTH) for anomaly in config.get(ANOMALIES, [])])
         dataset["train_type"] = tpe.value
-        dataset["mean"] = None if ts is None else ts.mean()
-        dataset["stddev"] = None if ts is None else ts.std(axis=1).mean()
+        dataset["train_is_normal"] = False if tpe == LearningType.Supervised else True
+        dataset["mean"] = ts.mean()
+        dataset["stddev"] = ts.std(axis=1).mean()
         dataset["trend"] = config.get(BASE_OSCILLATION, {}).get(PARAMETERS.TREND, {}).get(PARAMETERS.KIND, np.NAN)
         dataset["period_size"] = TimeEvalAddOn._calc_period_size(config.get(BASE_OSCILLATION, config.get(BASE_OSCILLATIONS, [{}])), dataset[PARAMETERS.LENGTH])
 
-        self.df: pd.DataFrame = self.df.append(dataset, ignore_index=True)
+        self.df = self.df.append(dataset, ignore_index=True)
 
     @staticmethod
     def _calc_contamination(anomalies: Iterable[Dict], ts_length: int) -> float:
-
         anomaly_lengths = [anomaly.get(PARAMETERS.LENGTH, default_values[ANOMALIES][PARAMETERS.LENGTH]) for anomaly in anomalies]
         if len(anomaly_lengths) > 0:
             return sum(anomaly_lengths) / ts_length
@@ -134,6 +134,3 @@ class TimeEvalAddOn(BaseAddOn):
             elif kind == BASE_OSCILLATION_NAMES.RANDOM_MODE_JUMP:
                 periods.append(int(length / frequency))
         return float(np.nanmedian(periods))
-
-    def __init__(self):
-        self.df = pd.DataFrame(columns=columns)

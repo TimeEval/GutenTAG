@@ -6,20 +6,29 @@ GutenTAG has a simple add-on feature which can be activated by using the [CLI](u
 
 ### Definition
 
-An add-on can be written and defined with the help of the [`BaseAddOn`](../gutenTAG/addons/__init__.py) class. This class defines two methods, that are called after the CLI tool has already saved the time series to disk:
+An add-on can be written and defined with the help of the [`BaseAddOn`](../gutenTAG/addons/__init__.py) class.
+This class defines two methods, that are called after the CLI tool has already saved the time series to disk:
 
 ```python
-import argparse
-
-from typing import Tuple
+import os
+from typing import List, Optional
+from dataclasses import dataclass
 from gutenTAG import GutenTAG
-from gutenTAG.generator import Overview
+from gutenTAG.generator import Overview, TimeSeries
 
+
+@dataclass
+class AddOnProcessContext:
+    overview: Overview
+    datasets: List[TimeSeries]
+    plot: bool = False
+    output_folder: Optional[os.PathLike] = None
+    n_jobs: int = 1
 
 class BaseAddOn:
-    def process(self, overview: Overview, gutenTAG: GutenTAG, args: argparse.Namespace) -> Tuple[Overview, GutenTAG]:
-        """Gets called before `process_generators`"""
-        return overview, gutenTAG
+    def process(self, ctx: AddOnProcessContext, gutenTAG: GutenTAG) -> AddOnProcessContext:
+        """Gets called after time series are generated but before they are plotted or written to disk."""
+        return ctx
 ```
 
 ### Implemented Add-Ons

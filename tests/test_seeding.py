@@ -34,9 +34,8 @@ class TestSeeding(unittest.TestCase):
         }
 
     def _create_and_generate(self, config: dict, seed: int) -> List[pd.DataFrame]:
-        gutenTAG = GutenTAG.from_dict(config)
-        gutenTAG.seed = seed
-        return gutenTAG.generate(True)  # type: ignore  # shouldn't be None and if so raise the error later on
+        gutentag = GutenTAG.from_dict(config, seed=seed)
+        return gutentag.generate(return_timeseries=True)  # type: ignore  # shouldn't be None and if so raise the error later on
 
     def _assert_df_equal(self, df1: pd.DataFrame, df2: pd.DataFrame, columns: Optional[List[str]] = None) -> None:
         if columns is None:
