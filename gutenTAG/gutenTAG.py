@@ -3,14 +3,15 @@ from __future__ import annotations
 import json
 import os
 import warnings
+from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Dict, Optional, Union, Callable, Sequence
+from typing import List, Dict, Optional, Union, Callable, Sequence, Tuple, Any
 
 import yaml
 from joblib import Parallel, delayed
 from tqdm import tqdm
 
-from .addons import import_addons, AddOnProcessContext
+from .addons import import_addons, AddOnProcessContext, AddOnFinalizeContext, BaseAddOn
 from .config.parser import ConfigParser
 from .config.validator import ConfigValidator
 from .generator.overview import Overview
@@ -18,6 +19,23 @@ from .generator.timeseries import TimeSeries
 from .timeseries import TrainingType, TimeSeries as ExtTimeSeries
 from .utils.global_variables import UNSUPERVISED_FILENAME, SUPERVISED_FILENAME, SEMI_SUPERVISED_FILENAME
 from .utils.tqdm_joblib import tqdm_joblib
+
+
+@dataclass
+class _GenerationContext:
+    plot: bool = False
+    return_timeseries: bool = False
+    output_folder: Optional[os.PathLike] = None
+    seed: Optional[int] = None
+    addons: Sequence[BaseAddOn] = ()
+
+    def to_addon_process_ctx(self, timeseries: TimeSeries, config: Dict) -> AddOnProcessContext:
+        return AddOnProcessContext(
+            timeseries=timeseries,
+            config=config,
+            plot=self.plot,
+            output_folder=self.output_folder,
+        )
 
 
 class GutenTAG:
@@ -29,11 +47,12 @@ class GutenTAG:
         self._timeseries: List[TimeSeries] = []
         self._n_jobs = n_jobs
         # remove duplicate addons
-        self._addons: List[str] = []
+        self._registered_addons: List[str] = []
         for addon in addons:
             self.use_addon(addon)
         self._overview.add_seed(seed)
         self.seed = seed
+        self.addons: Dict[str, BaseAddOn] = {}
 
     def load_config_json(self, json_config_path: os.PathLike, only: Optional[str] = None) -> GutenTAG:
         with open(json_config_path, "r") as f:
@@ -68,17 +87,17 @@ class GutenTAG:
         return self
 
     def use_addon(self, addon: str, insert_location: Union[str, int] = "last") -> GutenTAG:
-        if addon not in self._addons:
+        if addon not in self._registered_addons:
             if insert_location == "last":
-                self._addons.append(addon)
+                self._registered_addons.append(addon)
             elif insert_location == "first":
-                self._addons = [addon] + self._addons
+                self._registered_addons = [addon] + self._registered_addons
             elif isinstance(insert_location, int):
-                self._addons.insert(insert_location, addon)
+                self._registered_addons.insert(insert_location, addon)
             else:
                 ValueError(f"insert_position={insert_location} unknown!")
         else:
-            ValueError(f"'{addon}' already loaded at position {self._addons.index(addon)}")
+            ValueError(f"'{addon}' already loaded at position {self._registered_addons.index(addon)}")
         return self
 
     def generate(self,
@@ -91,53 +110,83 @@ class GutenTAG:
                 f"Cannot generate time series in parallel while plotting ('n_jobs' was set to {n_jobs})! Falling "
                 f"back to serial generation.")
             n_jobs = 1
-        with tqdm_joblib(tqdm(desc="Generating datasets", total=len(self._timeseries))):
-            self._timeseries = Parallel(n_jobs=n_jobs)(
-                delayed(ts.generate)(self.seed) for ts in self._timeseries
-            )
 
-        addons = import_addons(list(self._addons))
-        ctx = AddOnProcessContext(
-            overview=self._overview,
-            datasets=self._timeseries,
-            output_folder=output_folder,
-            plot=plot,
-            n_jobs=n_jobs
-        )
-        for addon in tqdm(addons, desc="Executing addons", total=len(self._addons)):
-            ctx = addon().process(ctx, gutenTAG=self)
-        self._overview = ctx.overview
-        self._timeseries = ctx.datasets
-        plot = ctx.plot
-
-        if plot:
-            for ts in tqdm(self._timeseries, desc="Plotting datasets", total=len(self._timeseries)):
-                ts.plot()
-
+        # prepare
+        folder: Optional[Path] = None
         if output_folder is not None:
-            self.save_timeseries(output_folder)
+            folder = Path(output_folder)
+            folder.mkdir(exist_ok=True)
 
-        if return_timeseries:
-            return [d for ts in self._timeseries for d in ts.to_datasets()]
+        addon_types = import_addons(list(self._registered_addons))
+        addons = [addon() for addon in tqdm(addon_types, desc="Initializing addons", total=len(addon_types))]
+        for name, addon in zip(self._registered_addons, addons):
+            self.addons[name] = addon
+
+        # process time series
+        ctx = _GenerationContext(
+            plot=plot,
+            output_folder=output_folder,
+            seed=self.seed,
+            addons=addons,
+            return_timeseries=return_timeseries,
+        )
+        with tqdm_joblib(tqdm(desc="Generating datasets", total=len(self._timeseries))):
+            results: List[Tuple[Dict, Dict[str, Any], Optional[List[ExtTimeSeries]]]] = Parallel(n_jobs=n_jobs)(
+                delayed(self.internal_generate)(ctx, ts, config)
+                for ts, config in zip(self._timeseries, self._overview.datasets)
+            )
+        configs, data_dicts, timeseries_datasets = tuple(zip(*results))
+        self._overview.datasets = configs
+
+        # finalize
+        if folder is not None:
+            self._overview.save_to_output_dir(folder)
+        finalize_ctx = AddOnFinalizeContext(
+            overview=self._overview,
+            plot=plot,
+            output_folder=output_folder
+        )
+        finalize_ctx.fill_store(data_dicts)
+        for addon in tqdm(addons, desc="Finalizing addons", total=len(addons)):
+            addon.finalize(finalize_ctx)
+
+        if return_timeseries and timeseries_datasets is not None:
+            return [d for dataset in timeseries_datasets for d in dataset]
         return None
 
-    def save_timeseries(self, output_dir: os.PathLike):
-        folder = Path(output_dir)
-        folder.mkdir(exist_ok=True)
-        self._overview.save_to_output_dir(folder)
+    @staticmethod
+    def internal_generate(ctx: _GenerationContext, ts: TimeSeries, config: Dict) -> Tuple[Dict, Dict[str, Any], Optional[List[ExtTimeSeries]]]:
+        ts.generate(ctx.seed)
+        addon_ctx = ctx.to_addon_process_ctx(ts, config)
+        for addon in ctx.addons:
+            addon_ctx = addon.process(addon_ctx)
+        ts = addon_ctx.timeseries
+        config = addon_ctx.config
+        data = addon_ctx._data_store
 
-        for i, ts in tqdm(enumerate(self._timeseries), desc="Saving datasets to disk", total=len(self._timeseries)):
-            name = ts.dataset_name or str(i)
-            dataset_folder = folder / name
-            dataset_folder.mkdir(exist_ok=True)
+        if ctx.plot:
+            ts.plot()
 
-            ts.to_csv(dataset_folder / UNSUPERVISED_FILENAME, TrainingType.TEST)
+        if ctx.output_folder is not None:
+            GutenTAG.save_timeseries(ts, ctx.output_folder)
 
-            if ts.supervised:
-                ts.to_csv(dataset_folder / SUPERVISED_FILENAME, TrainingType.TRAIN_ANOMALIES)
+        if ctx.return_timeseries:
+            return config, data, ts.to_datasets()
+        return config, data, None
 
-            if ts.semi_supervised:
-                ts.to_csv(dataset_folder / SEMI_SUPERVISED_FILENAME, TrainingType.TRAIN_NO_ANOMALIES)
+    @staticmethod
+    def save_timeseries(ts: TimeSeries, output_dir: os.PathLike) -> None:
+        name = ts.dataset_name
+        dataset_folder = Path(output_dir) / name
+        dataset_folder.mkdir(exist_ok=True)
+
+        ts.to_csv(dataset_folder / UNSUPERVISED_FILENAME, TrainingType.TEST)
+
+        if ts.supervised:
+            ts.to_csv(dataset_folder / SUPERVISED_FILENAME, TrainingType.TRAIN_ANOMALIES)
+
+        if ts.semi_supervised:
+            ts.to_csv(dataset_folder / SEMI_SUPERVISED_FILENAME, TrainingType.TRAIN_NO_ANOMALIES)
 
     @staticmethod
     def from_json(path: os.PathLike,

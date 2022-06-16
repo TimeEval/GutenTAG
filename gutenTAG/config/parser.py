@@ -48,8 +48,8 @@ class ConfigParser:
         self.skip_errors = skip_errors
 
     def parse(self, config: Dict) -> ResultType:
-        for t, ts in enumerate(config.get(TIMESERIES, [])):
-            name = ts.get(PARAMETERS.NAME, f"ts_{t}")
+        for i, ts in enumerate(config.get(TIMESERIES, [])):
+            name = ts.get(PARAMETERS.NAME, f"ts_{i}")
 
             raw_ts_config = deepcopy(ts)
             self.raw_ts_configs.append(raw_ts_config)
