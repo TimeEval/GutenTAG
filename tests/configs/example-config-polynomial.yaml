@@ -3,7 +3,7 @@ timeseries:
     length: 1000
     base-oscillations:
       - kind: polynomial
-        polynomial: [1, 2, 3]
+        polynomial: [0, 0, 0.00001]
     anomalies:
       - position: middle
         length: 20
