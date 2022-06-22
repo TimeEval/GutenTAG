@@ -22,6 +22,5 @@ class Polynomial(BaseOscillationInterface):
         length = length or self.length
         polynomial = polynomial or self.polynomial
 
-        base_ts = np.polynomial.Polynomial(polynomial).linspace(length)[1]
-
+        base_ts = np.polynomial.Polynomial(polynomial)(np.arange(length))
         return base_ts

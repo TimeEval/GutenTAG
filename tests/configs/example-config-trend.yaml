@@ -3,9 +3,10 @@ timeseries:
     length: 1000
     base-oscillations:
       - kind: random-walk
+        amplitude: 20
         trend:
           kind: polynomial
-          polynomial: [1,2,3]
+          polynomial: [0, -0.001, 0.00005]
     anomalies:
       - position: end
         length: 40
