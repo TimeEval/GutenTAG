@@ -56,10 +56,12 @@ class TimeSeries:
 
     def plot(self) -> None:
         n_series = 1 + np.sum([self.semi_supervised, self.supervised])
-        fig, axs = plt.subplots(2, n_series, sharex="all", sharey="row", figsize=(10, n_series*4))
+        fig, axs = plt.subplots(2, n_series, sharex="col", sharey="row", figsize=(6*n_series, 5))
         # fix indexing, because subplots only returns a 1-dim array in this case:
         if n_series == 1:
             axs = np.array([axs]).T
+
+        fig.suptitle(self.dataset_name)
 
         names: List[str] = ["test"]
         assert self.timeseries is not None, "TimeSeries is not generated. Please, do so before plotting!"

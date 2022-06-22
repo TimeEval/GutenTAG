@@ -51,11 +51,11 @@ class ConfigParser:
         for i, ts in enumerate(config.get(TIMESERIES, [])):
             name = ts.get(PARAMETERS.NAME, f"ts_{i}")
 
-            raw_ts_config = deepcopy(ts)
-            self.raw_ts_configs.append(raw_ts_config)
-
             if self._skip_name(name) or not self._check_compatibility(ts):
                 continue
+
+            raw_ts_config = deepcopy(ts)
+            self.raw_ts_configs.append(raw_ts_config)
 
             generation_options = GenerationOptions.from_dict(ts)
             generation_options.dataset_name = name
