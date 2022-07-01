@@ -75,8 +75,23 @@ GutenTAG's documentation can be found [here](doc/index.md).
 
 If you use GutenTAG in your project or research, please cite our demonstration paper:
 
-```biblatex
-tbd
+> Phillip Wenig, Sebastian Schmidl, and Thorsten Papenbrock.
+> TimeEval: A Benchmarking Toolkit for Time Series Anomaly Detection Algorithms. PVLDB, 15(12): XXXX - XXXX, 2022.
+> doi:[YYYY](https://doi.org/YYYY)
+>
+> _To appear in [PVLDB 2022 volume 15 issue 12](https://vldb.org/2022/)_.
+
+```bibtex
+@article{WenigEtAl2022TimeEval,
+  title = {TimeEval: {{A}} Benchmarking Toolkit for Time Series Anomaly Detection Algorithms},
+  author = {Wenig, Phillip and Schmidl, Sebastian and Papenbrock, Thorsten},
+  date = {2022},
+  journaltitle = {Proceedings of the {{VLDB Endowment}} ({{PVLDB}})},
+  volume = {15},
+  number = {12},
+  pages = {XXXX--XXXX},
+  doi = {YYYY}
+}
 ```
 
 ## To-Do
