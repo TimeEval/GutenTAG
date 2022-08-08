@@ -9,6 +9,11 @@ from ..utils.base_oscillation_kind import BaseOscillationKind
 from ..utils.types import BOGenerationContext
 
 
+def _gen_steps(ctx: BOGenerationContext, length: int) -> np.ndarray:
+    steps = ctx.rng.choice([-1., 0., 1.], size=length - 1)
+    return np.r_[0, steps].cumsum()
+
+
 class RandomWalk(BaseOscillationInterface):
     def get_timeseries_periods(self) -> Optional[int]:
         return None
@@ -26,13 +31,13 @@ class RandomWalk(BaseOscillationInterface):
         amplitude = amplitude or self.amplitude
         smoothing = smoothing or self.smoothing
 
-        origin = np.zeros(1)
-        steps = ctx.rng.choice([-1., 0., 1.], size=length - 1)
-        ts = np.concatenate([origin, steps]).cumsum(0)
-
         if smoothing:
-            gaussian = norm.pdf(np.linspace(-1.5, 1.5, int(smoothing * length)))
-            filter = gaussian / gaussian.max()
-            ts = np.convolve(ts, filter, 'same').reshape(-1, 1)
+            filter_size = int(smoothing * length)
+            ts = _gen_steps(ctx, length + filter_size - 1)
+            gaussian = norm.pdf(np.linspace(-1.5, 1.5, filter_size))
+            ts_filter = gaussian / gaussian.sum()
+            ts = np.convolve(ts, ts_filter, "valid")
+        else:
+            ts = _gen_steps(ctx, length)
 
-        return MinMaxScaler(feature_range=[-amplitude, amplitude]).fit_transform(ts / np.abs(ts).max()).reshape(-1)
+        return MinMaxScaler(feature_range=[-amplitude, amplitude]).fit_transform(ts.reshape(-1, 1)).reshape(-1)
