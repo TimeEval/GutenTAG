@@ -76,10 +76,8 @@ GutenTAG's documentation can be found [here](doc/index.md).
 If you use GutenTAG in your project or research, please cite our demonstration paper:
 
 > Phillip Wenig, Sebastian Schmidl, and Thorsten Papenbrock.
-> TimeEval: A Benchmarking Toolkit for Time Series Anomaly Detection Algorithms. PVLDB, 15(12): XXXX - XXXX, 2022.
-> doi:[YYYY](https://doi.org/YYYY)
->
-> _To appear in [PVLDB 2022 volume 15 issue 12](https://vldb.org/2022/)_.
+> TimeEval: A Benchmarking Toolkit for Time Series Anomaly Detection Algorithms. PVLDB, 15(12): 3678 - 3681, 2022.
+> doi:[10.14778/3554821.3554873](https://doi.org/10.14778/3554821.3554873)
 
 ```bibtex
 @article{WenigEtAl2022TimeEval,
@@ -89,8 +87,8 @@ If you use GutenTAG in your project or research, please cite our demonstration p
   journaltitle = {Proceedings of the {{VLDB Endowment}} ({{PVLDB}})},
   volume = {15},
   number = {12},
-  pages = {XXXX--XXXX},
-  doi = {YYYY}
+  pages = {3678 -- 3681},
+  doi = {10.14778/3554821.3554873}
 }
 ```
 
