@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 
 from gutenTAG import GutenTAG
-from gutenTAG.addons import AddOnProcessContext, AddOnFinalizeContext, BaseAddOn
+from gutenTAG.addons import AddOnProcessContext, AddOnFinalizeContext, BaseAddOn, import_addons
 from gutenTAG.addons.timeeval import TimeEvalAddOn
 
 
@@ -18,6 +18,29 @@ class TestAddons(unittest.TestCase):
         finalize_ctx = AddOnFinalizeContext(overview=gutentag._overview)
         finalize_ctx.fill_store(states)
         addon.finalize(finalize_ctx)
+
+    def test_import_builtin_addon(self):
+        addons = import_addons(["TimeEvalAddOn"])
+        self.assertEqual(len(addons), 1)
+
+    def test_import_absolute_path_addon(self):
+        addons = import_addons(["gutenTAG.addons.timeeval.TimeEvalAddOn"])
+        self.assertEqual(len(addons), 1)
+
+    def test_import_unknown_package(self):
+        with self.assertRaises(ValueError) as ex:
+            import_addons(["gutenTAG.unknownpackage.TimeEvalAddOn"])
+        self.assertRegex(str(ex.exception), r"Package .* could not be loaded")
+
+    def test_import_unknown_class(self):
+        with self.assertRaises(ValueError) as ex:
+            import_addons(["gutenTAG.addons.timeeval.TimeEvalAddOn2"])
+        self.assertRegex(str(ex.exception), r"AddOn .* not found")
+
+    def test_import_wrong_inheritance(self):
+        with self.assertRaises(ValueError) as ex:
+            import_addons(["gutenTAG.addons.AddOnFinalizeContext"])
+        self.assertRegex(str(ex.exception), r"is not a compatible AddOn")
 
     def test_timeeval_addon_rmj(self):
         gutentag = GutenTAG.from_yaml(Path("tests/configs/example-config-rmj.yaml"), seed=42)
