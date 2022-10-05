@@ -4,7 +4,7 @@ scikit-learn==1.0.*
 matplotlib==3.5.*
 pyyaml==6.*
 tqdm==4.54.*
-joblib==1.0.*
+joblib==1.2.*
 gitpython==3.1.*
 neurokit2==0.1.2
 jsonschema>=4.4.0
