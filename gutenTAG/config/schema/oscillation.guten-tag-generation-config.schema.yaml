@@ -120,12 +120,27 @@ oneOf:
           Variance of the signal relative to signal value.
           This is also called white noise.
           If set to 0, there is no noise.
+      amplitude:
+        type: number
+        exclusiveMinimum: 0
+        description: |
+          Amplitude of the oscillation (+/- from 0).
+          It will be bounded to [-amplitude, amplitude].
       kind:
         const: ecg
       frequency:
         type: number
-        description: Number of oscillations per 100 points.
+        description: Number of oscillations (beats) per 100 points.
         minimum: 0
+      ecg-sim-method:
+        type: string
+        enum:
+          - simple
+          - ecgsyn
+        description: |
+          The model used to generate the signal.
+          Can be either "simple" for a simulation based on Daubechies wavelets that roughly approximates a single cardiac cycle
+          or "ecgsyn" to use the dynamical model desbribed by McSharry et al. (2003) that includes variations in the heart beat cycles.
     additionalProperties: false
   - properties:
       trend:

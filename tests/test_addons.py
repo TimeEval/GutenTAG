@@ -58,7 +58,7 @@ class TestAddons(unittest.TestCase):
         self.assertEqual(df["median_anomaly_length"][0], 40)
         self.assertEqual(df["max_anomaly_length"][0], 40, 2)
         self.assertEqual(df["train_type"][0], "unsupervised")
-        self.assertAlmostEqual(df["mean"][0], 0.51, 2)
+        self.assertAlmostEqual(df["mean"][0], 0.50, 2)
         self.assertAlmostEqual(df["stddev"][0], 0.00, 2)
         self.assertTrue(np.isnan(df["trend"][0]))
         self.assertEqual(df["period_size"][0], 10)

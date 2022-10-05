@@ -61,6 +61,7 @@ class PARAMETERS:
     POSITION = "position"
     EXACT_POSITION = "exact-position"
     CREEP_LENGTH = "creep-length"
+    ECG_SIM_METHOD = "ecg-sim-method"
 
 
 class CONFIG_SCHEMA:
