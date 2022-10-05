@@ -19,7 +19,8 @@ default_values = {
         PARAMETERS.CHANNEL_DIFF: 0.0,
         PARAMETERS.CHANNEL_OFFSET: 1.0,
         PARAMETERS.RANDOM_SEED: None,
-        PARAMETERS.FORMULA: None
+        PARAMETERS.FORMULA: None,
+        PARAMETERS.ECG_SIM_METHOD: "simple"
     },
     ANOMALIES: {
         PARAMETERS.LENGTH: 200,
