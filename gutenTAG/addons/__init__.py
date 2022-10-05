@@ -69,7 +69,24 @@ class BaseAddOn:
 
 
 def import_addons(addons: List[str]) -> List[Type[BaseAddOn]]:
-    module_classes = [addon.rsplit(".", 1) for addon in addons]
+    builtin_module = "gutenTAG.addons.builtin"
+    module_classes = [(addon.rsplit(".", 1) if "." in addon else (builtin_module, addon)) for addon in addons]
 
-    classes = [importlib.import_module(package).__dict__[cls] for package, cls in module_classes]
-    return [cls for cls in classes if issubclass(cls, BaseAddOn)]
+    def load_addon(package, cls):
+        try:
+            module = importlib.import_module(package)
+        except ImportError as ex:
+            raise ValueError(f"Package '{package}' for AddOn {cls} could not be loaded!") from ex
+
+        try:
+            addon_cls = module.__dict__[cls]
+        except KeyError:
+            raise ValueError(f"AddOn {cls} not found in package '{package}'!")
+
+        if not issubclass(addon_cls, BaseAddOn):
+            raise ValueError(f"Trying to load addon {package}.{cls}, but it is not a compatible AddOn! GutenTAG "
+                             "AddOns must inherit from gutenTAG.addons.BaseAddOn!")
+
+        return addon_cls
+
+    return [load_addon(package, cls) for package, cls in module_classes]
