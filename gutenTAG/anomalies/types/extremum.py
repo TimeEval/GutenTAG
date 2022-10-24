@@ -30,8 +30,8 @@ class AnomalyExtremum(BaseAnomaly):
 
         base: np.ndarray = anomaly_protocol.base_oscillation.timeseries
         if self.local:
-            context_start = max(anomaly_protocol.start - self.context_window, 0)
-            context_end = min(anomaly_protocol.end + self.context_window, base.shape[0])
+            context_start = max(anomaly_protocol.start - self.context_window//2, 0)
+            context_end = min(anomaly_protocol.end + self.context_window//2, base.shape[0])
             context = base[context_start:context_end]
             diff = context.max() - context.min()
             extremum = anomaly_protocol.rng.random() * diff
@@ -50,6 +50,10 @@ class AnomalyExtremum(BaseAnomaly):
             value = base[anomaly_protocol.start] + extremum
         anomaly_protocol.subsequences.append(np.array([value]))
         return anomaly_protocol
+
+    @property
+    def requires_period_start_position(self) -> bool:
+        return False
 
     @staticmethod
     def get_parameter_class() -> Type[AnomalyExtremumParameters]:

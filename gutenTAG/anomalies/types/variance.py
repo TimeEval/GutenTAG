@@ -30,6 +30,10 @@ class AnomalyVariance(BaseAnomaly):
             base.noise[anomaly_protocol.start:anomaly_protocol.end] = subsequence_noise * creep
         return anomaly_protocol
 
+    @property
+    def requires_period_start_position(self) -> bool:
+        return False
+
     @staticmethod
     def get_parameter_class() -> Type[AnomalyVarianceParameters]:
         return AnomalyVarianceParameters

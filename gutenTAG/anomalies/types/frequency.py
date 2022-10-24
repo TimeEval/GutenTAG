@@ -29,6 +29,10 @@ class AnomalyFrequency(BaseAnomaly):
             self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind.name)
         return anomaly_protocol
 
+    @property
+    def requires_period_start_position(self) -> bool:
+        return True
+
     @staticmethod
     def get_parameter_class() -> Type[AnomalyFrequencyParameters]:
         return AnomalyFrequencyParameters
