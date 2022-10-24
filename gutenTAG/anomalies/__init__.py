@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import numpy as np
+
 from enum import Enum
 from typing import List, Optional, Tuple
 
@@ -12,6 +14,17 @@ class Position(Enum):
     Beginning = "beginning"
     Middle = "middle"
     End = "end"
+
+    @property
+    def id(self) -> int:
+        if self == Position.Beginning:
+            return 0
+        elif self == Position.Middle:
+            return 1
+        elif self == Position.End:
+            return 2
+        else:
+            raise ValueError(f"The position '{self}' is not yet supported! Guten Tag!")
 
 
 class Anomaly:
@@ -31,17 +44,16 @@ class Anomaly:
         self.creep_length = creep_length
 
         self.anomaly_kinds: List[BaseAnomaly] = []
+        self._requires_period_start_position: bool = False
 
     def set_anomaly(self, anomaly_kind: BaseAnomaly) -> Anomaly:
         self.anomaly_kinds.append(anomaly_kind)
+        self._requires_period_start_position = self._requires_period_start_position or anomaly_kind.requires_period_start_position
         return self
 
     def generate(self, ctx: AnomalyGenerationContext) -> AnomalyProtocol:
         if self.exact_position is None:
-            start, end = self._get_position_range(ctx)
-            while end > ctx.base_oscillation.length:
-                start, end = self._get_position_range(ctx)
-                start, end = self._maybe_repair_position((start, end), ctx.previous_anomaly_positions)
+            start, end = self._find_position(ctx)
         else:
             start, end = self.exact_position, self.exact_position + self.anomaly_length
 
@@ -54,54 +66,52 @@ class Anomaly:
 
         return protocol
 
-    def _get_position_range(self, ctx: AnomalyGenerationContext) -> Tuple[int, int]:
+    def _find_position(self, ctx: AnomalyGenerationContext, max_tries: int = 50) -> Tuple[int, int]:
+        n_tries = max_tries
+        while n_tries > 0:
+            pos = self._get_random_position(ctx)
+            n_tries -= 1
+            if pos[1] < ctx.base_oscillation.length and not self._has_collision(pos, ctx.previous_anomaly_positions):
+                return pos
+        raise ValueError(f"Giving up on finding a position for {self.anomaly_length}-point anomaly at {self.position} "
+                         f"in channel {self.channel}! Maximum number of retries ({max_tries}) exceeded!")
+
+    def _get_random_position(self, ctx: AnomalyGenerationContext) -> Tuple[int, int]:
         timeseries_length = ctx.base_oscillation.length
         timeseries_periods = ctx.timeseries_periods
-        if timeseries_periods is None or timeseries_periods <= 6:
-            return self._get_position_range_no_periodicity(ctx)
+        if (
+                not self._requires_period_start_position
+                or timeseries_periods is None
+                or timeseries_periods <= 6
+        ):
+            return self._get_random_position_no_periodicity(ctx)
 
         start_period = 0
-        period_size = int(timeseries_length / timeseries_periods)
-        periods_per_section = int(timeseries_periods / 3)
+        period_size = timeseries_length // timeseries_periods
+        periods_per_section = timeseries_periods // 3
         if periods_per_section > 1:
             start_period = ctx.rng.choice(list(range(periods_per_section)))
 
-        position = self.position
-        if position == Position.Beginning:
-            start = period_size * start_period
-        elif position == Position.Middle:
-            start = period_size * (periods_per_section + start_period)
-        elif position == Position.End:
-            start = period_size * (2 * periods_per_section + start_period)
-        else:
-            raise ValueError(f"The position '{position}' is not yet supported! Guten Tag!")
-
+        position = self.position.id
+        start = period_size * (position*periods_per_section + start_period)
         end = start + self.anomaly_length
         return start, end
 
-    def _get_position_range_no_periodicity(self, ctx: AnomalyGenerationContext) -> Tuple[int, int]:
+    def _get_random_position_no_periodicity(self, ctx: AnomalyGenerationContext) -> Tuple[int, int]:
         timeseries_length = ctx.base_oscillation.length
         section_size = timeseries_length // 3
-        position_in_section = ctx.rng.choice(list(range(section_size - self.anomaly_length)))
+        position_in_section = ctx.rng.choice(np.arange(section_size))
 
-        position = self.position
-        if position == Position.Beginning:
-            start = position_in_section
-        elif position == Position.Middle:
-            start = section_size + position_in_section
-        elif position == Position.End:
-            start = 2 * section_size + position_in_section
-        else:
-            raise ValueError(f"The position '{position}' is not yet supported! Guten Tag!")
-
+        position = self.position.id
+        start = (position * section_size) + position_in_section
         end = start + self.anomaly_length
         return start, end
 
-    def _maybe_repair_position(self, current: Tuple[int, int], others: List[Tuple[int, int]]) -> Tuple[int, int]:
-        start, end = current
-        current_length = current[1] - current[0]
-        for other in others:
-            if other[0] <= current[0] <= other[1] or other[0] <= current[1] <= other[1]:
-                start = other[1] + 1
-                end = start + current_length
-        return start, end
+    @staticmethod
+    def _has_collision(current_pos: Tuple[int, int], other_pos: List[Tuple[int, int]]) -> bool:
+        if len(other_pos) == 0:
+            return False
+        others = np.array(other_pos)
+        start_collision = (others[:, 0] <= current_pos[0]) & (current_pos[0] <= others[:, 1])
+        end_colllision = (others[:, 0] <= current_pos[1]) & (current_pos[1] <= others[:, 1])
+        return bool(np.any(start_collision | end_colllision))

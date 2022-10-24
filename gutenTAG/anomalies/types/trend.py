@@ -38,6 +38,10 @@ class AnomalyTrend(BaseAnomaly):
 
         return anomaly_protocol
 
+    @property
+    def requires_period_start_position(self) -> bool:
+        return False
+
     @staticmethod
     def get_parameter_class() -> Type[AnomalyTrendParameters]:
         return AnomalyTrendParameters

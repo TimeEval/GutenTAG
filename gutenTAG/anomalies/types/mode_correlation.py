@@ -26,6 +26,10 @@ class AnomalyModeCorrelation(BaseAnomaly):
             logging.warning("A `mode_correlation` anomaly can be injected in only a `random_mode_jump` base oscillation!")
         return anomaly_protocol
 
+    @property
+    def requires_period_start_position(self) -> bool:
+        return True
+
     @staticmethod
     def get_parameter_class() -> Type[AnomalyModeCorrelationParameters]:
         return AnomalyModeCorrelationParameters
