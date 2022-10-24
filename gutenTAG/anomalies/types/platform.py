@@ -23,6 +23,10 @@ class AnomalyPlatform(BaseAnomaly):
         self.turn_off_trend(anomaly_protocol)
         return anomaly_protocol
 
+    @property
+    def requires_period_start_position(self) -> bool:
+        return False
+
     @staticmethod
     def get_parameter_class() -> Type[AnomalyPlatformParameters]:
         return AnomalyPlatformParameters

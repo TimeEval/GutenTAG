@@ -23,14 +23,16 @@ class AnomalyPattern(BaseAnomaly):
 
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
         if anomaly_protocol.base_oscillation_kind == BaseOscillationKind.Sine:
-            def sinusoid(t: np.ndarray, k: float, amplitude: float) -> np.ndarray:
+            def sinusoid(t: np.ndarray, k: float, a_min: float, a_max: float) -> np.ndarray:
                 pattern = (np.arctan(k * t) / np.arctan(k))
-                scaled = MinMaxScaler(feature_range=(-amplitude, amplitude)).fit_transform(pattern.reshape(-1, 1)).reshape(-1)
+                scaled = MinMaxScaler(feature_range=(a_min, a_max)).fit_transform(pattern.reshape(-1, 1)).reshape(-1)
                 return scaled
 
             sine = anomaly_protocol.base_oscillation
-            subsequence = sinusoid(sine.timeseries[anomaly_protocol.start:anomaly_protocol.end], self.sinusoid_k, sine.amplitude)
+            snippet = sine.timeseries[anomaly_protocol.start:anomaly_protocol.end]
+            subsequence = sinusoid(snippet, self.sinusoid_k, snippet.min(), snippet.max())
             anomaly_protocol.subsequences.append(subsequence)
+
         elif anomaly_protocol.base_oscillation_kind == BaseOscillationKind.CylinderBellFunnel:
             cbf = anomaly_protocol.base_oscillation
             subsequence = cbf.generate_only_base(
@@ -38,6 +40,7 @@ class AnomalyPattern(BaseAnomaly):
                 variance_pattern_length=cbf.variance_pattern_length * self.cbf_pattern_factor
             )[anomaly_protocol.start:anomaly_protocol.end]
             anomaly_protocol.subsequences.append(subsequence)
+
         elif anomaly_protocol.base_oscillation_kind == BaseOscillationKind.ECG:
             ecg = anomaly_protocol.base_oscillation
             length = anomaly_protocol.end - anomaly_protocol.start
@@ -52,9 +55,14 @@ class AnomalyPattern(BaseAnomaly):
 
             subsequence = ecg.timeseries[anomaly_protocol.start + slide:anomaly_protocol.end + slide][::-1]
             anomaly_protocol.subsequences.append(subsequence)
+
         else:
             self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind.name)
         return anomaly_protocol
+
+    @property
+    def requires_period_start_position(self) -> bool:
+        return True
 
     @staticmethod
     def get_parameter_class() -> Type[AnomalyPatternParameters]:

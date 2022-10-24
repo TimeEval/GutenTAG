@@ -54,6 +54,11 @@ class BaseAnomaly(ABC):
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
         return anomaly_protocol
 
+    @property
+    @abstractmethod
+    def requires_period_start_position(self) -> bool:
+        return False
+
     def generate_creep(self, anomaly_protocol: AnomalyProtocol, custom_anomaly_length: Optional[int] = None) -> np.ndarray:
         creep_length = anomaly_protocol.creep_length
         anomaly_length = anomaly_protocol.length_without_creep if custom_anomaly_length is None else custom_anomaly_length
