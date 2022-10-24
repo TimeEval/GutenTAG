@@ -24,6 +24,10 @@ class AnomalyMean(BaseAnomaly):
         anomaly_protocol.subsequences.append(subsequence)
         return anomaly_protocol
 
+    @property
+    def requires_period_start_position(self) -> bool:
+        return False
+
     @staticmethod
     def get_parameter_class() -> Type[AnomalyMeanParameters]:
         return AnomalyMeanParameters

@@ -38,6 +38,7 @@ class AnomalyPattern(BaseAnomaly):
                 variance_pattern_length=cbf.variance_pattern_length * self.cbf_pattern_factor
             )[anomaly_protocol.start:anomaly_protocol.end]
             anomaly_protocol.subsequences.append(subsequence)
+
         elif anomaly_protocol.base_oscillation_kind == BaseOscillationKind.ECG:
             ecg = anomaly_protocol.base_oscillation
             length = anomaly_protocol.end - anomaly_protocol.start
@@ -52,9 +53,14 @@ class AnomalyPattern(BaseAnomaly):
 
             subsequence = ecg.timeseries[anomaly_protocol.start + slide:anomaly_protocol.end + slide][::-1]
             anomaly_protocol.subsequences.append(subsequence)
+
         else:
             self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind.name)
         return anomaly_protocol
+
+    @property
+    def requires_period_start_position(self) -> bool:
+        return True
 
     @staticmethod
     def get_parameter_class() -> Type[AnomalyPatternParameters]:
