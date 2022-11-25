@@ -9,6 +9,7 @@
 [![PyPI version](https://badge.fury.io/py/timeeval-gutenTAG.svg)](https://badge.fury.io/py/timeeval-gutenTAG)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![python version 3.7|3.8|3.9|3.10](https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9%20%7C%203.10-blue)
+[![Downloads](https://pepy.tech/badge/timeeval-gutentag)](https://pepy.tech/project/timeeval-gutentag)
 
 </div>
 
