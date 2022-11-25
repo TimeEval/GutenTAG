@@ -48,7 +48,7 @@ $ python -m gutenTAG
      | |__| | |_| | ||  __/ | | | |/ ____ \ |__| |_|
       \_____|\__,_|\__\___|_| |_|_/_/    \_\_____(_)
 
-                     Version 1.1.0
+                     Version 1.2.0
 
 "Good day!" wishes your friendly Timeseries Anomaly Generator.
 
