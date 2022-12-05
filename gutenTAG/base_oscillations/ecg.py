@@ -3,20 +3,24 @@ from typing import Optional
 import neurokit2 as nk
 import numpy as np
 
+from . import BaseOscillation
 from .interface import BaseOscillationInterface
-from ..utils.base_oscillation_kind import BaseOscillationKind
+from ..utils.global_variables import BASE_OSCILLATION_NAMES
 from ..utils.types import BOGenerationContext
+
 
 # we fix the sampling rate to 100 points = 1s
 sampling_rate = 100
 
 
 class ECG(BaseOscillationInterface):
+    KIND = BASE_OSCILLATION_NAMES.ECG
+
+    def get_base_oscillation_kind(self) -> str:
+        return self.KIND
+
     def get_timeseries_periods(self) -> Optional[int]:
         return int((self.length // sampling_rate) * (self.frequency / 100 * sampling_rate))
-
-    def get_base_oscillation_kind(self) -> BaseOscillationKind:
-        return BaseOscillationKind.ECG
 
     def generate_only_base(self,
                            ctx: BOGenerationContext,
@@ -40,3 +44,6 @@ class ECG(BaseOscillationInterface):
                               noise=0,
                               method=self.ecg_sim_method)
         return ecg * amplitude
+
+
+BaseOscillation.register(ECG.KIND, ECG)

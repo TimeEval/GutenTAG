@@ -6,7 +6,7 @@ from dataclasses import dataclass, asdict
 from typing import Dict, Optional, Tuple, List
 
 from ..anomalies import Anomaly, Position, AnomalyKind, BaseAnomaly
-from ..base_oscillations import BaseOscillation, BaseOscillationInterface
+from ..base_oscillations import BaseOscillationInterface, BaseOscillation
 from ..utils.compatibility import Compatibility
 from ..utils.default_values import default_values
 from ..utils.global_variables import BASE_OSCILLATION, BASE_OSCILLATIONS, TIMESERIES, PARAMETERS, ANOMALIES

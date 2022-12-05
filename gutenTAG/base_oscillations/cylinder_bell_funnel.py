@@ -2,19 +2,26 @@ from typing import Optional, Sequence, Callable
 
 import numpy as np
 
+from . import BaseOscillation
 from .interface import BaseOscillationInterface
-from ..utils.base_oscillation_kind import BaseOscillationKind
+from ..utils.global_variables import BASE_OSCILLATION_NAMES
 from ..utils.types import BOGenerationContext
 
 
 class CylinderBellFunnel(BaseOscillationInterface):
+    KIND = BASE_OSCILLATION_NAMES.CYLINDER_BELL_FUNNEL
+
+    def get_base_oscillation_kind(self) -> str:
+        return self.KIND
+
     def get_timeseries_periods(self) -> Optional[int]:
         if self.avg_pattern_length > 0:
             return self.length // self.avg_pattern_length
         return None
 
-    def get_base_oscillation_kind(self) -> BaseOscillationKind:
-        return BaseOscillationKind.CylinderBellFunnel
+    def is_periodic(self) -> bool:
+        """CylinderBellFunnel has reoccurring patterns but no fixed periodicity!"""
+        return False
 
     def generate_only_base(self,
                            ctx: BOGenerationContext,
@@ -46,6 +53,9 @@ class CylinderBellFunnel(BaseOscillationInterface):
         else:
             raise AssertionError("`timeseries` and `noise` are None. Please, generate `timeseries` and `noise` before calling this method!")
         return self
+
+
+BaseOscillation.register(CylinderBellFunnel.KIND, CylinderBellFunnel)
 
 
 # Taken from https://github.com/KDD-OpenSource/data-generation/blob/master/generation/cbf.py

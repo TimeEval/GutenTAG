@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 from gutenTAG.addons import BaseAddOn, AddOnProcessContext, AddOnFinalizeContext
+from gutenTAG.base_oscillations.utils.math_func_support import calc_period_length
 from gutenTAG.generator import TimeSeries
 from gutenTAG.utils.default_values import default_values
 from gutenTAG.utils.global_variables import SUPERVISED_FILENAME, UNSUPERVISED_FILENAME, SEMI_SUPERVISED_FILENAME, \
@@ -142,7 +143,7 @@ class TimeEvalAddOn(BaseAddOn):
             if frequency is None or kind not in [BASE_OSCILLATION_NAMES.SINE, BASE_OSCILLATION_NAMES.COSINE, BASE_OSCILLATION_NAMES.ECG, BASE_OSCILLATION_NAMES.RANDOM_MODE_JUMP]:
                 periods.append(np.NAN)
             elif kind in [BASE_OSCILLATION_NAMES.SINE, BASE_OSCILLATION_NAMES.COSINE, BASE_OSCILLATION_NAMES.ECG]:
-                periods.append(int(100 / frequency))
+                periods.append(calc_period_length(frequency))
             elif kind == BASE_OSCILLATION_NAMES.RANDOM_MODE_JUMP:
                 periods.append(int(length / frequency))
         return float(np.nanmedian(periods))

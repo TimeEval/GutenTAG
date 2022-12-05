@@ -2,15 +2,18 @@ from typing import Optional
 
 import numpy as np
 
+from . import BaseOscillation
 from .interface import BaseOscillationInterface
 from .utils.math_func_support import prepare_base_signal, generate_periodic_signal, calc_n_periods
-from ..utils.base_oscillation_kind import BaseOscillationKind
+from ..utils.global_variables import BASE_OSCILLATION_NAMES
 from ..utils.types import BOGenerationContext
 
 
 class Cosine(BaseOscillationInterface):
-    def get_base_oscillation_kind(self) -> BaseOscillationKind:
-        return BaseOscillationKind.Cosine
+    KIND = BASE_OSCILLATION_NAMES.COSINE
+
+    def get_base_oscillation_kind(self) -> str:
+        return self.KIND
 
     def get_timeseries_periods(self) -> Optional[int]:
         return calc_n_periods(self.length, self.frequency)
@@ -29,3 +32,6 @@ class Cosine(BaseOscillationInterface):
 
         base_ts = prepare_base_signal(n, f)
         return generate_periodic_signal(base_ts, np.cos, a, v_freq_mod)
+
+
+BaseOscillation.register(Cosine.KIND, Cosine)

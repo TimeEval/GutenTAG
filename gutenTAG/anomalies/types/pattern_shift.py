@@ -5,7 +5,7 @@ import numpy as np
 
 from . import BaseAnomaly
 from .. import AnomalyProtocol
-from ...utils.base_oscillation_kind import BaseOscillationKind
+from ...base_oscillations import ECG, Sine, Cosine
 
 
 @dataclass
@@ -21,7 +21,7 @@ class AnomalyPatternShift(BaseAnomaly):
         self.transition_window = parameters.transition_window
 
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
-        if anomaly_protocol.base_oscillation_kind in [BaseOscillationKind.Sine, BaseOscillationKind.Cosine, BaseOscillationKind.ECG]:
+        if anomaly_protocol.base_oscillation.is_periodic():
             assert abs(self.shift_by) <= self.transition_window, \
                 "The parameter 'shift_by' must not be larger than 'transition_window' in absolute terms! Guten Tag!"
 
@@ -42,7 +42,7 @@ class AnomalyPatternShift(BaseAnomaly):
 
             anomaly_protocol.subsequences.append(subsequence)
         else:
-            self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind.name)
+            self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind)
         return anomaly_protocol
 
     @property

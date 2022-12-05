@@ -12,10 +12,8 @@ from joblib import Parallel, delayed
 from tqdm import tqdm
 
 from .addons import import_addons, AddOnProcessContext, AddOnFinalizeContext, BaseAddOn
-from .config.parser import ConfigParser
-from .config.validator import ConfigValidator
-from .generator.overview import Overview
-from .generator.timeseries import TimeSeries
+from .config import ConfigParser, ConfigValidator
+from .generator import Overview, TimeSeries
 from .timeseries import TrainingType, TimeSeries as ExtTimeSeries
 from .utils.global_variables import UNSUPERVISED_FILENAME, SUPERVISED_FILENAME, SEMI_SUPERVISED_FILENAME
 from .utils.tqdm_joblib import tqdm_joblib

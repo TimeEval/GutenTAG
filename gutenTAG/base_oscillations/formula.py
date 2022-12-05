@@ -7,8 +7,9 @@ from typing import Optional, List, Dict, Any, NamedTuple, Union
 
 import numpy as np
 
+from . import BaseOscillation
 from .interface import BaseOscillationInterface
-from ..utils.base_oscillation_kind import BaseOscillationKind
+from ..utils.global_variables import BASE_OSCILLATION_NAMES
 from ..utils.types import BOGenerationContext
 
 
@@ -21,11 +22,13 @@ AXIS = "axis"
 
 
 class Formula(BaseOscillationInterface):
+    KIND = BASE_OSCILLATION_NAMES.FORMULA
+
+    def get_base_oscillation_kind(self) -> str:
+        return self.KIND
+
     def get_timeseries_periods(self) -> Optional[int]:
         return None
-
-    def get_base_oscillation_kind(self) -> BaseOscillationKind:
-        return BaseOscillationKind.Formula
 
     def generate_only_base(self, ctx: BOGenerationContext, *args, **kwargs) -> np.ndarray:
         formula = self.formula
@@ -34,6 +37,9 @@ class Formula(BaseOscillationInterface):
         ts = FormulaParser(formula).parse(c).execute()
 
         return ts
+
+
+BaseOscillation.register(Formula.KIND, Formula)
 
 
 class OperationType(Enum):

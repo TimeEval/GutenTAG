@@ -4,7 +4,6 @@ from typing import List, Optional
 
 import numpy as np
 
-from ...utils.base_oscillation_kind import BaseOscillationKind
 from ...utils.logger import GutenTagLogger
 from ...utils.types import AnomalyGenerationContext
 
@@ -34,7 +33,7 @@ class AnomalyProtocol:
         return self.ctx.base_oscillation
 
     @property
-    def base_oscillation_kind(self) -> BaseOscillationKind:
+    def base_oscillation_kind(self) -> str:
         return self.ctx.base_oscillation_kind
 
     @property

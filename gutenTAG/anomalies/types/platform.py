@@ -4,6 +4,7 @@ from typing import Type
 import numpy as np
 
 from . import BaseAnomaly, AnomalyProtocol
+from ...base_oscillations import RandomModeJump
 
 
 @dataclass
@@ -17,6 +18,10 @@ class AnomalyPlatform(BaseAnomaly):
         self.value = parameters.value
 
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
+        if anomaly_protocol.base_oscillation_kind == RandomModeJump.KIND:
+            self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind)
+            return anomaly_protocol
+
         length = anomaly_protocol.end - anomaly_protocol.start
         values = np.zeros(length) + self.value
         anomaly_protocol.subsequences.append(values)
