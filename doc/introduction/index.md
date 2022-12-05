@@ -92,15 +92,15 @@ which combinations GutenTAG does not support.
 - `x` = Combination allowed
 - `-` = Combination not allowed
 
-|                  | Sine  | Random Walk | CBF | ECG | Polynomial | Random Mode Jump | Formula |
-|:-----------------|:-----:|:-----------:|:---:|:---:|:----------:|:----------------:|:-------:|
-| amplitude        |   x   |      x      |  x  |  x  |      -     |         -        |    -    |
-| extremum         |   x   |      x      |  x  |  x  |      x     |         -        |    x    |
-| frequency        |   x   |      -      |  -  |  x  |      -     |         -        |    -    |
-| mean             |   x   |      x      |  x  |  x  |      x     |         -        |    x    |
-| pattern          |   x   |      -      |  x  |  x  |      -     |         -        |    -    |
-| pattern_shift    |   x   |      -      |  -  |  x  |      -     |         -        |    -    |
-| platform         |   x   |      x      |  x  |  x  |      x     |         -        |    x    |
-| trend            |   x   |      x      |  x  |  x  |      x     |         -        |    x    |
-| variance         |   x   |      x      |  x  |  x  |      x     |         -        |    x    |
-| mode_correlation |   -   |      -      |  -  |  -  |      -     |         x        |    -    |
+|                  | Sine  | Cosine | Random Walk | CBF | ECG | Polynomial | Random Mode Jump | Formula |
+|:-----------------|:-----:|:------:|:-----------:|:---:|:---:|:----------:|:----------------:|:-------:|
+| amplitude        |   x   |    x   |      x      |  x  |  x  |      -     |         -        |    -    |
+| extremum         |   x   |    x   |      x      |  x  |  x  |      x     |         -        |    x    |
+| frequency        |   x   |    x   |      -      |  -  |  x  |      -     |         -        |    -    |
+| mean             |   x   |    x   |      x      |  x  |  x  |      x     |         -        |    x    |
+| pattern          |   x   |    x   |      -      |  x  |  x  |      -     |         -        |    -    |
+| pattern_shift    |   x   |    x   |      -      |  -  |  x  |      -     |         -        |    -    |
+| platform         |   x   |    x   |      x      |  x  |  x  |      x     |         -        |    x    |
+| trend            |   x   |    x   |      x      |  x  |  x  |      x     |         -        |    x    |
+| variance         |   x   |    x   |      x      |  x  |  x  |      x     |         -        |    x    |
+| mode_correlation |   -   |    -   |      -      |  -  |  -  |      -     |         x        |    -    |

@@ -22,14 +22,14 @@ class AnomalyPattern(BaseAnomaly):
         self.cbf_pattern_factor = parameters.cbf_pattern_factor
 
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
-        if anomaly_protocol.base_oscillation_kind == BaseOscillationKind.Sine:
+        if anomaly_protocol.base_oscillation_kind in [BaseOscillationKind.Sine, BaseOscillationKind.Cosine]:
             def sinusoid(t: np.ndarray, k: float, a_min: float, a_max: float) -> np.ndarray:
-                pattern = (np.arctan(k * t) / np.arctan(k))
+                pattern = np.arctan(k * t) / np.arctan(k)
                 scaled = MinMaxScaler(feature_range=(a_min, a_max)).fit_transform(pattern.reshape(-1, 1)).reshape(-1)
                 return scaled
 
-            sine = anomaly_protocol.base_oscillation
-            snippet = sine.timeseries[anomaly_protocol.start:anomaly_protocol.end]
+            bo = anomaly_protocol.base_oscillation
+            snippet = bo.timeseries[anomaly_protocol.start:anomaly_protocol.end]
             subsequence = sinusoid(snippet, self.sinusoid_k, snippet.min(), snippet.max())
             anomaly_protocol.subsequences.append(subsequence)
 

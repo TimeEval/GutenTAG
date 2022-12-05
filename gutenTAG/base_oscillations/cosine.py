@@ -8,9 +8,9 @@ from ..utils.base_oscillation_kind import BaseOscillationKind
 from ..utils.types import BOGenerationContext
 
 
-class Sine(BaseOscillationInterface):
+class Cosine(BaseOscillationInterface):
     def get_base_oscillation_kind(self) -> BaseOscillationKind:
-        return BaseOscillationKind.Sine
+        return BaseOscillationKind.Cosine
 
     def get_timeseries_periods(self) -> Optional[int]:
         return calc_n_periods(self.length, self.frequency)
@@ -28,4 +28,4 @@ class Sine(BaseOscillationInterface):
         v_freq_mod: float = freq_mod or self.freq_mod  # factor of f
 
         base_ts = prepare_base_signal(n, f)
-        return generate_periodic_signal(base_ts, np.sin, a, v_freq_mod)
+        return generate_periodic_signal(base_ts, np.cos, a, v_freq_mod)

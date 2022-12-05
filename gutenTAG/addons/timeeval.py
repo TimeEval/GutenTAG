@@ -139,9 +139,9 @@ class TimeEvalAddOn(BaseAddOn):
         for dim in bases:
             frequency = dim.get(PARAMETERS.FREQUENCY)
             kind = dim.get(PARAMETERS.KIND)
-            if frequency is None or kind not in [BASE_OSCILLATION_NAMES.SINE, BASE_OSCILLATION_NAMES.ECG, BASE_OSCILLATION_NAMES.RANDOM_MODE_JUMP]:
+            if frequency is None or kind not in [BASE_OSCILLATION_NAMES.SINE, BASE_OSCILLATION_NAMES.COSINE, BASE_OSCILLATION_NAMES.ECG, BASE_OSCILLATION_NAMES.RANDOM_MODE_JUMP]:
                 periods.append(np.NAN)
-            elif kind in [BASE_OSCILLATION_NAMES.SINE, BASE_OSCILLATION_NAMES.ECG]:
+            elif kind in [BASE_OSCILLATION_NAMES.SINE, BASE_OSCILLATION_NAMES.COSINE, BASE_OSCILLATION_NAMES.ECG]:
                 periods.append(int(100 / frequency))
             elif kind == BASE_OSCILLATION_NAMES.RANDOM_MODE_JUMP:
                 periods.append(int(length / frequency))

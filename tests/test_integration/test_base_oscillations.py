@@ -57,3 +57,8 @@ class TestIntegrationBaseOscillations(TestIntegration):
         self._compare_expected_and_generated("tests/configs/example-config-formula.yaml",
                                              "tests/generated/example-ts-formula.csv",
                                              ["value-0", "is_anomaly"])
+
+    def test_cosine_from_config(self):
+        self._compare_expected_and_generated("tests/configs/example-config-cosine.yaml",
+                                             "tests/generated/example-ts-cosine.csv",
+                                             ["value-0", "is_anomaly"])

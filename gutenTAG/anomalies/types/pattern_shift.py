@@ -21,7 +21,7 @@ class AnomalyPatternShift(BaseAnomaly):
         self.transition_window = parameters.transition_window
 
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
-        if anomaly_protocol.base_oscillation_kind in [BaseOscillationKind.Sine, BaseOscillationKind.ECG]:
+        if anomaly_protocol.base_oscillation_kind in [BaseOscillationKind.Sine, BaseOscillationKind.Cosine, BaseOscillationKind.ECG]:
             assert abs(self.shift_by) <= self.transition_window, \
                 "The parameter 'shift_by' must not be larger than 'transition_window' in absolute terms! Guten Tag!"
 

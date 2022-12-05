@@ -14,6 +14,7 @@ ANOMALIES = "anomalies"
 
 class BASE_OSCILLATION_NAMES:
     SINE = "sine"
+    COSINE = "cosine"
     RANDOM_WALK = "random-walk"
     CYLINDER_BELL_FUNNEL = "cylinder-bell-funnel"
     ECG = "ecg"
