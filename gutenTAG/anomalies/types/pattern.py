@@ -6,7 +6,7 @@ from sklearn.preprocessing import MinMaxScaler
 
 from . import BaseAnomaly
 from .. import AnomalyProtocol
-from ...utils.base_oscillation_kind import BaseOscillationKind
+from ...base_oscillations import Sine, Cosine, CylinderBellFunnel, ECG
 
 
 @dataclass
@@ -22,18 +22,7 @@ class AnomalyPattern(BaseAnomaly):
         self.cbf_pattern_factor = parameters.cbf_pattern_factor
 
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
-        if anomaly_protocol.base_oscillation_kind in [BaseOscillationKind.Sine, BaseOscillationKind.Cosine]:
-            def sinusoid(t: np.ndarray, k: float, a_min: float, a_max: float) -> np.ndarray:
-                pattern = np.arctan(k * t) / np.arctan(k)
-                scaled = MinMaxScaler(feature_range=(a_min, a_max)).fit_transform(pattern.reshape(-1, 1)).reshape(-1)
-                return scaled
-
-            bo = anomaly_protocol.base_oscillation
-            snippet = bo.timeseries[anomaly_protocol.start:anomaly_protocol.end]
-            subsequence = sinusoid(snippet, self.sinusoid_k, snippet.min(), snippet.max())
-            anomaly_protocol.subsequences.append(subsequence)
-
-        elif anomaly_protocol.base_oscillation_kind == BaseOscillationKind.CylinderBellFunnel:
+        if anomaly_protocol.base_oscillation_kind == CylinderBellFunnel.KIND:
             cbf = anomaly_protocol.base_oscillation
             subsequence = cbf.generate_only_base(
                 anomaly_protocol.ctx.to_bo(),
@@ -41,7 +30,7 @@ class AnomalyPattern(BaseAnomaly):
             )[anomaly_protocol.start:anomaly_protocol.end]
             anomaly_protocol.subsequences.append(subsequence)
 
-        elif anomaly_protocol.base_oscillation_kind == BaseOscillationKind.ECG:
+        elif anomaly_protocol.base_oscillation_kind == ECG.KIND:
             ecg = anomaly_protocol.base_oscillation
             length = anomaly_protocol.end - anomaly_protocol.start
             window = int(length * 0.05)
@@ -52,12 +41,22 @@ class AnomalyPattern(BaseAnomaly):
                     break
             else:
                 slide = 0
-
             subsequence = ecg.timeseries[anomaly_protocol.start + slide:anomaly_protocol.end + slide][::-1]
             anomaly_protocol.subsequences.append(subsequence)
 
+        elif anomaly_protocol.base_oscillation.is_periodic():
+            def sinusoid(t: np.ndarray, k: float, a_min: float, a_max: float) -> np.ndarray:
+                pattern = np.arctan(k * t) / np.arctan(k)
+                scaled = MinMaxScaler(feature_range=(a_min, a_max)).fit_transform(pattern.reshape(-1, 1)).reshape(-1)
+                return scaled
+
+            bo = anomaly_protocol.base_oscillation
+            snippet = bo.timeseries[anomaly_protocol.start:anomaly_protocol.end]
+            subsequence = sinusoid(snippet, self.sinusoid_k, snippet.min(), snippet.max())
+            anomaly_protocol.subsequences.append(subsequence)
+
         else:
-            self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind.name)
+            self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind)
         return anomaly_protocol
 
     @property

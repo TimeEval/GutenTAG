@@ -6,6 +6,7 @@ from scipy.stats import norm
 from sklearn.preprocessing import MinMaxScaler
 
 from . import BaseAnomaly, AnomalyProtocol
+from ...base_oscillations import RandomModeJump
 
 
 @dataclass
@@ -19,6 +20,10 @@ class AnomalyTrend(BaseAnomaly):
         self.trend = parameters.trend
 
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
+        if anomaly_protocol.base_oscillation_kind == RandomModeJump.KIND:
+            self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind)
+            return anomaly_protocol
+
         length = anomaly_protocol.end - anomaly_protocol.start
         transition_length = int(length * 0.2)
         plateau_length = int(length * 0.8)

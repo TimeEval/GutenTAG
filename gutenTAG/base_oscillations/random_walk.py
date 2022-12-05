@@ -4,8 +4,9 @@ import numpy as np
 from scipy.stats import norm
 from sklearn.preprocessing import MinMaxScaler
 
+from . import BaseOscillation
 from .interface import BaseOscillationInterface
-from ..utils.base_oscillation_kind import BaseOscillationKind
+from ..utils.global_variables import BASE_OSCILLATION_NAMES
 from ..utils.types import BOGenerationContext
 
 
@@ -15,11 +16,13 @@ def _gen_steps(ctx: BOGenerationContext, length: int) -> np.ndarray:
 
 
 class RandomWalk(BaseOscillationInterface):
+    KIND = BASE_OSCILLATION_NAMES.RANDOM_WALK
+
+    def get_base_oscillation_kind(self) -> str:
+        return self.KIND
+
     def get_timeseries_periods(self) -> Optional[int]:
         return None
-
-    def get_base_oscillation_kind(self) -> BaseOscillationKind:
-        return BaseOscillationKind.RandomWalk
 
     def generate_only_base(self,
                            ctx: BOGenerationContext,
@@ -41,3 +44,6 @@ class RandomWalk(BaseOscillationInterface):
             ts = _gen_steps(ctx, length)
 
         return MinMaxScaler(feature_range=[-amplitude, amplitude]).fit_transform(ts.reshape(-1, 1)).reshape(-1)
+
+
+BaseOscillation.register(RandomWalk.KIND, RandomWalk)

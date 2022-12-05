@@ -6,8 +6,6 @@ from typing import List, Tuple, Optional, Union, Sequence
 import numpy as np
 from numpy.random import SeedSequence
 
-from .base_oscillation_kind import BaseOscillationKind
-
 
 class GenerationContext:
     def __init__(self, seed: SeedSequence):
@@ -80,5 +78,5 @@ class AnomalyGenerationContext(GenerationContext):
         return self.base_oscillation.get_timeseries_periods()
 
     @property
-    def base_oscillation_kind(self) -> BaseOscillationKind:
+    def base_oscillation_kind(self) -> str:
         return self.base_oscillation.get_base_oscillation_kind()

@@ -11,7 +11,7 @@ from numpy.random import SeedSequence
 
 from ..anomalies import Anomaly
 from ..base_oscillations import BaseOscillationInterface
-from ..base_oscillations.utils.consolidator import Consolidator
+from ..consolidator import Consolidator
 from ..timeseries import TrainingType, INDEX_COLUMN_NAME, LABEL_COLUMN_NAME, TimeSeries as ExtTimeSeries
 from ..utils.types import GenerationContext
 

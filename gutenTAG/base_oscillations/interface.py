@@ -3,7 +3,6 @@ from typing import Optional
 
 import numpy as np
 
-from ..utils.base_oscillation_kind import BaseOscillationKind
 from ..utils.default_values import default_values
 from ..utils.global_variables import PARAMETERS, BASE_OSCILLATIONS
 from ..utils.types import BOGenerationContext
@@ -50,6 +49,10 @@ class BaseOscillationInterface(ABC):
         self.trend_series = self._generate_trend(ctx.to_trend())
         self.noise = self.generate_noise(ctx, self.variance * self.amplitude, self.length)
 
+    def is_periodic(self) -> bool:
+        periods = self.get_timeseries_periods()
+        return periods is not None and periods > 1
+
     @abstractmethod
     def get_timeseries_periods(self) -> Optional[int]:
         """
@@ -59,7 +62,7 @@ class BaseOscillationInterface(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def get_base_oscillation_kind(self) -> BaseOscillationKind:
+    def get_base_oscillation_kind(self) -> str:
         raise NotImplementedError()
 
     @abstractmethod

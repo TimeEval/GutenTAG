@@ -1,9 +1,11 @@
 from dataclasses import dataclass
 from typing import Type
+
 import numpy as np
 
 from . import BaseAnomaly
 from .. import AnomalyProtocol
+from ...base_oscillations import RandomModeJump
 
 
 @dataclass
@@ -17,6 +19,10 @@ class AnomalyMean(BaseAnomaly):
         self.offset = parameters.offset
 
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
+        if anomaly_protocol.base_oscillation_kind == RandomModeJump.KIND:
+            self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind)
+            return anomaly_protocol
+
         base = anomaly_protocol.base_oscillation
         ts: np.ndarray = base.timeseries
         creep = self.generate_creep(anomaly_protocol)

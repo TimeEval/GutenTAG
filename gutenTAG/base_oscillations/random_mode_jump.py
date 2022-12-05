@@ -2,17 +2,24 @@ from typing import Optional
 
 import numpy as np
 
+from . import BaseOscillation
 from .interface import BaseOscillationInterface
-from ..utils.base_oscillation_kind import BaseOscillationKind
+from ..utils.global_variables import BASE_OSCILLATION_NAMES
 from ..utils.types import BOGenerationContext
 
 
 class RandomModeJump(BaseOscillationInterface):
-    def get_base_oscillation_kind(self) -> BaseOscillationKind:
-        return BaseOscillationKind.RandomModeJump
+    KIND = BASE_OSCILLATION_NAMES.RANDOM_MODE_JUMP
+
+    def get_base_oscillation_kind(self) -> str:
+        return self.KIND
 
     def get_timeseries_periods(self) -> Optional[int]:
         return self.frequency
+
+    def is_periodic(self) -> bool:
+        """RandomModeJump has reoccurring modes but no fixed periodicity!"""
+        return False
 
     def generate_only_base(self,
                            ctx: BOGenerationContext,
@@ -45,3 +52,6 @@ class RandomModeJump(BaseOscillationInterface):
     def _generate_channel_amplitude(self, channel: int, channel_diff: float, channel_offset: float) -> float:
         high_val = (channel_diff * channel) + channel_offset
         return high_val
+
+
+BaseOscillation.register(RandomModeJump.KIND, RandomModeJump)

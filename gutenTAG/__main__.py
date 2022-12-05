@@ -1,6 +1,5 @@
 import argparse
 import sys
-import warnings
 from pathlib import Path
 from typing import List
 

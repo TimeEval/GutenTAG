@@ -3,7 +3,7 @@ from typing import Type
 
 from . import BaseAnomaly
 from .. import AnomalyProtocol
-from ...utils.base_oscillation_kind import BaseOscillationKind
+from ...base_oscillations import CylinderBellFunnel, RandomModeJump
 
 
 @dataclass
@@ -18,9 +18,16 @@ class AnomalyVariance(BaseAnomaly):
 
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
         base = anomaly_protocol.base_oscillation
-        if anomaly_protocol.base_oscillation_kind == BaseOscillationKind.CylinderBellFunnel:
-            subsequence = base.generate_only_base(anomaly_protocol.ctx.to_bo(), variance=self.variance)[anomaly_protocol.start:anomaly_protocol.end]
+        if anomaly_protocol.base_oscillation_kind == RandomModeJump.KIND:
+            self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind)
+
+        elif anomaly_protocol.base_oscillation_kind == CylinderBellFunnel.KIND:
+            subsequence = base.generate_only_base(
+                anomaly_protocol.ctx.to_bo(),
+                variance=self.variance
+            )[anomaly_protocol.start:anomaly_protocol.end]
             anomaly_protocol.subsequences.append(subsequence)
+
         else:
             length = anomaly_protocol.end - anomaly_protocol.start
             variance_diff = self.variance - base.variance

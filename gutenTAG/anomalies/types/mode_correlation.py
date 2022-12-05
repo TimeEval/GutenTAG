@@ -1,10 +1,9 @@
-import logging
 from dataclasses import dataclass
 from typing import Type
 
 from . import BaseAnomaly
 from .. import AnomalyProtocol
-from ...utils.base_oscillation_kind import BaseOscillationKind
+from ...base_oscillations import RandomModeJump
 
 
 @dataclass
@@ -17,13 +16,13 @@ class AnomalyModeCorrelation(BaseAnomaly):
         super().__init__()
 
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
-        base = anomaly_protocol.base_oscillation
-        if anomaly_protocol.base_oscillation_kind == BaseOscillationKind.RandomModeJump:
-            timeseries = base.timeseries
+        if anomaly_protocol.base_oscillation_kind == RandomModeJump.KIND:
+            timeseries = anomaly_protocol.base_oscillation.timeseries
             subsequence = timeseries[anomaly_protocol.start:anomaly_protocol.end] * -1
             anomaly_protocol.subsequences.append(subsequence)
         else:
-            logging.warning("A `mode_correlation` anomaly can be injected in only a `random_mode_jump` base oscillation!")
+            self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind)
+            self.logger.warning("A `mode_correlation` anomaly can be injected in only a `random_mode_jump` base oscillation!")
         return anomaly_protocol
 
     @property

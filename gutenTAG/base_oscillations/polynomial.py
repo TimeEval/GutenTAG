@@ -2,14 +2,17 @@ from typing import Optional, List
 
 import numpy as np
 
+from . import BaseOscillation
 from .interface import BaseOscillationInterface
-from ..utils.base_oscillation_kind import BaseOscillationKind
+from ..utils.global_variables import BASE_OSCILLATION_NAMES
 from ..utils.types import BOGenerationContext
 
 
 class Polynomial(BaseOscillationInterface):
-    def get_base_oscillation_kind(self) -> BaseOscillationKind:
-        return BaseOscillationKind.Polynomial
+    KIND = BASE_OSCILLATION_NAMES.POLYNOMIAL
+
+    def get_base_oscillation_kind(self) -> str:
+        return self.KIND
 
     def get_timeseries_periods(self) -> Optional[int]:
         return None
@@ -24,3 +27,6 @@ class Polynomial(BaseOscillationInterface):
 
         base_ts = np.polynomial.Polynomial(polynomial)(np.arange(length))
         return base_ts
+
+
+BaseOscillation.register(Polynomial.KIND, Polynomial)
