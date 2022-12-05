@@ -1,5 +1,6 @@
 from typing import Optional, Any, Dict, Type
 
+from .cosine import Cosine
 from .cylinder_bell_funnel import CylinderBellFunnel
 from .ecg import ECG
 from .formula import Formula  # type: ignore  # mypy ends up in recursion
@@ -20,6 +21,7 @@ def get_or_error(name: str, value: Optional[Any]) -> Any:
 class BaseOscillation:
     key_mapping: Dict[str, Type[BaseOscillationInterface]] = {
         BASE_OSCILLATION_NAMES.SINE: Sine,
+        BASE_OSCILLATION_NAMES.COSINE: Cosine,
         BASE_OSCILLATION_NAMES.RANDOM_WALK: RandomWalk,
         BASE_OSCILLATION_NAMES.CYLINDER_BELL_FUNNEL: CylinderBellFunnel,
         BASE_OSCILLATION_NAMES.ECG: ECG,

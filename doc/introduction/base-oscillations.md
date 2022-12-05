@@ -3,6 +3,7 @@
 The generator comes with the following base oscillations in [gutenTAG/base_oscillations](../../gutenTAG/base_oscillations):
 
 - sine
+- cosine
 - random-walk
 - cylinder-bell-funnel
 - ecg
@@ -49,6 +50,17 @@ These parameters can be set for all base oscillations.
 |amplitude|Float|+/- deviation from 0|
 |freq-mod|Float|Factor (of base frequency) of the frequency modulation that changes the amplitude of the sine wave over time. The carrier wave always has an amplitude of 1.|
 
+## Cosine
+
+![cosine](images/cosine.png)
+
+**Parameters**
+
+| Name      | Type  | Description                                                                                                                                                 |
+|:----------|:------|:------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| frequency | Float | Number of cosine waves per 100 points                                                                                                                       |
+| amplitude | Float | +/- deviation from 0                                                                                                                                        |
+| freq-mod  | Float | Factor (of base frequency) of the frequency modulation that changes the amplitude of the wave over time. The carrier wave always has an amplitude of 1.     |
 
 ## Random Walk
 

@@ -30,7 +30,7 @@ A GutenTAG time series consists of a single (univariate) or multiple (multivaria
    pip install timeeval-gutenTAG
    ```
 
-   GutenTAG supports Python 3.7, 3.8, 3.9, and 3.10; all other [requirements](./requirements.txt) are installed with the pip-call above.
+   GutenTAG supports Python 3.7, 3.8, 3.9, 3.10, and 3.11; all other [requirements](./requirements.txt) are installed with the pip-call above.
 
 2. Create a generation configuration file [`example-config.yaml`](./generation_configs/example-config.yaml) with the instructions to generate a single time series with two anomalies:
    A _pattern_ anomaly in the middle and an _amplitude_ anomaly at the end of the series.

@@ -11,6 +11,7 @@ properties:
     type: string
     enum:
       - sine
+      - cosine
       - random-walk
       - ecg
       - cylinder-bell-funnel
@@ -36,7 +37,7 @@ oneOf:
         const: sine
       frequency:
         type: number
-        description: Number of oscillations per 100 points.
+        description: Number of oscillations per 100 points (in Hz if 100 points = 1s).
         minimum: 0
       amplitude:
         type: number
@@ -46,7 +47,36 @@ oneOf:
           It will be bounded to [-amplitude, amplitude].
       freq-mod:
         type: number
-        description: Factor of time-dependent frequency modulation (modulates the sine amplitude).
+        description: Factor of time-dependent frequency modulation (modulates the amplitude).
+    additionalProperties: false
+  - properties:
+      trend:
+        description: Trend to add to the base oscillation
+        $ref: "#"
+      offset:
+        type: number
+        description: Constant offset added to the base oscillation.
+      variance:
+        type: number
+        description: |
+          Variance of the signal relative to signal value.
+          This is also called white noise.
+          If set to 0, there is no noise.
+      kind:
+        const: cosine
+      frequency:
+        type: number
+        description: Number of oscillations per 100 points (in Hz if 100 points = 1s).
+        minimum: 0
+      amplitude:
+        type: number
+        exclusiveMinimum: 0
+        description: |
+          Amplitude of the oscillation (+/- from 0).
+          It will be bounded to [-amplitude, amplitude].
+      freq-mod:
+        type: number
+        description: Factor of time-dependent frequency modulation (modulates the amplitude).
     additionalProperties: false
   - properties:
       trend:
