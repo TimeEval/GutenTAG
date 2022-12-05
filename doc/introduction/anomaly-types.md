@@ -71,10 +71,11 @@ The generator comes with the following anomaly types in [gutenTAG/anomalies/type
 
 **Parameters**
 
-|Name|Type|Description|
-|----|----|-----------|
-|sinusoid_k|Float|[Only for `Sine`] Ramming factor for changing sine waves|
-|cbf_pattern_factor|Float|[Only for `cylinder_bell_funnel`] Pattern variance factor for change in CBF wave.|
+| Name               | Type  | Description                                                                       |
+|:-------------------|:------|:----------------------------------------------------------------------------------|
+| sinusoid_k         | Float | [Only for `sine` and `cosine`] Ramming factor for changing sine waves.            |
+| square_duty        | Float | [Only for `square`] New duty of the square wave.                                  |
+| cbf_pattern_factor | Float | [Only for `cylinder_bell_funnel`] Pattern variance factor for change in CBF wave. |
 
 Only one of the parameters above is necessary.
 `sinusoid_k` works with `sine` BOs, while `cbf_pattern_factor` works with `cylinder-bell-funnel` BOs.
@@ -85,10 +86,10 @@ Only one of the parameters above is necessary.
 
 **Parameters**
 
-|Name|Type|Description|
-|----|----|-----------|
-|shift_by|Int|Size of the shift length to the right. Can be negative for shift to the left.|
-|transition_window|Int|Number of points to the left and right used for transition|
+| Name              | Type | Description                                                                   |
+|:------------------|:-----|:------------------------------------------------------------------------------|
+| shift_by          | Int  | Size of the shift length to the right. Can be negative for shift to the left. |
+| transition_window | Int  | Number of points to the left and right used for transition.                   |
 
 ## Platform
 

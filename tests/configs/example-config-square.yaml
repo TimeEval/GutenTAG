@@ -1,0 +1,13 @@
+timeseries:
+  - name: square
+    length: 1000
+    base-oscillations:
+      - kind: square
+        frequency: 0.5
+        duty: 0.25
+    anomalies:
+      - position: beginning
+        length: 50
+        kinds:
+          - kind: amplitude
+            amplitude_factor: 2.0

@@ -13,6 +13,7 @@ ANOMALIES = "anomalies"
 
 
 class BASE_OSCILLATION_NAMES:
+    SQUARE = "square"
     SINE = "sine"
     COSINE = "cosine"
     RANDOM_WALK = "random-walk"
@@ -37,6 +38,7 @@ class ANOMALY_TYPE_NAMES:
 
 
 class PARAMETERS:
+    DUTY = "duty"
     OSCILLATION = "oscillation"
     LENGTH = "length"
     FREQUENCY = "frequency"

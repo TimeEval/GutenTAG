@@ -8,3 +8,4 @@ from .polynomial import Polynomial
 from .random_mode_jump import RandomModeJump
 from .random_walk import RandomWalk
 from .sine import Sine
+from .square import Square
