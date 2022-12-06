@@ -1,0 +1,12 @@
+timeseries:
+  - name: sawtooth
+    length: 1000
+    base-oscillations:
+      - kind: sawtooth
+        frequency: 2
+    anomalies:
+      - position: beginning
+        length: 20
+        kinds:
+          - kind: amplitude
+            amplitude_factor: 2.0

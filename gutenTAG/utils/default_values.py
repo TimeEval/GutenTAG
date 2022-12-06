@@ -21,6 +21,7 @@ default_values = {
         PARAMETERS.RANDOM_SEED: None,
         PARAMETERS.FORMULA: None,
         PARAMETERS.ECG_SIM_METHOD: "simple",
+        PARAMETERS.WIDTH: 1.0,
         PARAMETERS.DUTY: 0.5
     },
     ANOMALIES: {

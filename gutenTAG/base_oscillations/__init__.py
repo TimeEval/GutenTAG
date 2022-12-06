@@ -7,5 +7,6 @@ from .interface import BaseOscillationInterface
 from .polynomial import Polynomial
 from .random_mode_jump import RandomModeJump
 from .random_walk import RandomWalk
+from .sawtooth import Sawtooth
 from .sine import Sine
 from .square import Square

@@ -6,7 +6,8 @@ from sklearn.preprocessing import MinMaxScaler
 
 from . import BaseAnomaly
 from .. import AnomalyProtocol
-from ...base_oscillations import CylinderBellFunnel, ECG, Square
+from ...base_oscillations import CylinderBellFunnel, ECG
+from ...base_oscillations import CylinderBellFunnel, ECG, Square, Sawtooth
 
 
 @dataclass
@@ -14,6 +15,7 @@ class AnomalyPatternParameters:
     sinusoid_k: float = 10.0
     cbf_pattern_factor: float = 2.0
     square_duty: float = 1.0
+    sawtooth_width: float = 0.5
 
 
 class AnomalyPattern(BaseAnomaly):
@@ -22,6 +24,7 @@ class AnomalyPattern(BaseAnomaly):
         self.sinusoid_k = parameters.sinusoid_k
         self.cbf_pattern_factor = parameters.cbf_pattern_factor
         self.square_duty = parameters.square_duty
+        self.sawtooth_width = parameters.sawtooth_width
 
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
         if anomaly_protocol.base_oscillation_kind == CylinderBellFunnel.KIND:
@@ -44,6 +47,13 @@ class AnomalyPattern(BaseAnomaly):
             else:
                 slide = 0
             subsequence = ecg.timeseries[anomaly_protocol.start + slide:anomaly_protocol.end + slide][::-1]
+            anomaly_protocol.subsequences.append(subsequence)
+
+        elif anomaly_protocol.base_oscillation_kind == Sawtooth.KIND:
+            subsequence = anomaly_protocol.base_oscillation.generate_only_base(
+                anomaly_protocol.ctx.to_bo(),
+                width=self.sawtooth_width
+            )[anomaly_protocol.start:anomaly_protocol.end]
             anomaly_protocol.subsequences.append(subsequence)
 
         elif anomaly_protocol.base_oscillation_kind == Square.KIND:

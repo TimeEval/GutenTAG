@@ -13,7 +13,6 @@ ANOMALIES = "anomalies"
 
 
 class BASE_OSCILLATION_NAMES:
-    SQUARE = "square"
     SINE = "sine"
     COSINE = "cosine"
     RANDOM_WALK = "random-walk"
@@ -22,6 +21,8 @@ class BASE_OSCILLATION_NAMES:
     POLYNOMIAL = "polynomial"
     RANDOM_MODE_JUMP = "random-mode-jump"
     FORMULA = "formula"
+    SQUARE = "square"
+    SAWTOOTH = "sawtooth"
 
 
 class ANOMALY_TYPE_NAMES:
@@ -38,7 +39,6 @@ class ANOMALY_TYPE_NAMES:
 
 
 class PARAMETERS:
-    DUTY = "duty"
     OSCILLATION = "oscillation"
     LENGTH = "length"
     FREQUENCY = "frequency"
@@ -65,6 +65,8 @@ class PARAMETERS:
     EXACT_POSITION = "exact-position"
     CREEP_LENGTH = "creep-length"
     ECG_SIM_METHOD = "ecg-sim-method"
+    DUTY = "duty"
+    WIDTH = "width"
 
 
 class CONFIG_SCHEMA:

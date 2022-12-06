@@ -18,6 +18,7 @@ properties:
       - polynomial
       - random-mode-jump
       - formula
+      - sawtooth
       - square
     description: Kind of the base oscillation.
 oneOf:
@@ -279,4 +280,37 @@ oneOf:
       duty:
         type: number
         description: load percentage (time spent in high state compared to low state).
+    additionalProperties: false
+  - properties:
+      trend:
+        description: Trend to add to the base oscillation
+        $ref: "#"
+      offset:
+        type: number
+        description: Constant offset added to the base oscillation.
+      variance:
+        type: number
+        description: |
+          Variance of the signal relative to signal value.
+          This is also called white noise.
+          If set to 0, there is no noise.
+      kind:
+        const: sawtooth
+      frequency:
+        type: number
+        description: Number of oscillations per 100 points (in Hz if 100 points = 1s).
+        minimum: 0
+      amplitude:
+        type: number
+        exclusiveMinimum: 0
+        description: |
+          Amplitude of the oscillation.
+          It will be bounded to [-amplitude, amplitude].
+      freq-mod:
+        type: number
+        description: Factor of time-dependent frequency modulation (modulates the amplitude).
+      width:
+        type: number
+        description: |
+          >0.5 rising, <0.5 falling; sets proportional width of rising slope.
     additionalProperties: false
