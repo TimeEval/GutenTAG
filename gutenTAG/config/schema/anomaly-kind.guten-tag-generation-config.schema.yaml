@@ -103,6 +103,11 @@ definitions:
         description: |
           Only used for base oscillation of type 'square'.
           New duty (load factor) of the square wave.
+      sawtooth_width:
+        type: number
+        description: |
+          Only used for base oscillations of type 'sawtooth'.
+          Sets the new width of the sawtooth wave in this anomaly subsequence.
 # use minProperties to allow having both parameters present
 #    anyOf:
 #      - required:

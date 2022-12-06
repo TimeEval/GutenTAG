@@ -11,6 +11,7 @@ The generator comes with the following base oscillations in [gutenTAG/base_oscil
 - polynomial
 - random-mode-jump
 - formula
+- sawtooth
 
 Base oscillations can have an underlying trend.
 This trend can be any of the above base oscillations.
@@ -146,6 +147,19 @@ These parameters can be set for all base oscillations.
 | aggregation | Object      | Aggregation done on base object. |
 
 The `formula` base oscillation is a simple math engine that can perform primitive math operations on multiple already generated channels.
+
+## Sawtooth
+
+![sawtooth](images/sawtooth.png)
+
+**Parameters**
+
+| Name      | Type  | Description                                                                                                                                             |
+|:----------|:------|:--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| frequency | Float | Number of waves per 100 points                                                                                                                          |
+| amplitude | Float | +/- deviation from 0                                                                                                                                    |
+| freq-mod  | Float | Factor (of base frequency) of the frequency modulation that changes the amplitude of the wave over time. The carrier wave always has an amplitude of 1. |
+| width     | Float | >0.5 rising, <0.5 falling; sets proportional width of rising slope.                                                                                     |
 
 ### Syntax
 

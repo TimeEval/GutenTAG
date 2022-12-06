@@ -75,6 +75,7 @@ The generator comes with the following anomaly types in [gutenTAG/anomalies/type
 |:-------------------|:------|:----------------------------------------------------------------------------------|
 | sinusoid_k         | Float | [Only for `sine` and `cosine`] Ramming factor for changing sine waves.            |
 | square_duty        | Float | [Only for `square`] New duty of the square wave.                                  |
+| sawtooth_width     | Float | [Only for `sawtooth`] New width                                                   |
 | cbf_pattern_factor | Float | [Only for `cylinder_bell_funnel`] Pattern variance factor for change in CBF wave. |
 
 Only one of the parameters above is necessary.
