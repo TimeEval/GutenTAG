@@ -72,3 +72,8 @@ class TestIntegrationBaseOscillations(TestIntegration):
         self._compare_expected_and_generated("tests/configs/example-config-sawtooth.yaml",
                                              "tests/generated/example-ts-sawtooth.csv",
                                              ["value-0", "is_anomaly"])
+
+    def test_dirichlet_from_config(self):
+        self._compare_expected_and_generated("tests/configs/example-config-dirichlet.yaml",
+                                             "tests/generated/example-ts-dirichlet.csv",
+                                             ["value-0", "is_anomaly"])

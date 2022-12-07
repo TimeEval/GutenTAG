@@ -74,15 +74,14 @@ Each time series has the following properties:
 - (some additional optional configuration options)
 
 ### Internal Process
+
 1. We first generate the base oscillation.
 2. Then, we inject the anomalies at the specific locations.
     1. The location of an anomaly is defined by the given position (in time)
         1. A position can be an exact time stamp or index in the time series
         2. or an approximate region like _beginning_, _middle_, or _end_. Here, GutenTAG will randomly choose a cycle in the corresponding region and will use its start as position.
     2. and the channel defined by the channel ID.
-4. Afterwards, the variations like _noise_, _trend_, and _offset_ are applied to the time series.
-
-
+3. Afterwards, the variations like _noise_, _trend_, and _offset_ are applied to the time series.
 
 ## Combinations
 
@@ -92,15 +91,15 @@ which combinations GutenTAG does not support.
 - `x` = Combination allowed
 - `-` = Combination not allowed
 
-|                  | Sine  | Cosine | Square | Random Walk | CBF | ECG | Polynomial | Random Mode Jump | Formula | Sawtooth |
-|:-----------------|:-----:|:------:|:------:|:-----------:|:---:|:---:|:----------:|:----------------:|:-------:|:--------:|
-| amplitude        |   x   |   x    |   x    |      x      |  x  |  x  |      -     |         -        |    -    |    x     |
-| extremum         |   x   |   x    |   x    |      x      |  x  |  x  |      x     |         -        |    x    |    x     |
-| frequency        |   x   |   x    |   x    |      -      |  -  |  x  |      -     |         -        |    -    |    x     |
-| mean             |   x   |   x    |   x    |      x      |  x  |  x  |      x     |         -        |    x    |    x     |
-| pattern          |   x   |   x    |   x    |      -      |  x  |  x  |      -     |         -        |    -    |    x     |
-| pattern_shift    |   x   |   x    |   x    |      -      |  -  |  x  |      -     |         -        |    -    |    x     |
-| platform         |   x   |   x    |   x    |      x      |  x  |  x  |      x     |         -        |    x    |    x     |
-| trend            |   x   |   x    |   x    |      x      |  x  |  x  |      x     |         -        |    x    |    x     |
-| variance         |   x   |   x    |   x    |      x      |  x  |  x  |      x     |         -        |    x    |    x     |
-| mode_correlation |   -   |   -    |   -    |      -      |  -  |  -  |      -     |         x        |    -    |    -     |
+|                  | Sine  | Cosine | Square | Random Walk | CBF | ECG | Polynomial | Random Mode Jump | Formula | Sawtooth | Dirichlet |
+|:-----------------|:-----:|:------:|:------:|:-----------:|:---:|:---:|:----------:|:----------------:|:-------:|:--------:|:---------:|
+| amplitude        |   x   |   x    |   x    |      x      |  x  |  x  |      -     |         -        |    -    |    x     |     x     |
+| extremum         |   x   |   x    |   x    |      x      |  x  |  x  |      x     |         -        |    x    |    x     |     x     |
+| frequency        |   x   |   x    |   x    |      -      |  -  |  x  |      -     |         -        |    -    |    x     |     x     |
+| mean             |   x   |   x    |   x    |      x      |  x  |  x  |      x     |         -        |    x    |    x     |     x     |
+| pattern          |   x   |   x    |   x    |      -      |  x  |  x  |      -     |         -        |    -    |    x     |     x     |
+| pattern_shift    |   x   |   x    |   x    |      -      |  -  |  x  |      -     |         -        |    -    |    x     |     x     |
+| platform         |   x   |   x    |   x    |      x      |  x  |  x  |      x     |         -        |    x    |    x     |     x     |
+| trend            |   x   |   x    |   x    |      x      |  x  |  x  |      x     |         -        |    x    |    x     |     x     |
+| variance         |   x   |   x    |   x    |      x      |  x  |  x  |      x     |         -        |    x    |    x     |     x     |
+| mode_correlation |   -   |   -    |   -    |      -      |  -  |  -  |      -     |         x        |    -    |    -     |     -     |

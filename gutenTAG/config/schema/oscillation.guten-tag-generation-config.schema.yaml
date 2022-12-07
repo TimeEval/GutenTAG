@@ -20,6 +20,7 @@ properties:
       - formula
       - sawtooth
       - square
+      - dirichlet
     description: Kind of the base oscillation.
 oneOf:
   - properties:
@@ -313,4 +314,35 @@ oneOf:
         type: number
         description: |
           >0.5 rising, <0.5 falling; sets proportional width of rising slope.
+    additionalProperties: false
+  - properties:
+      trend:
+        description: Trend to add to the base oscillation
+        $ref: "#"
+      offset:
+        type: number
+        description: Constant offset added to the base oscillation.
+      variance:
+        type: number
+        description: |
+          Variance of the signal relative to signal value.
+          This is also called white noise.
+          If set to 0, there is no noise.
+      kind:
+        const: dirichlet
+      frequency:
+        type: number
+        description: Number of oscillations per 100 points (in Hz if 100 points = 1s).
+        minimum: 0
+      amplitude:
+        type: number
+        exclusiveMinimum: 0
+        description: |
+          Amplitude of the oscillation.
+          It will be bounded to [-amplitude, amplitude].
+      periodicity:
+        type: number
+        description: |
+          Sets the periodicity of the dirichlet wave (higher numbers have a higher complexity), but the high-level
+          period length is not changed. However, even periodicity numbers double the period length.
     additionalProperties: false

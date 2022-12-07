@@ -23,6 +23,7 @@ class BASE_OSCILLATION_NAMES:
     FORMULA = "formula"
     SQUARE = "square"
     SAWTOOTH = "sawtooth"
+    DIRICHLET = "dirichlet"
 
 
 class ANOMALY_TYPE_NAMES:
@@ -67,6 +68,7 @@ class PARAMETERS:
     ECG_SIM_METHOD = "ecg-sim-method"
     DUTY = "duty"
     WIDTH = "width"
+    PERIODICITY = "periodicity"
 
 
 class CONFIG_SCHEMA:
