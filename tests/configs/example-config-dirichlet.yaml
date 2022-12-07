@@ -1,0 +1,12 @@
+timeseries:
+  - name: dirichlet
+    length: 1000
+    base-oscillations:
+      - kind: dirichlet
+        frequency: 2
+    anomalies:
+      - position: beginning
+        length: 50
+        kinds:
+          - kind: amplitude
+            amplitude_factor: 2.0

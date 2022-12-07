@@ -161,6 +161,18 @@ The `formula` base oscillation is a simple math engine that can perform primitiv
 | freq-mod  | Float | Factor (of base frequency) of the frequency modulation that changes the amplitude of the wave over time. The carrier wave always has an amplitude of 1. |
 | width     | Float | >0.5 rising, <0.5 falling; sets proportional width of rising slope.                                                                                     |
 
+## Dirichlet
+
+![dirichlet](images/dirichlet.png)
+
+**Parameters**
+
+| Name        | Type  | Description                                                                                                                                                                                        |
+|:------------|:------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| frequency   | Float | Number of waves per 100 points                                                                                                                                                                     |
+| amplitude   | Float | +/- deviation from 0                                                                                                                                                                               |
+| periodicity | Float | Sets the periodicity of the dirichlet wave (higher numbers have a higher complexity), but the high-level period length is not changed. However, even periodicity numbers double the period length. |
+
 ### Syntax
 
 **Formula Object**

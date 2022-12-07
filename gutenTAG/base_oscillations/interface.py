@@ -29,6 +29,7 @@ class BaseOscillationInterface(ABC):
         self.ecg_sim_method = kwargs.get(PARAMETERS.ECG_SIM_METHOD, default_values[BASE_OSCILLATIONS][PARAMETERS.ECG_SIM_METHOD])
         self.width = kwargs.get(PARAMETERS.WIDTH, default_values[BASE_OSCILLATIONS][PARAMETERS.WIDTH])
         self.duty = kwargs.get(PARAMETERS.DUTY, default_values[BASE_OSCILLATIONS][PARAMETERS.DUTY])
+        self.periodicity = kwargs.get(PARAMETERS.PERIODICITY, default_values[BASE_OSCILLATIONS][PARAMETERS.PERIODICITY])
 
         self.timeseries: Optional[np.ndarray] = None
         self.noise: Optional[np.ndarray] = None
