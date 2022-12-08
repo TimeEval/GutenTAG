@@ -16,7 +16,7 @@
 GutenTAG is an extensible tool to generate time series datasets with and without anomalies.
 A GutenTAG time series consists of a single (univariate) or multiple (multivariate) channels containing a base oscillation with different anomalies at different positions and of different kinds.
 
-[![base-oscillations](https://img.shields.io/badge/base_oscillations-7-3a4750?style=for-the-badge)](./doc/introduction/base-oscillations.md)
+[![base-oscillations](https://img.shields.io/badge/base_oscillations-11-3a4750?style=for-the-badge)](./doc/introduction/base-oscillations.md)
 [![base-oscillations](https://img.shields.io/badge/anomaly_types-10-f6c90b?style=for-the-badge)](./doc/introduction/anomaly-types.md)
 [![base-oscillations](https://img.shields.io/badge/add--ons-1-f64e8b?style=for-the-badge)](./doc/advanced-features.md)
 

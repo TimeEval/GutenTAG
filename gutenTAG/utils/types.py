@@ -78,5 +78,9 @@ class AnomalyGenerationContext(GenerationContext):
         return self.base_oscillation.get_timeseries_periods()
 
     @property
+    def timeseries_period_size(self) -> Optional[int]:
+        return self.base_oscillation.get_period_size()
+
+    @property
     def base_oscillation_kind(self) -> str:
         return self.base_oscillation.get_base_oscillation_kind()

@@ -5,6 +5,7 @@ from .dirichlet import Dirichlet
 from .ecg import ECG
 from .formula import Formula  # type: ignore  # mypy ends up in recursion
 from .interface import BaseOscillationInterface
+from .mls import MLS
 from .polynomial import Polynomial
 from .random_mode_jump import RandomModeJump
 from .random_walk import RandomWalk

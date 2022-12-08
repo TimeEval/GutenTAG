@@ -21,6 +21,7 @@ properties:
       - sawtooth
       - square
       - dirichlet
+      - mls
     description: Kind of the base oscillation.
 oneOf:
   - properties:
@@ -345,4 +346,38 @@ oneOf:
         description: |
           Sets the periodicity of the dirichlet wave (higher numbers have a higher complexity), but the high-level
           period length is not changed. However, even periodicity numbers double the period length.
+    additionalProperties: false
+  - properties:
+      trend:
+        description: Trend to add to the base oscillation
+        $ref: "#"
+      offset:
+        type: number
+        description: Constant offset added to the base oscillation.
+      variance:
+        type: number
+        description: |
+          Variance of the signal relative to signal value.
+          This is also called white noise.
+          If set to 0, there is no noise.
+      kind:
+        const: mls
+      amplitude:
+        type: number
+        exclusiveMinimum: 0
+        description: |
+          Amplitude of the oscillation.
+          It will be bounded to [-amplitude, amplitude].
+      complexity:
+        type: number
+        exclusiveMinimum: 0
+        exclusiveMaximum: 16
+        description: |
+          The number of bits used to generate the sequence.
+          This controls the length of the repeating sequence and its complexity.
+      smoothing:
+        type: number
+        description: |
+          Smoothing factor for convolutional smoothing of the generated bit sequence (highly recommended).
+          Default is 0.01.
     additionalProperties: false

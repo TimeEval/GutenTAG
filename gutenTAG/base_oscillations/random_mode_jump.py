@@ -17,6 +17,9 @@ class RandomModeJump(BaseOscillationInterface):
     def get_timeseries_periods(self) -> Optional[int]:
         return self.frequency
 
+    def get_period_size(self) -> Optional[int]:
+        return int(self.length // self.frequency)
+
     def is_periodic(self) -> bool:
         """RandomModeJump has reoccurring modes but no fixed periodicity!"""
         return False
