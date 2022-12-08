@@ -6,8 +6,7 @@ from sklearn.preprocessing import MinMaxScaler
 
 from . import BaseAnomaly
 from .. import AnomalyProtocol
-from ...base_oscillations import CylinderBellFunnel, ECG
-from ...base_oscillations import CylinderBellFunnel, ECG, Square, Sawtooth
+from ...base_oscillations import CylinderBellFunnel, ECG, Square, Sawtooth, MLS
 
 
 @dataclass
@@ -41,7 +40,7 @@ class AnomalyPattern(BaseAnomaly):
             window = int(length * 0.05)
 
             for slide in range(-3, 3):
-                start = ecg.timeseries[anomaly_protocol.start+slide:anomaly_protocol.start+window]
+                start = ecg.timeseries[anomaly_protocol.start + slide:anomaly_protocol.start + window]
                 if np.argmax(start) == 0:
                     break
             else:
@@ -61,6 +60,26 @@ class AnomalyPattern(BaseAnomaly):
                 anomaly_protocol.ctx.to_bo(),
                 duty=self.square_duty
             )[anomaly_protocol.start:anomaly_protocol.end]
+            anomaly_protocol.subsequences.append(subsequence)
+
+        elif anomaly_protocol.base_oscillation_kind == MLS.KIND:
+            transition_window = int(0.1 * anomaly_protocol.length)
+            transition_window = transition_window - transition_window % 2
+            subsequence = anomaly_protocol.base_oscillation.timeseries[anomaly_protocol.start:anomaly_protocol.end]
+            reversed = subsequence[::-1]
+
+            transition_start = np.interp(np.linspace(0, transition_window*2, transition_window),
+                                         np.arange(transition_window*2),
+                                         np.r_[subsequence[:transition_window], reversed[:transition_window]])
+            transition_end = np.interp(np.linspace(0, transition_window*2, transition_window),
+                                       np.arange(transition_window*2),
+                                       np.r_[reversed[-transition_window:], subsequence[-transition_window:]])
+
+            subsequence = np.concatenate([
+                transition_start,
+                reversed[transition_window:-transition_window],
+                transition_end
+            ])
             anomaly_protocol.subsequences.append(subsequence)
 
         elif anomaly_protocol.base_oscillation.is_periodic():

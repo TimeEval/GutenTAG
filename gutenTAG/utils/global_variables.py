@@ -13,6 +13,7 @@ ANOMALIES = "anomalies"
 
 
 class BASE_OSCILLATION_NAMES:
+    MLS = "mls"
     SINE = "sine"
     COSINE = "cosine"
     RANDOM_WALK = "random-walk"
@@ -69,6 +70,7 @@ class PARAMETERS:
     DUTY = "duty"
     WIDTH = "width"
     PERIODICITY = "periodicity"
+    COMPLEXITY = "complexity"
 
 
 class CONFIG_SCHEMA:

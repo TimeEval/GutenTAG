@@ -143,7 +143,7 @@ class TimeEvalAddOn(BaseAddOn):
             if frequency is None or kind not in [BASE_OSCILLATION_NAMES.SINE, BASE_OSCILLATION_NAMES.COSINE,
                                                  BASE_OSCILLATION_NAMES.ECG, BASE_OSCILLATION_NAMES.RANDOM_MODE_JUMP,
                                                  BASE_OSCILLATION_NAMES.SQUARE, BASE_OSCILLATION_NAMES.SAWTOOTH,
-                                                 BASE_OSCILLATION_NAMES.DIRICHLET]:
+                                                 BASE_OSCILLATION_NAMES.DIRICHLET, BASE_OSCILLATION_NAMES.MLS]:
                 periods.append(np.NAN)
             elif kind in [BASE_OSCILLATION_NAMES.SINE, BASE_OSCILLATION_NAMES.COSINE, BASE_OSCILLATION_NAMES.ECG,
                           BASE_OSCILLATION_NAMES.SQUARE, BASE_OSCILLATION_NAMES.SAWTOOTH]:
@@ -151,6 +151,9 @@ class TimeEvalAddOn(BaseAddOn):
             elif kind == BASE_OSCILLATION_NAMES.DIRICHLET:
                 periodicity = dim.get(PARAMETERS.PERIODICITY, default_values[BASE_OSCILLATIONS][PARAMETERS.PERIODICITY])
                 periods.append(calc_period_length(frequency) * int((periodicity % 2 == 0) + 1))
+            elif kind == BASE_OSCILLATION_NAMES.MLS:
+                complexity = dim.get(PARAMETERS.COMPLEXITY, default_values[BASE_OSCILLATIONS][PARAMETERS.COMPLEXITY])
+                periods.append(2 ** complexity - 1)
             elif kind == BASE_OSCILLATION_NAMES.RANDOM_MODE_JUMP:
                 periods.append(int(length / frequency))
         return float(np.nanmedian(periods))

@@ -173,6 +173,18 @@ The `formula` base oscillation is a simple math engine that can perform primitiv
 | amplitude   | Float | +/- deviation from 0                                                                                                                                                                               |
 | periodicity | Float | Sets the periodicity of the dirichlet wave (higher numbers have a higher complexity), but the high-level period length is not changed. However, even periodicity numbers double the period length. |
 
+## Maximum Length Sequence (MLS)
+
+![mls](images/mls.png)
+
+**Parameters**
+
+| Name        | Type  | Description                                                                                                              |
+|:------------|:------|:-------------------------------------------------------------------------------------------------------------------------|
+| amplitude   | Float | +/- deviation from 0                                                                                                     |
+| complexity  | Float | The number of bits used to generate the sequence. This controls the length of the repeating sequence and its complexity. |
+| smoothing   | Float | Smoothing factor for convolutional smoothing of the generated bit sequence (highly recommended). Default is 0.01.        |
+
 ### Syntax
 
 **Formula Object**

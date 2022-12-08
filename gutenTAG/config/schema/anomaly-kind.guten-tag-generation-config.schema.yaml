@@ -108,13 +108,6 @@ definitions:
         description: |
           Only used for base oscillations of type 'sawtooth'.
           Sets the new width of the sawtooth wave in this anomaly subsequence.
-# use minProperties to allow having both parameters present
-#    anyOf:
-#      - required:
-#        - sinusoid_k
-#      - required:
-#        - cbf_pattern_factor
-    minProperties: 2
     additionalProperties: false
   pattern-shift-params:
     required:

@@ -23,7 +23,8 @@ default_values = {
         PARAMETERS.ECG_SIM_METHOD: "simple",
         PARAMETERS.WIDTH: 1.0,
         PARAMETERS.DUTY: 0.5,
-        PARAMETERS.PERIODICITY: 6
+        PARAMETERS.PERIODICITY: 6,
+        PARAMETERS.COMPLEXITY: 7
     },
     ANOMALIES: {
         PARAMETERS.LENGTH: 200,

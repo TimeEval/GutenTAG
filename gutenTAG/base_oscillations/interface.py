@@ -30,6 +30,7 @@ class BaseOscillationInterface(ABC):
         self.width = kwargs.get(PARAMETERS.WIDTH, default_values[BASE_OSCILLATIONS][PARAMETERS.WIDTH])
         self.duty = kwargs.get(PARAMETERS.DUTY, default_values[BASE_OSCILLATIONS][PARAMETERS.DUTY])
         self.periodicity = kwargs.get(PARAMETERS.PERIODICITY, default_values[BASE_OSCILLATIONS][PARAMETERS.PERIODICITY])
+        self.complexity = kwargs.get(PARAMETERS.COMPLEXITY, default_values[BASE_OSCILLATIONS][PARAMETERS.COMPLEXITY])
 
         self.timeseries: Optional[np.ndarray] = None
         self.noise: Optional[np.ndarray] = None
@@ -63,6 +64,16 @@ class BaseOscillationInterface(ABC):
         :return: Optional[int]
         """
         raise NotImplementedError()
+
+    def get_period_size(self) -> Optional[int]:
+        """
+        Returns the number of points within on period. period_size * n_periods might not be exactly equal to the time
+        series length! If no periodicity is given, return None.
+        """
+        if self.is_periodic():
+            return self.length // self.get_timeseries_periods()
+        else:
+            return None
 
     @abstractmethod
     def get_base_oscillation_kind(self) -> str:

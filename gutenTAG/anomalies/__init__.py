@@ -77,17 +77,18 @@ class Anomaly:
                          f"in channel {self.channel}! Maximum number of retries ({max_tries}) exceeded!")
 
     def _get_random_position(self, ctx: AnomalyGenerationContext) -> Tuple[int, int]:
-        timeseries_length = ctx.base_oscillation.length
         timeseries_periods = ctx.timeseries_periods
+        period_size = ctx.timeseries_period_size
         if (
                 not self._requires_period_start_position
                 or timeseries_periods is None
                 or timeseries_periods <= 6
+                or period_size is None
+                or period_size <= 2
         ):
             return self._get_random_position_no_periodicity(ctx)
 
         start_period = 0
-        period_size = timeseries_length // timeseries_periods
         periods_per_section = timeseries_periods // 3
         if periods_per_section > 1:
             start_period = ctx.rng.choice(list(range(periods_per_section)))
