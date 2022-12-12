@@ -78,7 +78,9 @@ The last column is the label, `0` if no anomaly else `1`. The preceding columns 
 
 ## From Python
 
-To generate GutenTAG time series from Python, you have multiple options. Either you write a `dict()` with the same schema as in [From CLI](#from-cli) and call the following:
+To generate GutenTAG time series from Python, you have multiple options. Either you write a `dict()` with the same schema as in [From CLI](#from-cli) or you call the generation functions directly.
+
+You can use the GutenTAG generator with a configuration dict in the following way:
 
 ```python
 from gutenTAG import GutenTAG, TrainingType, LABEL_COLUMN_NAME
@@ -116,3 +118,30 @@ df.iloc[:, 1:-1]
 # the labels are stored at
 df[LABEL_COLUMN_NAME]
 ```
+
+Alternatively, you can generate time series data by calling the generation function of a base oscillation directly:
+
+> **Attention**
+>
+> The Python API for injecting anomalies is still work in progress (WIP)!
+
+```python
+import pandas as pd
+import gutenTAG.api as gt
+import matplotlib.pyplot as plt
+
+N = 500
+ts_sine = gt.sine(length=N, frequency=2, amplitude=1.8)
+ts_dirichlet = gt.dirichlet(length=N)
+
+# anomaly injection TBD
+
+df = pd.DataFrame({"ch-0": ts_sine, "ch-1": ts_dirichlet})
+
+df.plot()
+plt.show()
+```
+
+The above script creates the following time series:
+
+![example-ts-api](./images/example-ts-api.png)

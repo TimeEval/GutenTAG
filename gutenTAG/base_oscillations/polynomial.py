@@ -4,7 +4,8 @@ import numpy as np
 
 from . import BaseOscillation
 from .interface import BaseOscillationInterface
-from ..utils.global_variables import BASE_OSCILLATION_NAMES
+from ..utils.default_values import default_values
+from ..utils.global_variables import BASE_OSCILLATION_NAMES, BASE_OSCILLATIONS, PARAMETERS
 from ..utils.types import BOGenerationContext
 
 
@@ -20,13 +21,17 @@ class Polynomial(BaseOscillationInterface):
     def generate_only_base(self,
                            ctx: BOGenerationContext,
                            length: Optional[int] = None,
-                           polynomial: Optional[List[float]] = None,
+                           polynom: Optional[List[float]] = None,
                            *args, **kwargs) -> np.ndarray:
         length = length or self.length
-        polynomial = polynomial or self.polynomial
+        polynom = polynom or self.polynomial
 
-        base_ts = np.polynomial.Polynomial(polynomial)(np.arange(length))
-        return base_ts
+        return polynomial(length, polynom)
+
+
+def polynomial(length: int = default_values[BASE_OSCILLATIONS][PARAMETERS.LENGTH],
+               polynomial: List[float] = default_values[BASE_OSCILLATIONS][PARAMETERS.POLYNOMIAL]) -> np.ndarray:
+    return np.polynomial.Polynomial(polynomial)(np.arange(length))
 
 
 BaseOscillation.register(Polynomial.KIND, Polynomial)

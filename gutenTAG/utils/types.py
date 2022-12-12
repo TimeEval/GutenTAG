@@ -65,6 +65,10 @@ class BOGenerationContext(GenerationContext):
             is_trend=True
         )
 
+    @staticmethod
+    def default() -> BOGenerationContext:
+        return GenerationContext(SeedSequence()).to_bo()
+
 
 @dataclass
 class AnomalyGenerationContext(GenerationContext):
