@@ -7,7 +7,8 @@ from scipy import signal
 from . import BaseOscillation
 from .interface import BaseOscillationInterface
 from .utils.math_func_support import prepare_base_signal, generate_periodic_signal, calc_n_periods
-from ..utils.global_variables import BASE_OSCILLATION_NAMES
+from ..utils.default_values import default_values
+from ..utils.global_variables import BASE_OSCILLATION_NAMES, PARAMETERS, BASE_OSCILLATIONS
 from ..utils.types import BOGenerationContext
 
 
@@ -34,9 +35,17 @@ class Square(BaseOscillationInterface):
         v_freq_mod: float = freq_mod or self.freq_mod  # factor of f
         v_duty: float = duty or self.duty
 
-        base_ts = prepare_base_signal(n, f)
-        func = partial(signal.square, duty=v_duty)
-        return generate_periodic_signal(base_ts, func, a, v_freq_mod)
+        return square(n, f, a, v_freq_mod, v_duty)
+
+
+def square(length: int = default_values[BASE_OSCILLATIONS][PARAMETERS.LENGTH],
+           frequency: float = default_values[BASE_OSCILLATIONS][PARAMETERS.FREQUENCY],
+           amplitude: float = default_values[BASE_OSCILLATIONS][PARAMETERS.AMPLITUDE],
+           freq_mod: float = default_values[BASE_OSCILLATIONS][PARAMETERS.FREQ_MOD],
+           duty: float = default_values[BASE_OSCILLATIONS][PARAMETERS.DUTY]) -> np.ndarray:
+    base_ts = prepare_base_signal(length, frequency)
+    func = partial(signal.square, duty=duty)
+    return generate_periodic_signal(base_ts, func, amplitude, freq_mod)
 
 
 BaseOscillation.register(Square.KIND, Square)

@@ -12,6 +12,8 @@ The generator comes with the following base oscillations in [gutenTAG/base_oscil
 - random-mode-jump
 - formula
 - sawtooth
+- dirichlet
+- mls
 
 Base oscillations can have an underlying trend.
 This trend can be any of the above base oscillations.
@@ -136,18 +138,6 @@ These parameters can be set for all base oscillations.
 | channel_offset | Float | Value offset from 0 in both directions                    |
 | random_seed    | Int   | Random seed to have the similar channels                  |
 
-## Formula
-
-**Parameters**
-
-| Name        | Type        | Description                      |
-|-------------|-------------|----------------------------------|
-| base        | Int, Object | Base time series to operate on.  |
-| operation   | Object      | Operation done on base object.   |
-| aggregation | Object      | Aggregation done on base object. |
-
-The `formula` base oscillation is a simple math engine that can perform primitive math operations on multiple already generated channels.
-
 ## Sawtooth
 
 ![sawtooth](images/sawtooth.png)
@@ -184,6 +174,18 @@ The `formula` base oscillation is a simple math engine that can perform primitiv
 | amplitude   | Float | +/- deviation from 0                                                                                                     |
 | complexity  | Float | The number of bits used to generate the sequence. This controls the length of the repeating sequence and its complexity. |
 | smoothing   | Float | Smoothing factor for convolutional smoothing of the generated bit sequence (highly recommended). Default is 0.01.        |
+
+## Formula
+
+**Parameters**
+
+| Name        | Type        | Description                      |
+|-------------|-------------|----------------------------------|
+| base        | Int, Object | Base time series to operate on.  |
+| operation   | Object      | Operation done on base object.   |
+| aggregation | Object      | Aggregation done on base object. |
+
+The `formula` base oscillation is a simple math engine that can perform primitive math operations on multiple already generated channels.
 
 ### Syntax
 

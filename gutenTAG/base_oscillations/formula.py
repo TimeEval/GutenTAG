@@ -1,5 +1,4 @@
 # type: ignore  # mypy ends up in recursion
-
 from __future__ import annotations
 
 from enum import Enum
@@ -9,7 +8,8 @@ import numpy as np
 
 from . import BaseOscillation
 from .interface import BaseOscillationInterface
-from ..utils.global_variables import BASE_OSCILLATION_NAMES
+from ..utils.default_values import default_values
+from ..utils.global_variables import BASE_OSCILLATION_NAMES, BASE_OSCILLATIONS, PARAMETERS
 from ..utils.types import BOGenerationContext
 
 
@@ -31,12 +31,13 @@ class Formula(BaseOscillationInterface):
         return None
 
     def generate_only_base(self, ctx: BOGenerationContext, *args, **kwargs) -> np.ndarray:
-        formula = self.formula
         c = ctx.previous_channels if ctx.previous_channels else []
+        return formula(c, self.formula)
 
-        ts = FormulaParser(formula).parse(c).execute()
 
-        return ts
+def formula(previous_channels: List[np.ndarray] = (),
+            formula_dict: Dict[str, Any] = default_values[BASE_OSCILLATIONS][PARAMETERS.FORMULA]) -> np.ndarray:
+    return FormulaParser(formula_dict).parse(previous_channels).execute()
 
 
 BaseOscillation.register(Formula.KIND, Formula)

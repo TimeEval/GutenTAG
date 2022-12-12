@@ -6,9 +6,10 @@ import scipy.special
 
 from . import BaseOscillation
 from .interface import BaseOscillationInterface
-from .utils.math_func_support import prepare_base_signal, generate_periodic_signal, calc_n_periods, SAMPLING_F
-from ..utils.global_variables import BASE_OSCILLATION_NAMES
-from ..utils.types import BOGenerationContext, GenerationContext
+from .utils.math_func_support import prepare_base_signal, generate_periodic_signal, calc_n_periods
+from ..utils.default_values import default_values
+from ..utils.global_variables import BASE_OSCILLATION_NAMES, BASE_OSCILLATIONS, PARAMETERS
+from ..utils.types import BOGenerationContext
 
 
 class Dirichlet(BaseOscillationInterface):
@@ -32,11 +33,18 @@ class Dirichlet(BaseOscillationInterface):
         f: float = frequency or self.frequency  # in Hz
         a: float = amplitude or self.amplitude
         p: float = periodicity or self.periodicity
-        assert p > 1, "periodicity must be > 1, otherwise the dirichlet wave collapses"
 
-        base_ts = prepare_base_signal(n, f)
-        func = partial(scipy.special.diric, n=p)
-        return generate_periodic_signal(base_ts, func, a)
+        return dirichlet(n, f, a, p)
+
+
+def dirichlet(length: int = default_values[BASE_OSCILLATIONS][PARAMETERS.LENGTH],
+              frequency: float = default_values[BASE_OSCILLATIONS][PARAMETERS.COMPLEXITY],
+              amplitude: float = default_values[BASE_OSCILLATIONS][PARAMETERS.AMPLITUDE],
+              periodicity: float = default_values[BASE_OSCILLATIONS][PARAMETERS.PERIODICITY]) -> np.ndarray:
+    assert periodicity > 1, "periodicity must be > 1, otherwise the dirichlet wave collapses"
+    base_ts = prepare_base_signal(length, frequency)
+    func = partial(scipy.special.diric, n=periodicity)
+    return generate_periodic_signal(base_ts, func, amplitude)
 
 
 BaseOscillation.register(Dirichlet.KIND, Dirichlet)
