@@ -58,11 +58,12 @@ class Anomaly:
             start, end = self.exact_position, self.exact_position + self.anomaly_length
 
         length = end - start
-        label_range = LabelRange(start, length)
+        label_range = LabelRange(start, length, "")
         protocol = AnomalyProtocol(start, end, self.channel, ctx, label_range, creep_length=self.creep_length)
 
         for anomaly in self.anomaly_kinds:
             protocol = anomaly.generate(protocol)
+            protocol.labels.class_label = type(anomaly).__name__
 
         return protocol
 

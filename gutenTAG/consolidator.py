@@ -68,6 +68,28 @@ class Consolidator:
     def _add_label_ranges_to_labels(self, label_ranges: List[LabelRange]):
         if self.labels is not None:
             for label_range in label_ranges:
-                self.labels[label_range.start:label_range.start + label_range.length] = 1
+                if label_range.class_label == "AnomalyAmplitude":
+                    nr_label_anomaly = 1
+                elif label_range.class_label == "AnomalyExtremum":
+                    nr_label_anomaly = 2
+                elif label_range.class_label == "AnomalyFrequency":
+                    nr_label_anomaly = 3
+                elif label_range.class_label == "AnomalyMean":
+                    nr_label_anomaly = 4
+                elif label_range.class_label == "AnomalyPattern":
+                    nr_label_anomaly = 5
+                elif label_range.class_label == "AnomalyPatternShift":
+                    nr_label_anomaly = 6
+                elif label_range.class_label == "AnomalyPlatform":
+                    nr_label_anomaly = 7
+                elif label_range.class_label == "AnomalyTrend":
+                    nr_label_anomaly = 8
+                elif label_range.class_label == "AnomalyVariance":
+                    nr_label_anomaly = 9
+                elif label_range.class_label == "AnomalyModeCorrelation":
+                    nr_label_anomaly = 10
+                else:
+                    nr_label_anomaly = 11
+                self.labels[label_range.start:label_range.start + label_range.length] = nr_label_anomaly
         else:
             raise AssertionError("You cannot run this method before initializing the `labels` field!")
