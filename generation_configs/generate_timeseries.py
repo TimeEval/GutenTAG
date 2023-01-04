@@ -1,7 +1,6 @@
 import random
 from pathlib import Path
 import numpy as np
-import itertools
 from gutenTAG import GutenTAG
 
 
