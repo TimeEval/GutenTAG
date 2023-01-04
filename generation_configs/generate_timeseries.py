@@ -1,6 +1,7 @@
 import random
 from pathlib import Path
 import numpy as np
+import itertools
 from gutenTAG import GutenTAG
 
 
@@ -73,6 +74,28 @@ def random_bo(kind: str):
     return mapping[kind]
 
 def random_anomaly(kind: str, length: int, position: str):
+    trend_bos = [
+        {
+            "kind": "polynomial",
+            "polynomial": [2, 2]
+        },
+        {
+            "kind": "polynomial",
+            "polynomial": [0.2, 0.2]
+        },
+        {
+            "kind": "sine",
+            "frequency": 0.725,
+            "amplitude": 0.25,
+            "variance": 0.0
+        },
+        {
+            "kind": "sine",
+            "frequency": 1,
+            "amplitude": .5,
+            "variance": 0.0
+        }
+    ]
     mapping = {
         "amplitude": {
                 "kind": "amplitude",
@@ -106,10 +129,10 @@ def random_anomaly(kind: str, length: int, position: str):
             "kind": "platform",
             "value": np.random.randint(10)
         },
-        # "trend": {
-        #     "kind": "trend",
-        #     "oscillation": np.random.choice(trend_bos)
-        # },
+        "trend": {
+            "kind": "trend",
+            "oscillation": np.random.choice(trend_bos)
+        },
         "variance": {
             "kind": "variance",
             "variance": np.random.rand() / 2
@@ -121,28 +144,35 @@ def random_anomaly(kind: str, length: int, position: str):
     return mapping[kind]
 
 
-def generate_timeseries(dataset_name, nr_datapoints, base_oscillation, share_anomaly_points):
-    anomaly_datapoints = 0
-    anomalies_definitions = []
-    anomalies = ["amplitude", "extremum", "frequency", "mean", "pattern",
-                 "pattern-shift", "platform", "variance"] #"trend",
-    anomaly_lengths = [10, 20, 30, 40, 50]
+def generate_timeseries(dataset_name, nr_datapoints, base_oscillation, share_anomaly_points, anomaly_lengths, anomaly_types) :
+    anomaly_lengths = anomaly_lengths
+    anomaly_types = anomaly_types
     anomaly_position = ["beginning", "middle", "end"]
-    while anomaly_datapoints/nr_datapoints < share_anomaly_points:
-        for anom in anomalies:
-            for n in anomaly_lengths:
-                for position in anomaly_position:
-                    if anom == "extremum":
-                        n = 1
-                    new_anomaly = {
-                        "position": position,
-                        "length": n,
-                        "kinds": [random_anomaly(kind = anom, length = n, position = position)]
-                    }
-                    anomalies_definitions.append(new_anomaly)
-                    anomaly_datapoints = anomaly_datapoints + n
+    anomaly_position_iterator = 0
+    anomaly_datapoints_counter = 0
+    anomalies_definitions = []
+    
+    for n in anomaly_lengths:
+        normal_n = n
+        for type in anomaly_types:
+            if (anomaly_datapoints_counter/nr_datapoints < share_anomaly_points):
+                if type == "extremum":
+                    n = 1
+                else:
+                    n = normal_n
+                
+                position = anomaly_position[anomaly_position_iterator]
+                new_anomaly = {
+                    "position": position,
+                    "length": n,
+                    "kinds": [random_anomaly(kind = type, length = n, position = position)]
+                }
+                anomalies_definitions.append(new_anomaly)
 
-
+                anomaly_datapoints_counter = anomaly_datapoints_counter + n
+                anomaly_position_iterator = anomaly_position_iterator + 1
+                if (anomaly_position_iterator == len(anomaly_position)):
+                    anomaly_position_iterator = 0
         
     return [{
         "name": dataset_name,
@@ -157,7 +187,13 @@ def generate_timeseries(dataset_name, nr_datapoints, base_oscillation, share_ano
 if __name__ == "__main__":
     path = Path("generated_test_datasets")
     print("Generating config ...")
-    config = {"timeseries": generate_timeseries("test_dataset", 1000, "ecg", 0.1)}
+    config = {"timeseries": generate_timeseries(dataset_name = "test_dataset", 
+                                                nr_datapoints = 1000, 
+                                                base_oscillation = "ecg", 
+                                                share_anomaly_points = 0.1,
+                                                anomaly_lengths=[10, 20, 30, 40, 50],
+                                                # TODO: pattern-shift is not working
+                                                anomaly_types=["amplitude", "extremum", "frequency", "mean", "pattern", "platform", "trend", "variance"])}
     print(config)
     gutentag = GutenTAG(n_jobs=-1, seed=SEED, addons=["gutenTAG.addons.timeeval.TimeEvalAddOn"])
     gutentag.load_config_dict(config)
