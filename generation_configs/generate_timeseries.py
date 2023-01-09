@@ -74,37 +74,33 @@ def random_bo(kind: str):
 
 def random_anomaly(kind: str, length: int, position: str):
     trend_bos = [
-        {
-            "kind": "polynomial",
-            "polynomial": [0.2, 0.2]
-        }
         # {
-        #     "kind": "sine",
-        #     "frequency": 0.725,
-        #     "amplitude": 0.25,
-        #     "variance": 0.0
+        #     "kind": "polynomial",
+        #     "polynomial": [0.2, 0.2]
         # },
-        # {
-        #     "kind": "sine",
-        #     "frequency": 1,
-        #     "amplitude": .5,
-        #     "variance": 0.0
-        # }
+        {
+            "kind": "sine",
+            "frequency": 0.5,
+            "amplitude": 0.98,
+            "variance": 0
+        }
     ]
     mapping = {
         "amplitude": {
                 "kind": "amplitude",
-                "amplitude_factor": np.random.choice([0.1, 0.25, 0.5, 2, 3, 7])
+                "amplitude_factor": np.random.choice([0.01,0.1,0.25,0.5]) #np.random.choice([0.1, 0.25, 0.5, 2, 3, 7])
+                    #extemely visible all the anomalies with higher amplitude_factor eg. from 5
         },
         "extremum": {
             "kind": "extremum",
             "min": False,
             "local": bool(np.random.choice([True, False])),
-            "context_window": 100
+            "context_window": 1
+            # higher value of context window make the anomalies extreme. eg. from 10
         },
         "frequency": {
             "kind": "frequency",
-            "frequency_factor": np.random.choice([0.1, 0.25, 0.3, 0.5, 2, 3, 7])
+            "frequency_factor": np.random.choice([0.1]) #, 0.25, 0.3, 0.5, 2, 3, 7])
         },
         "mean": {
             "kind": "mean",
@@ -122,7 +118,7 @@ def random_anomaly(kind: str, length: int, position: str):
         },
         "platform": {
             "kind": "platform",
-            "value": np.random.randint(10)
+            "value": np.random.randint(1)
         },
         "trend": {
             "kind": "trend",
@@ -182,23 +178,23 @@ def generate_timeseries(dataset_name, nr_datapoints, base_oscillation, share_ano
 if __name__ == "__main__":
     path = Path("generated_test_datasets")
     print("Generating config ...")
-    config = {"timeseries": generate_timeseries(dataset_name = "ecg_test_dataset", 
-                                                nr_datapoints = 10000, 
-                                                base_oscillation = "ecg", 
-                                                share_anomaly_points = 0.1,
-                                                anomaly_lengths = [10, 20, 30, 40, 50],
-                                                # TODO: pattern-shift has to be adapted to be nicer
-                                                # shift_by < transition_window < length
-                                                anomaly_types = ["amplitude", "extremum", "frequency", "mean", "pattern", "platform", "trend", "variance"])}
-    
-    # config = {"timeseries": generate_timeseries(dataset_name = "rw_test_dataset", 
-    #                                             nr_datapoints = 1000, 
-    #                                             base_oscillation = "rw", 
+    # config = {"timeseries": generate_timeseries(dataset_name = "ecg_test_dataset",
+    #                                             nr_datapoints = 10000,
+    #                                             base_oscillation = "ecg",
     #                                             share_anomaly_points = 0.1,
     #                                             anomaly_lengths = [10, 20, 30, 40, 50],
     #                                             # TODO: pattern-shift has to be adapted to be nicer
     #                                             # shift_by < transition_window < length
-    #                                             anomaly_types = ["amplitude", "extremum", "mean", "platform", "trend", "variance"])}
+    #                                             anomaly_types = ["amplitude", "extremum", "frequency", "mean", "pattern", "platform", "trend", "variance"])}
+
+    config = {"timeseries": generate_timeseries(dataset_name = "rw_test_dataset",
+                                                 nr_datapoints = 100000,
+                                                 base_oscillation = "rw",
+                                                 share_anomaly_points = 0.1,
+                                                 anomaly_lengths = [10, 20, 30, 40, 50],
+                                                 # TODO: pattern-shift has to be adapted to be nicer
+                                                 # shift_by < transition_window < length
+                                                 anomaly_types = ["amplitude" , "extremum", "mean", "platform", "trend", "variance"])}
     
     gutentag = GutenTAG(n_jobs=-1, seed=SEED, addons=["gutenTAG.addons.timeeval.TimeEvalAddOn"])
     gutentag.load_config_dict(config)
