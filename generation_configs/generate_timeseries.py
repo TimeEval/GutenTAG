@@ -72,66 +72,186 @@ def random_bo(kind: str):
     }
     return mapping[kind]
 
-def random_anomaly(kind: str, length: int, position: str):
-    trend_bos = [
-        # {
-        #     "kind": "polynomial",
-        #     "polynomial": [0.2, 0.2]
-        # },
-        {
-            "kind": "sine",
-            "frequency": 0.5,
-            "amplitude": 0.98,
-            "variance": 0
-        }
-    ]
-    mapping = {
-        "amplitude": {
-                "kind": "amplitude",
-                "amplitude_factor": np.random.choice([0.01,0.1,0.25,0.5]) #np.random.choice([0.1, 0.25, 0.5, 2, 3, 7])
-                    #extemely visible all the anomalies with higher amplitude_factor eg. from 5
-        },
-        "extremum": {
-            "kind": "extremum",
-            "min": False,
-            "local": bool(np.random.choice([True, False])),
-            "context_window": 1
-            # higher value of context window make the anomalies extreme. eg. from 10
-        },
-        "frequency": {
-            "kind": "frequency",
-            "frequency_factor": np.random.choice([0.1]) #, 0.25, 0.3, 0.5, 2, 3, 7])
-        },
-        "mean": {
-            "kind": "mean",
-            "offset": np.random.rand() * 20 - 10
-        },
-        "pattern": {
-            "kind": "pattern",
-            "sinusoid_k": np.random.rand(),
-            "cbf_pattern_factor": np.random.rand()
-        },
-        "pattern-shift": {
-            "kind": "pattern-shift",
-            "shift_by": np.random.randint(-5, 5),
-            "transition_window": 5
-        },
-        "platform": {
-            "kind": "platform",
-            "value": np.random.randint(1)
-        },
-        "trend": {
-            "kind": "trend",
-            "oscillation": np.random.choice(trend_bos)
-        },
-        "variance": {
-            "kind": "variance",
-            "variance": np.random.rand() / 2
-        },
-        "mode-correlation": {
-                "kind": "mode-correlation"
+def random_anomaly(kind: str, base_oscillation: str):
+    match base_oscillation:
+        case "rw":
+            trend_bos = [
+                # {
+                #     "kind": "polynomial",
+                #     "polynomial": [0.2, 0.2]
+                # },
+                {
+                    "kind": "sine",
+                    "frequency": 0.5,
+                    "amplitude": 0.98,
+                    "variance": 0
+                }
+            ]
+            mapping = {
+                "amplitude": {
+                        "kind": "amplitude",
+                        "amplitude_factor": np.random.choice([0.1])
+                },
+                "extremum": {
+                    "kind": "extremum",
+                    "min": False,
+                    "local": bool(np.random.choice([True, False])),
+                    "context_window": 1
+                    # higher value of context window make the anomalies extreme. eg. from 10
+                },
+                "frequency": {
+                    "kind": "frequency",
+                    "frequency_factor": np.random.choice([0.1]) #, 0.25, 0.3, 0.5, 2, 3, 7])
+                },
+                "mean": {
+                    "kind": "mean",
+                    "offset": np.random.rand() * 20 - 10
+                },
+                "pattern": {
+                    "kind": "pattern",
+                    "sinusoid_k": np.random.rand(),
+                    "cbf_pattern_factor": np.random.rand()
+                },
+                "pattern-shift": {
+                    "kind": "pattern-shift",
+                    "shift_by": np.random.randint(-5, 5),
+                    "transition_window": 5
+                },
+                "platform": {
+                    "kind": "platform",
+                    "value": np.random.randint(1)
+                },
+                "trend": {
+                    "kind": "trend",
+                    "oscillation": np.random.choice(trend_bos)
+                },
+                "variance": {
+                    "kind": "variance",
+                    "variance": np.random.rand() / 2
+                },
+                "mode-correlation": {
+                        "kind": "mode-correlation"
+                    }
             }
-    }
+        case "sine":
+            trend_bos = [
+                {
+                    "kind": "polynomial",
+                    "polynomial": [0.2, 0.2]
+                },
+                # {
+                #     "kind": "sine",
+                #     "frequency": 0.5,
+                #     "amplitude": 0.98,
+                #     "variance": 0
+                # }
+            ]
+            mapping = {
+                "amplitude": {
+                    "kind": "amplitude",
+                    "amplitude_factor": np.random.choice([10])
+                },
+                "extremum": {
+                    "kind": "extremum",
+                    "min": False,
+                    "local": bool(np.random.choice([True, False])),
+                    "context_window": 1
+
+                },
+                "frequency": {
+                    "kind": "frequency",
+                    "frequency_factor": np.random.choice([0.0001,0.001,0.01,0.25]) #, 0.25, 0.3, 0.5, 2, 3, 7])
+                },
+                "mean": {
+                    "kind": "mean",
+                    "offset": np.random.rand() * 5 - 50
+                },
+                "pattern": {
+                    "kind": "pattern",
+                    "sinusoid_k": np.random.rand(),
+                    "cbf_pattern_factor": np.random.rand()
+                },
+                "pattern-shift": {
+                    "kind": "pattern-shift",
+                    "shift_by": np.random.randint(-5, 5),
+                    "transition_window": 5
+                },
+                "platform": {
+                    "kind": "platform",
+                    "value": np.random.randint(100)
+                },
+                "trend": {
+                    "kind": "trend",
+                    "oscillation": np.random.choice(trend_bos)
+                },
+                "variance": {
+                    "kind": "variance",
+                    "variance": np.random.rand() / 0.2
+                },
+                "mode-correlation": {
+                    "kind": "mode-correlation"
+                }
+            }
+        case "ecg":
+            trend_bos = [
+                {
+                    "kind": "polynomial",
+                    "polynomial": [0.2, 0.2]
+                },
+                # {
+                #     "kind": "sine",
+                #     "frequency": 0.5,
+                #     "amplitude": 0.98,
+                #     "variance": 0
+                # }
+            ]
+            mapping = {
+                "amplitude": {
+                    "kind": "amplitude",
+                    "amplitude_factor": np.random.choice([10])
+                },
+                "extremum": {
+                    "kind": "extremum",
+                    "min": False,
+                    "local": bool(np.random.choice([True, False])),
+                    "context_window": 10
+
+                },
+                "frequency": {
+                    "kind": "frequency",
+                    "frequency_factor": np.random.choice([0.25,0.30,0.50,0.75]) #, 0.25, 0.3, 0.5, 2, 3, 7])
+                },
+                "mean": {
+                    "kind": "mean",
+                    "offset": np.random.rand() * 5 - 50
+                },
+                "pattern": {
+                    "kind": "pattern",
+                    "sinusoid_k": np.random.rand(),
+                    "cbf_pattern_factor": np.random.rand()
+                },
+                "pattern-shift": {
+                    "kind": "pattern-shift",
+                    "shift_by": np.random.randint(-5, 5),
+                    "transition_window": 5
+                },
+                "platform": {
+                    "kind": "platform",
+                    "value": np.random.randint(100)
+                },
+                "trend": {
+                    "kind": "trend",
+                    "oscillation": np.random.choice(trend_bos)
+                },
+                "variance": {
+                    "kind": "variance",
+                    "variance": np.random.rand() / 0.2
+                },
+                "mode-correlation": {
+                    "kind": "mode-correlation"
+                }
+            }
+
     return mapping[kind]
 
 
@@ -156,7 +276,7 @@ def generate_timeseries(dataset_name, nr_datapoints, base_oscillation, share_ano
                 new_anomaly = {
                     "position": position,
                     "length": n,
-                    "kinds": [random_anomaly(kind = type, length = n, position = position)]
+                    "kinds": [random_anomaly(kind = type, base_oscillation= base_oscillation)]
                 }
                 anomalies_definitions.append(new_anomaly)
 
@@ -178,23 +298,15 @@ def generate_timeseries(dataset_name, nr_datapoints, base_oscillation, share_ano
 if __name__ == "__main__":
     path = Path("generated_test_datasets")
     print("Generating config ...")
-    # config = {"timeseries": generate_timeseries(dataset_name = "ecg_test_dataset",
-    #                                             nr_datapoints = 10000,
-    #                                             base_oscillation = "ecg",
-    #                                             share_anomaly_points = 0.1,
-    #                                             anomaly_lengths = [10, 20, 30, 40, 50],
-    #                                             # TODO: pattern-shift has to be adapted to be nicer
-    #                                             # shift_by < transition_window < length
-    #                                             anomaly_types = ["amplitude", "extremum", "frequency", "mean", "pattern", "platform", "trend", "variance"])}
 
-    config = {"timeseries": generate_timeseries(dataset_name = "rw_test_dataset",
+    config = {"timeseries": generate_timeseries(dataset_name = "sine_test_dataset",
                                                  nr_datapoints = 100000,
-                                                 base_oscillation = "rw",
+                                                 base_oscillation = "sine",
                                                  share_anomaly_points = 0.1,
                                                  anomaly_lengths = [10, 20, 30, 40, 50],
                                                  # TODO: pattern-shift has to be adapted to be nicer
                                                  # shift_by < transition_window < length
-                                                 anomaly_types = ["amplitude" , "extremum", "mean", "platform", "trend", "variance"])}
+                                                 anomaly_types = ["amplitude", "extremum", "frequency", "mean", "pattern", "platform", "trend", "variance"])}
     
     gutentag = GutenTAG(n_jobs=-1, seed=SEED, addons=["gutenTAG.addons.timeeval.TimeEvalAddOn"])
     gutentag.load_config_dict(config)
