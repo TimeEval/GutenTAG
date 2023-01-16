@@ -32,7 +32,7 @@ class Consolidator:
             if bo.timeseries is not None:
                 channels.append(bo.timeseries)
         self.timeseries = self._stack_channels(channels)
-        self.labels = np.zeros(self.timeseries.shape[0], dtype=np.int8)
+        self.labels = np.full(self.timeseries.shape[0], "Normal", dtype=np.object_)
         self.generate_anomalies(ctx)
 
         self.apply_anomalies()
@@ -69,27 +69,27 @@ class Consolidator:
         if self.labels is not None:
             for label_range in label_ranges:
                 if label_range.class_label == "AnomalyAmplitude":
-                    nr_label_anomaly = 1
+                    nr_label_anomaly = "AnomalyAmplitude"
                 elif label_range.class_label == "AnomalyExtremum":
-                    nr_label_anomaly = 2
+                    nr_label_anomaly = "AnomalyExtremum"
                 elif label_range.class_label == "AnomalyFrequency":
-                    nr_label_anomaly = 3
+                    nr_label_anomaly = "AnomalyFrequency"
                 elif label_range.class_label == "AnomalyMean":
-                    nr_label_anomaly = 4
+                    nr_label_anomaly = "AnomalyMean"
                 elif label_range.class_label == "AnomalyPattern":
-                    nr_label_anomaly = 5
+                    nr_label_anomaly = "AnomalyPattern"
                 elif label_range.class_label == "AnomalyPatternShift":
-                    nr_label_anomaly = 6
+                    nr_label_anomaly = "AnomalyPatternShift"
                 elif label_range.class_label == "AnomalyPlatform":
-                    nr_label_anomaly = 7
+                    nr_label_anomaly = "AnomalyPlatform"
                 elif label_range.class_label == "AnomalyTrend":
-                    nr_label_anomaly = 8
+                    nr_label_anomaly = "AnomalyTrend"
                 elif label_range.class_label == "AnomalyVariance":
-                    nr_label_anomaly = 9
+                    nr_label_anomaly = "AnomalyVariance"
                 elif label_range.class_label == "AnomalyModeCorrelation":
-                    nr_label_anomaly = 10
+                    nr_label_anomaly = "AnomalyModeCorrelation"
                 else:
-                    nr_label_anomaly = 11
+                    nr_label_anomaly = "Anomaly"
                 self.labels[label_range.start:label_range.start + label_range.length] = nr_label_anomaly
         else:
             raise AssertionError("You cannot run this method before initializing the `labels` field!")

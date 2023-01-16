@@ -67,7 +67,7 @@ class TimeSeries:
         assert self.timeseries is not None, "TimeSeries is not generated. Please, do so before plotting!"
         assert self.labels is not None, "TimeSeries is not generated. Please, do so before plotting!"
         series: List[np.ndarray] = [self.timeseries]
-        labels: List[np.ndarray] = [self.labels]
+        labels: List[np.ndarray] = [self.labels != "Normal"]
         if self.supervised and self.supervised_timeseries is not None and self.train_labels is not None:
             names.append("train_supervised")
             series.append(self.supervised_timeseries)

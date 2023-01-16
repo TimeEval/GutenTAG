@@ -163,7 +163,8 @@ class GutenTAG:
         data = addon_ctx._data_store
 
         if ctx.plot:
-            ts.plot()
+           ts.plot()
+
 
         if ctx.output_folder is not None:
             GutenTAG.save_timeseries(ts, ctx.output_folder)
