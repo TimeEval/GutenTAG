@@ -67,7 +67,7 @@ See `python -m gutenTAG --help` for the CLI usage and the explanation of the CLI
 The generator will then create a directory with the desired timeseries and an `overview.yaml` file that has the same structure as the `config.yaml` with the extension of the `generation-id` parameter for time series without a name. This ID or the configured name tells the user which of the subfolders contains which time series. Inside of the subfolders is a `test.csv` file that represents the defined time series; if the time series is configured semi-supervised, there will be an additional file `train_no_anomaly.csv` containing a similar time series without anomalies; if the time series is configured supervised, there will be an additional file `train_anomaly.csv` containing a similar time series with anomalies. Each file has the following structure
 
 ```csv
-timestamp,value-0,value-1,is_anomaly
+timestamp,value-0,value-1,class
 0,0.1,0.3,0
 1,0.3,0.3,0
 2,0.1,0.3,1

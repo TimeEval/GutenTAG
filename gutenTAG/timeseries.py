@@ -18,4 +18,4 @@ class TimeSeries:
 
 
 INDEX_COLUMN_NAME = "timestamp"
-LABEL_COLUMN_NAME = "is_anomaly"
+LABEL_COLUMN_NAME = "class"
