@@ -40,13 +40,4 @@ class CustomProcess(BaseOscillationInterface):
         return data
     
 
-    # def custom_process(source_ts_path: str,
-    #                     length: int = default_values[BASE_OSCILLATIONS][PARAMETERS]
-    #                     ) -> np.ndarray:
-    #     ts_df = pd.read_csv(source_ts_path, parse_dates=True, index_col="timestamp")
-    #     synthesizer: Syntesizer = Syntesizer()
-    #     synthesizer.fit(ts_df)
-
-    #     return None
-
 BaseOscillation.register(CustomProcess.KIND, CustomProcess)
