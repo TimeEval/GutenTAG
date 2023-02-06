@@ -26,7 +26,8 @@ default_values: Dict[str, Dict[str, Any]] = {
         PARAMETERS.WIDTH: 1.0,
         PARAMETERS.DUTY: 0.5,
         PARAMETERS.PERIODICITY: 6,
-        PARAMETERS.COMPLEXITY: 7
+        PARAMETERS.COMPLEXITY: 7,
+        PARAMETERS.INPUT_TIMESERIES_PATH: None
     },
     ANOMALIES: {
         PARAMETERS.LENGTH: 200,

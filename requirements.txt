@@ -9,3 +9,6 @@ joblib>=1.2.0
 gitpython>=3.1.0
 neurokit2==0.1.2
 jsonschema>=4.4.0
+statsmodels
+notebook
+jupyter

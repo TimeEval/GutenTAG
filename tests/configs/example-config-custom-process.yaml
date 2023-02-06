@@ -1,0 +1,19 @@
+timeseries:
+  - name: custom-process-ffm03
+    length: 5000
+    base-oscillations:
+      - kind: custom-process
+        input-timeseries-path: 'tests/imported_timeseries/lisas/LSEFFM03.csv'
+    anomalies:
+      - position: end
+        length: 200
+        channel: 0
+        kinds:
+          - kind: variance
+            variance: 0.5
+      - position: middle
+        channel: 0
+        length: 20
+        kinds:
+          - kind: mean
+            offset: 1.5

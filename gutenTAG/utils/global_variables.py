@@ -6,10 +6,12 @@ SEMI_SUPERVISED_FILENAME = "train_no_anomaly.csv"
 UNSUPERVISED_FILENAME = "test.csv"
 
 
+
 BASE_OSCILLATION = "base-oscillation"
 BASE_OSCILLATIONS = BASE_OSCILLATION + "s"
 TIMESERIES = "timeseries"
 ANOMALIES = "anomalies"
+TIMESTAMP = "timestamp"
 
 
 class BASE_OSCILLATION_NAMES:
@@ -25,6 +27,7 @@ class BASE_OSCILLATION_NAMES:
     SQUARE = "square"
     SAWTOOTH = "sawtooth"
     DIRICHLET = "dirichlet"
+    CUSTOM_PROCESS = "custom-process"
 
 
 class ANOMALY_TYPE_NAMES:
@@ -71,6 +74,7 @@ class PARAMETERS:
     WIDTH = "width"
     PERIODICITY = "periodicity"
     COMPLEXITY = "complexity"
+    INPUT_TIMESERIES_PATH = "input-timeseries-path"
 
 
 class CONFIG_SCHEMA:
