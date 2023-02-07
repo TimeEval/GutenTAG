@@ -38,7 +38,7 @@ class ECG(BaseOscillationInterface):
 
 def ecg(rng: np.random.Generator = np.random.default_rng(),
         length: int = default_values[BASE_OSCILLATIONS][PARAMETERS.LENGTH],
-        frequency: float = default_values[BASE_OSCILLATIONS][PARAMETERS.COMPLEXITY],
+        frequency: float = default_values[BASE_OSCILLATIONS][PARAMETERS.FREQUENCY],
         amplitude: float = default_values[BASE_OSCILLATIONS][PARAMETERS.AMPLITUDE],
         ecg_sim_method: str = default_values[BASE_OSCILLATIONS][PARAMETERS.ECG_SIM_METHOD]) -> np.ndarray:
     duration = length // sampling_rate
