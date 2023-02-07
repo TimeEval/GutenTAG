@@ -22,7 +22,7 @@ properties:
       - square
       - dirichlet
       - mls
-      - custom-process
+      - custom-input
     description: Kind of the base oscillation.
 oneOf:
   - properties:
@@ -396,7 +396,7 @@ oneOf:
           This is also called white noise.
           If set to 0, there is no noise.
       kind:
-        const: custom-process
+        const: custom-input
       input-timeseries-path:
         type: string
         description: |

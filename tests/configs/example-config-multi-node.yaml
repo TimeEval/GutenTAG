@@ -11,16 +11,16 @@ base:
     semi-supervised: false
     supervised: false
 
-custom-process:
-  - &cp-ffm01
-    kind: "custom-process"
-    input-timeseries-path: 'tests/imported_timeseries/lisas/LSEFFM01.csv'
-  - &cp-ffm02
-    <<: *cp-ffm01
-    input-timeseries-path: 'tests/imported_timeseries/lisas/LSEFFM02.csv'
-  - &cp-ffm03
-    <<: *cp-ffm01
-    input-timeseries-path: 'tests/imported_timeseries/lisas/LSEFFM03.csv'
+custom-input:
+  - &ci-example01
+    kind: "custom-input"
+    input-timeseries-path: 'tests/imported_timeseries/lisas/example01.csv'
+  - &ci-example02
+    <<: *ci-example01
+    input-timeseries-path: 'tests/imported_timeseries/lisas/example02.csv'
+  - &ci-example03
+    <<: *ci-example01
+    input-timeseries-path: 'tests/imported_timeseries/lisas/example03.csv'
 
 # anomalies
 anomaly_kinds:
@@ -107,26 +107,26 @@ anomaly_kinds:
 #############################
 timeseries:
   # amplitude
-  - name: ffm01-amplitude-larger
+  - name: example01-amplitude-larger
     <<: *base-ts
     base-oscillation:
-      <<: *cp-ffm01
+      <<: *ci-example01
     anomalies:
       - *amplitude-larger
   # extremum and mean
-  - name: ffm02-extremum-mean
+  - name: example02-extremum-mean
     <<: *base-ts
     base-oscillation:
-      <<: *cp-ffm02
+      <<: *ci-example02
     anomalies:
       - position: beginning
         <<: *global-extremum
       - position: middle
         <<: *mean
   # platform
-  - name: ffm03-platform
+  - name: example03-platform
     <<: *base-ts
     base-oscillation:
-      <<: *cp-ffm03
+      <<: *ci-example03
     anomalies:
       - *platform

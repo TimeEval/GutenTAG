@@ -1,9 +1,9 @@
 timeseries:
-  - name: custom-process-ffm03
+  - name: custom-input-example3
     length: 5000
     base-oscillations:
-      - kind: custom-process
-        input-timeseries-path: 'tests/imported_timeseries/lisas/LSEFFM03.csv'
+      - kind: custom-input
+        input-timeseries-path: 'tests/imported_timeseries/lisas/example03.csv'
     anomalies:
       - position: end
         length: 200

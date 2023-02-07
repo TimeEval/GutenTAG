@@ -175,7 +175,7 @@ These parameters can be set for all base oscillations.
 | complexity  | Float | The number of bits used to generate the sequence. This controls the length of the repeating sequence and its complexity. |
 | smoothing   | Float | Smoothing factor for convolutional smoothing of the generated bit sequence (highly recommended). Default is 0.01.        |
 
-## Custom Process
+## Custom Input
 
 **Parameters**
 

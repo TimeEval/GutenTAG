@@ -1,11 +1,11 @@
 timeseries:
-  - name: custom-process-ffm04-multi
+  - name: custom-input-example4-multi
     length: 5000 # must be equal to the length of the input timeseries
     base-oscillations:
-      - kind: custom-process
-        input-timeseries-path: 'tests/imported_timeseries/lisas/LSEFFM04.csv'
-      - kind: custom-process
-        input-timeseries-path: 'tests/imported_timeseries/lisas/LSEFFM04.csv'
+      - kind: custom-input
+        input-timeseries-path: 'tests/imported_timeseries/lisas/example04.csv'
+      - kind: custom-input
+        input-timeseries-path: 'tests/imported_timeseries/lisas/example04.csv'
     anomalies:
       - exact-position: 460
         length: 540
