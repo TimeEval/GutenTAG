@@ -109,7 +109,7 @@ class ConfigParser:
             d.get(PARAMETERS.EXACT_POSITION, None),
             d[PARAMETERS.LENGTH],
             d.get(PARAMETERS.CHANNEL, default_values[ANOMALIES][PARAMETERS.CHANNEL]),
-            d.get(PARAMETERS.CREEP_LENGTH, default_values[ANOMALIES][PARAMETERS.CREEP_LENGTH])
+            d.get(PARAMETERS.CREEPING_LENGTH, default_values[ANOMALIES][PARAMETERS.CREEPING_LENGTH])
         )
 
         anomaly_kinds = self._build_anomaly_kinds(d, anomaly.anomaly_length)

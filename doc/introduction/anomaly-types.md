@@ -135,11 +135,11 @@ None
 2. [RECOMMENDED] create a new anomaly type class under [gutenTAG/anomalies/types](../../gutenTAG/anomalies/types)
     1. the new class should inherit from [`gutenTAG.anomalies.BaseAnomaly`](../../gutenTAG/anomalies/types/__init__.py)
 
-## Creepy Anomaly
+## Creeping Anomaly
 
-Some anomaly types (`amplitude`, `mean`, and `variance`) allow for a transition into the anomaly - a creep. 
-Therefore, the additional parameter `creep-length` for an anomaly is introduced. It takes `creep-length` points 
-from the overall `length` anomaly points and creates a linear transition into the `length - creep-length` anomaly. 
+Some anomaly types (`amplitude`, `mean`, and `variance`) allow for a transition into the anomaly - a creeping. 
+Therefore, the additional parameter `creeping-length` for an anomaly is introduced. It takes `creeping-length` points 
+from the overall `length` anomaly points and creates a linear transition into the `length - creeping-length` anomaly. 
 
 ### Example
 
@@ -154,11 +154,11 @@ timeseries:
     anomalies:
       - exact-position: 460
         length: 540
-        creep-length: 500
+        creeping-length: 500
         channel: 0
         kinds:
           - kind: variance
             variance: 1.0
 ```
 
-![example-anomaly-creep.png](images/example-anomaly-creep.png)
+![example-anomaly-creeping.png](images/example-anomaly-creeping.png)

@@ -65,7 +65,7 @@ class PARAMETERS:
     CHANNEL = "channel"
     POSITION = "position"
     EXACT_POSITION = "exact-position"
-    CREEP_LENGTH = "creep-length"
+    CREEPING_LENGTH = "creeping-length"
     ECG_SIM_METHOD = "ecg-sim-method"
     DUTY = "duty"
     WIDTH = "width"

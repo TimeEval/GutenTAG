@@ -6,7 +6,7 @@ timeseries:
     anomalies:
       - position: end
         length: 140
-        creep-length: 100
+        creeping-length: 100
         channel: 0
         kinds:
           - kind: amplitude

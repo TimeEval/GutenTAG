@@ -7,7 +7,7 @@ timeseries:
     anomalies:
       - position: middle
         length: 340
-        creep-length: 300
+        creeping-length: 300
         channel: 0
         kinds:
           - kind: variance

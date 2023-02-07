@@ -410,19 +410,19 @@ def gen_special_series():
         "anomalies": [{
             "position": "middle",
             "length": 300,
-            "creep-length": 200,
+            "creeping-length": 200,
             "channel": 1,
             "kinds": [{"kind": "mean", "offset": 2}]
         }, {
             "position": "middle",
             "length": 300,
-            "creep-length": 250,
+            "creeping-length": 250,
             "channel": 0,
             "kinds": [{"kind": "variance", "variance": .5}]
         }, {
             "position": "end",
             "length": 200,
-            "creep-length": 100,
+            "creeping-length": 100,
             "channel": 2,
             "kinds": [{"kind": "amplitude", "amplitude_factor": 2}]
         }]

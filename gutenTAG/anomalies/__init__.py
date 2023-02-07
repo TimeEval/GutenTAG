@@ -36,12 +36,12 @@ class Anomaly:
                  exact_position: Optional[int],
                  anomaly_length: int,
                  channel: int = 0,
-                 creep_length: int = 0):
+                 creeping_length: int = 0):
         self.position = position
         self.exact_position = exact_position
         self.anomaly_length = anomaly_length
         self.channel = channel
-        self.creep_length = creep_length
+        self.creeping_length = creeping_length
 
         self.anomaly_kinds: List[BaseAnomaly] = []
         self._requires_period_start_position: bool = False
@@ -59,7 +59,7 @@ class Anomaly:
 
         length = end - start
         label_range = LabelRange(start, length)
-        protocol = AnomalyProtocol(start, end, self.channel, ctx, label_range, creep_length=self.creep_length)
+        protocol = AnomalyProtocol(start, end, self.channel, ctx, label_range, creeping_length=self.creeping_length)
 
         for anomaly in self.anomaly_kinds:
             protocol = anomaly.generate(protocol)
