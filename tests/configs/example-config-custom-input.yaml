@@ -3,7 +3,7 @@ timeseries:
     length: 5000
     base-oscillations:
       - kind: custom-input
-        input-timeseries-path: 'tests/imported_timeseries/lisas/example03.csv'
+        input-timeseries-path: 'tests/imported_timeseries/nodes/example03.csv'
     anomalies:
       - position: end
         length: 200

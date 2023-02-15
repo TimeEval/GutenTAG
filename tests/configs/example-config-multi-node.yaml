@@ -14,13 +14,13 @@ base:
 custom-input:
   - &ci-example01
     kind: "custom-input"
-    input-timeseries-path: 'tests/imported_timeseries/lisas/example01.csv'
+    input-timeseries-path: 'tests/imported_timeseries/nodes/example01.csv'
   - &ci-example02
     <<: *ci-example01
-    input-timeseries-path: 'tests/imported_timeseries/lisas/example02.csv'
+    input-timeseries-path: 'tests/imported_timeseries/nodes/example02.csv'
   - &ci-example03
     <<: *ci-example01
-    input-timeseries-path: 'tests/imported_timeseries/lisas/example03.csv'
+    input-timeseries-path: 'tests/imported_timeseries/nodes/example03.csv'
 
 # anomalies
 anomaly_kinds:

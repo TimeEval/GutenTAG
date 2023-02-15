@@ -3,9 +3,9 @@ timeseries:
     length: 5000 # must be equal to the length of the input timeseries
     base-oscillations:
       - kind: custom-input
-        input-timeseries-path: 'tests/imported_timeseries/lisas/example04.csv'
+        input-timeseries-path: 'tests/imported_timeseries/nodes/example04.csv'
       - kind: custom-input
-        input-timeseries-path: 'tests/imported_timeseries/lisas/example04.csv'
+        input-timeseries-path: 'tests/imported_timeseries/nodes/example04.csv'
     anomalies:
       - exact-position: 460
         length: 540
