@@ -23,21 +23,21 @@ class TestIntegrationAnomalyTypes(TestIntegration):
                                              ["value-0", "is_anomaly"])
 
     def test_creeping_amplitude_anomaly_from_config(self):
-        self._compare_expected_and_generated("tests/configs/example-config-creep-amplitude.yaml",
-                                             "tests/generated/example-ts-creep-amplitude.csv",
+        self._compare_expected_and_generated("tests/configs/example-config-creeping-amplitude.yaml",
+                                             "tests/generated/example-ts-creeping-amplitude.csv",
                                              ["value-0", "is_anomaly"])
 
     def test_creeping_mean_anomaly_from_config(self):
-        self._compare_expected_and_generated("tests/configs/example-config-creep-mean.yaml",
-                                             "tests/generated/example-ts-creep-mean.csv",
+        self._compare_expected_and_generated("tests/configs/example-config-creeping-mean.yaml",
+                                             "tests/generated/example-ts-creeping-mean.csv",
                                              ["value-0", "is_anomaly"])
 
     def test_creeping_variance_anomaly_from_config(self):
         self._compare_expected_and_generated("tests/configs/example-config-creep-variance.yaml",
-                                             "tests/generated/example-ts-creep-variance.csv",
+                                             "tests/generated/example-ts-creeping-variance.csv",
                                              ["value-0", "is_anomaly"])
 
     def test_creeping_variance_transition_anomaly_from_config(self):
-        self._compare_expected_and_generated("tests/configs/example-config-creep-variance-transition.yaml",
-                                             "tests/generated/example-ts-creep-variance-transition.csv",
+        self._compare_expected_and_generated("tests/configs/example-config-creeping-variance-transition.yaml",
+                                             "tests/generated/example-ts-creeping-variance-transition.csv",
                                              ["value-0", "is_anomaly"])
