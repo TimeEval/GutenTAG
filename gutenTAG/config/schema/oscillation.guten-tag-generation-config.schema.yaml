@@ -401,4 +401,8 @@ oneOf:
         type: string
         description: |
           timeseries from input file path
+      usecols:
+        type: list
+        description: |
+          list of columns of the input dataframe to use
     additionalProperties: false

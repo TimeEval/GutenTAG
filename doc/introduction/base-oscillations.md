@@ -176,12 +176,20 @@ These parameters can be set for all base oscillations.
 | smoothing   | Float | Smoothing factor for convolutional smoothing of the generated bit sequence (highly recommended). Default is 0.01.        |
 
 ## Custom Input
+Enables the user to add synthetic labeled anomalies to an time series file.
+
+The current requirements on the data are:
+* column headers: timestamp, value_col_name0, value_col_name1, ...
+* selection of columns to use
+* no anomalies (and no labels) present
+
 
 **Parameters**
 
 | Name                    | Type  |Description                                                                                                   |
 |:------------------------|:------|:-------------------------------------------------------------------------------------------------------------|
 | input-timeseries-path   | String| location of the input time-series csv file                                                                   |
+| usecols                 | List  | columns from input file to use                                                                               |
 
 ## Formula
 

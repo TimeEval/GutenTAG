@@ -27,29 +27,29 @@ class CustomInput(BaseOscillationInterface):
                         *args, **kwargs) -> np.ndarray:
         
         """
-        Generate a 1-dimensional numpy array of length 'length' using the data from the input timeseries file.
-        If 'length' or 'input_timeseries_path' is not provided, use the default values set in the 'self' object.
+        Generate a numpy array using the data from the input timeseries file.
 
         Args:
             ctx (BOGenerationContext): Context object for base object generation.
             length (Optional[int]): Desired length of the generated array. (default is self.length)
             input_timeseries_path (Optional[str]): Path to the input timeseries file. (default is self.input_timeseries_path)
+            usecols (Optional[List[str]]): List of column names to be returned from the CSV file. (default is None, which returns all columns)
 
         Returns:
-            np.ndarray: 1-dimensional array of the given length.
+            np.ndarray: A 1-dimensional or multi-dimensional numpy array, depending on the selected columns.
+
+        If `usecols` is not provided, or if it is `None`, the function will return all columns in the input CSV file. In this case, the dimensionality of the returned array will be the same as the original dataframe, which could be 1-dimensional or multi-dimensional, depending on the structure of the CSV file.
+
+        If `usecols` is provided with a list of column names that selects only one column, the returned array will be 1-dimensional.
+
+        If `usecols` is provided with a list of column names that selects multiple columns, the returned array will be multi-dimensional, with one dimension for each selected column.
         """
         length = length or self.length
         input_timeseries_path = input_timeseries_path or self.input_timeseries_path
-        df = pd.read_csv(input_timeseries_path, index_col=TIMESTAMP)
-        data = df.values
-        data = [_list[0] for _list in data]
-        data = np.array(data)
-        try:
-            len(np.shape(data)) == 1
-        except Exception:
-            print("timeseries must be 1-d")
-        length = len(data)
-        return data
+        df = pd.read_csv(input_timeseries_path, usecols=usecols, index_col=TIMESTAMP)
+        if len(df) > length:
+            raise ValueError("Number of rows in the input timeseries file exceeds the desired length")
+        return df.values[:,0]
     
 
 BaseOscillation.register(CustomInput.KIND, CustomInput)
