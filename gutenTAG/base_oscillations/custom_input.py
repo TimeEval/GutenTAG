@@ -47,8 +47,8 @@ class CustomInput(BaseOscillationInterface):
         length = length or self.length
         input_timeseries_path = input_timeseries_path or self.input_timeseries_path
         df = pd.read_csv(input_timeseries_path, usecols=usecols, index_col=TIMESTAMP)
-        if len(df) > length:
-            raise ValueError("Number of rows in the input timeseries file exceeds the desired length")
+        if len(df) < length:
+            raise ValueError("Number of rows in the input timeseries file is less than the desired length")
         return df.values[:,0]
     
 

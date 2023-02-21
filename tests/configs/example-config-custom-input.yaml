@@ -17,3 +17,4 @@ timeseries:
         kinds:
           - kind: mean
             offset: 1.5
+            
