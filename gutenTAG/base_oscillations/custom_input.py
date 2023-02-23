@@ -1,3 +1,4 @@
+from ast import List
 from typing import Optional
 
 import numpy as np
@@ -24,6 +25,7 @@ class CustomInput(BaseOscillationInterface):
                         ctx: BOGenerationContext,
                         length: Optional[int] = None,
                         input_timeseries_path: Optional[str] = None,
+                        usecols: Optional[List[str]] = None,
                         *args, **kwargs) -> np.ndarray:
         
         """
