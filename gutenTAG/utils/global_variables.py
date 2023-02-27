@@ -73,7 +73,9 @@ class PARAMETERS:
     WIDTH = "width"
     PERIODICITY = "periodicity"
     COMPLEXITY = "complexity"
-    INPUT_TIMESERIES_PATH = "input-timeseries-path"
+    INPUT_TIMESERIES_PATH_TRAIN = "input-timeseries-path-train"
+    INPUT_TIMESERIES_PATH_TEST = "input-timeseries-path-test"
+    USECOLS = "usecols"
 
 
 class CONFIG_SCHEMA:

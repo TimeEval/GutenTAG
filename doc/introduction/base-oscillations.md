@@ -176,7 +176,7 @@ These parameters can be set for all base oscillations.
 | smoothing   | Float | Smoothing factor for convolutional smoothing of the generated bit sequence (highly recommended). Default is 0.01.        |
 
 ## Custom Input
-Enables the user to add synthetic labeled anomalies to an time series file.
+Enables the user to add synthetic labeled anomalies to a time series file.
 
 The current requirements on the data are:
 * Tolumn headers: timestamp, value_col_name0, value_col_name1, ...
@@ -187,10 +187,11 @@ The current requirements on the data are:
 
 **Parameters**
 
-| Name                    | Type  |Description                                                                                                   |
-|:------------------------|:------|:-------------------------------------------------------------------------------------------------------------|
-| input-timeseries-path   | String| location of the input time-series csv file                                                                   |
-| usecols                 | List  | columns from input file to use                                                                               |
+| Name                       | Type  |Description                                                                                                   |
+|:---------------------------|:------|:-------------------------------------------------------------------------------------------------------------|
+| input-timeseries-path-test | String| location of an input time-series csv file relative to the project root folder used to make test set          |
+| input-timeseries-path-train| String| location of an input time-series csv file relative to the project root folder used to make train set         |
+| usecols                    | List  | columns from input file to use                                                                               |
 
 ## Formula
 

@@ -31,7 +31,9 @@ class BaseOscillationInterface(ABC):
         self.duty = kwargs.get(PARAMETERS.DUTY, default_values[BASE_OSCILLATIONS][PARAMETERS.DUTY])
         self.periodicity = kwargs.get(PARAMETERS.PERIODICITY, default_values[BASE_OSCILLATIONS][PARAMETERS.PERIODICITY])
         self.complexity = kwargs.get(PARAMETERS.COMPLEXITY, default_values[BASE_OSCILLATIONS][PARAMETERS.COMPLEXITY])
-        self.input_timeseries_path = kwargs.get(PARAMETERS.INPUT_TIMESERIES_PATH, default_values[BASE_OSCILLATIONS][PARAMETERS.INPUT_TIMESERIES_PATH])
+        self.input_timeseries_path_train = kwargs.get(PARAMETERS.INPUT_TIMESERIES_PATH_TRAIN, default_values[BASE_OSCILLATIONS][PARAMETERS.INPUT_TIMESERIES_PATH_TRAIN])
+        self.input_timeseries_path_test = kwargs.get(PARAMETERS.INPUT_TIMESERIES_PATH_TEST, default_values[BASE_OSCILLATIONS][PARAMETERS.INPUT_TIMESERIES_PATH_TEST])
+        self.usecols = kwargs.get(PARAMETERS.USECOLS,default_values[BASE_OSCILLATIONS][PARAMETERS.USECOLS])
 
         self.timeseries: Optional[np.ndarray] = None
         self.noise: Optional[np.ndarray] = None
@@ -49,8 +51,8 @@ class BaseOscillationInterface(ABC):
                 trend_series = self.trend.timeseries
         return trend_series
 
-    def generate_timeseries_and_variations(self, ctx: BOGenerationContext, **kwargs):
-        self.timeseries = self.generate_only_base(ctx, **kwargs)
+    def generate_timeseries_and_variations(self, ctx: BOGenerationContext, semi_supervised: Optional[bool] = None, supervised: Optional[bool] =  None, **kwargs):
+        self.timeseries = self.generate_only_base(ctx, semi_supervised=semi_supervised, supervised=supervised, **kwargs)
         self.trend_series = self._generate_trend(ctx.to_trend())
         self.noise = self.generate_noise(ctx, self.variance * self.amplitude, self.length)
 

@@ -11,7 +11,6 @@ from ..utils.default_values import default_values
 
 
 class CustomInput(BaseOscillationInterface):
-    "currently works for univariate data"
     KIND = BASE_OSCILLATION_NAMES.CUSTOM_INPUT
 
     def get_base_oscillation_kind(self) -> str:
@@ -23,8 +22,11 @@ class CustomInput(BaseOscillationInterface):
     def generate_only_base(self,
                         ctx: BOGenerationContext,
                         length: Optional[int] = None,
-                        input_timeseries_path: Optional[str] = None,
+                        input_timeseries_path_train: Optional[str] = None,
+                        input_timeseries_path_test: Optional[str] = None,
                         usecols: Optional[List[str]] = None,
+                        semi_supervised: Optional[bool] = None,
+                        supervised: Optional[bool] = None,
                         *args, **kwargs) -> np.ndarray:
         
         """
@@ -33,7 +35,7 @@ class CustomInput(BaseOscillationInterface):
         Args:
             ctx (BOGenerationContext): Context object for base object generation.
             length (Optional[int]): Desired length of the generated array. (default is self.length)
-            input_timeseries_path (Optional[str]): Path to the input timeseries file. (default is self.input_timeseries_path)
+            input_timeseries_path_train (Optional[str]): Path to the input timeseries file. (default is self.input_timeseries_path_train)
             usecols (Optional[List[str]]): List of column names to be returned from the CSV file. (default is None, which returns all columns)
 
         Returns:
@@ -46,8 +48,18 @@ class CustomInput(BaseOscillationInterface):
         If `usecols` is provided with a list of column names that selects multiple columns, the returned array will be multi-dimensional, with one dimension for each selected column.
         """
         length = length or self.length
-        input_timeseries_path = input_timeseries_path or self.input_timeseries_path
-        df = pd.read_csv(input_timeseries_path, usecols=usecols, index_col=TIMESTAMP)
+        input_timeseries_path_train = input_timeseries_path_train or self.input_timeseries_path_train
+        input_timeseries_path_test = input_timeseries_path_test or self.input_timeseries_path_test
+        usecols = usecols or self.usecols
+        usecols.append(TIMESTAMP)
+        # semi_supervised=semi_supervised or self.semi_supervised
+        # supervised=supervised or self.supervised
+
+
+        if semi_supervised or supervised:
+            df = pd.read_csv(input_timeseries_path_train, usecols=usecols, index_col=TIMESTAMP)
+        else:
+            df = pd.read_csv(input_timeseries_path_test, usecols=usecols, index_col=TIMESTAMP)
         if len(df) < length:
             raise ValueError("Number of rows in the input timeseries file is less than the desired length")
         return df.values[:,0]

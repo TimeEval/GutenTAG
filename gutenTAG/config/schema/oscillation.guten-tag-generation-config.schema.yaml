@@ -397,12 +397,16 @@ oneOf:
           If set to 0, there is no noise.
       kind:
         const: custom-input
-      input-timeseries-path:
+      input-timeseries-path-train:
         type: string
         description: |
-          timeseries from input file path
-      usecols:
-        type: list
+          timeseries from input file path used for a (semi-)supevised training set.
+      input-timeseries-path-test:
+        type: string
         description: |
-          list of columns of the input dataframe to use
+          timeseries from input file path used for a test set.
+      usecols:
+        type: array
+        description: |
+          list of column(s) of the input file(s) to use
     additionalProperties: false
