@@ -32,6 +32,6 @@ default_values: Dict[str, Dict[str, Any]] = {
         PARAMETERS.LENGTH: 200,
         PARAMETERS.POSITION: "middle",
         PARAMETERS.CHANNEL: 0,
-        PARAMETERS.CREEP_LENGTH: 0
+        PARAMETERS.CREEPING_LENGTH: 0
     }
 }

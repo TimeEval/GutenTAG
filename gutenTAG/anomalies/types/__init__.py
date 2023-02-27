@@ -21,7 +21,7 @@ class AnomalyProtocol:
     channel: int
     ctx: AnomalyGenerationContext
     labels: LabelRange
-    creep_length: int = 0
+    creeping_length: int = 0
     subsequences: List[np.ndarray] = field(default_factory=lambda: [])
 
     @property
@@ -41,8 +41,8 @@ class AnomalyProtocol:
         return self.end - self.start
 
     @property
-    def length_without_creep(self) -> int:
-        return self.length - self.creep_length
+    def length_without_creeping(self) -> int:
+        return self.length - self.creeping_length
 
 
 class BaseAnomaly(ABC):
@@ -58,11 +58,11 @@ class BaseAnomaly(ABC):
     def requires_period_start_position(self) -> bool:
         return False
 
-    def generate_creep(self, anomaly_protocol: AnomalyProtocol, custom_anomaly_length: Optional[int] = None) -> np.ndarray:
-        creep_length = anomaly_protocol.creep_length
-        anomaly_length = anomaly_protocol.length_without_creep if custom_anomaly_length is None else custom_anomaly_length
+    def generate_creeping(self, anomaly_protocol: AnomalyProtocol, custom_anomaly_length: Optional[int] = None) -> np.ndarray:
+        creeping_length = anomaly_protocol.creeping_length
+        anomaly_length = anomaly_protocol.length_without_creeping if custom_anomaly_length is None else custom_anomaly_length
         return np.concatenate([
-            np.linspace(0, 1, creep_length),  # creep
+            np.linspace(0, 1, creeping_length),  # creep
             np.ones(anomaly_length)           # anomaly
         ])
 

@@ -25,8 +25,8 @@ class AnomalyMean(BaseAnomaly):
 
         base = anomaly_protocol.base_oscillation
         ts: np.ndarray = base.timeseries
-        creep = self.generate_creep(anomaly_protocol)
-        subsequence = ts[anomaly_protocol.start:anomaly_protocol.end] + self.offset * creep
+        creeping = self.generate_creeping(anomaly_protocol)
+        subsequence = ts[anomaly_protocol.start:anomaly_protocol.end] + self.offset * creeping
         anomaly_protocol.subsequences.append(subsequence)
         return anomaly_protocol
 
