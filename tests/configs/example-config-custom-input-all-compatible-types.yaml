@@ -1,0 +1,142 @@
+timeseries:
+  - name: custom-input-example-amplitude
+    length: 1000
+    semi-supervised: true
+    supervised: true
+    base-oscillations:
+      - kind: custom-input
+        input-timeseries-path-train: 'tests/custom_input_ts/dummy_timeseries.csv'
+        input-timeseries-path-test: 'tests/custom_input_ts/dummy_timeseries_2.csv'
+        usecols:
+          - 'value1'
+      - kind: custom-input
+        input-timeseries-path-train: 'tests/custom_input_ts/dummy_timeseries.csv'
+        input-timeseries-path-test: 'tests/custom_input_ts/dummy_timeseries_2.csv'
+        usecols:
+          - 'value2'
+    anomalies:
+      - position: middle
+        length: 200
+        channel: 0
+        kinds:
+          - kind: amplitude
+            amplitude_factor: 2.0
+
+  - name: custom-input-example-extremum
+    length: 1000
+    semi-supervised: true
+    supervised: true
+    base-oscillations:
+      - kind: custom-input
+        input-timeseries-path-train: 'tests/custom_input_ts/dummy_timeseries.csv'
+        input-timeseries-path-test: 'tests/custom_input_ts/dummy_timeseries_2.csv'
+        usecols:
+          - 'value1'
+      - kind: custom-input
+        input-timeseries-path-train: 'tests/custom_input_ts/dummy_timeseries.csv'
+        input-timeseries-path-test: 'tests/custom_input_ts/dummy_timeseries_2.csv'
+        usecols:
+          - 'value2'
+    anomalies:
+      - position: beginning
+        length: 1
+        channel: 0
+        kinds:
+          - kind: extremum
+            min: true
+            local: false
+
+  - name: custom-input-example-mean
+    length: 1000
+    semi-supervised: true
+    supervised: true
+    base-oscillations:
+      - kind: custom-input
+        input-timeseries-path-train: 'tests/custom_input_ts/dummy_timeseries.csv'
+        input-timeseries-path-test: 'tests/custom_input_ts/dummy_timeseries_2.csv'
+        usecols:
+          - 'value1'
+      - kind: custom-input
+        input-timeseries-path-train: 'tests/custom_input_ts/dummy_timeseries.csv'
+        input-timeseries-path-test: 'tests/custom_input_ts/dummy_timeseries_2.csv'
+        usecols:
+          - 'value2'
+    anomalies:
+      - position: middle
+        length: 340
+        creep-length: 300
+        channel: 0
+        kinds:
+          - kind: mean
+            offset: 100.0
+
+  - name: custom-input-example-platform
+    length: 1000
+    semi-supervised: true
+    supervised: true
+    base-oscillations:
+      - kind: custom-input
+        input-timeseries-path-train: 'tests/custom_input_ts/dummy_timeseries.csv'
+        input-timeseries-path-test: 'tests/custom_input_ts/dummy_timeseries_2.csv'
+        usecols:
+          - 'value1'
+      - kind: custom-input
+        input-timeseries-path-train: 'tests/custom_input_ts/dummy_timeseries.csv'
+        input-timeseries-path-test: 'tests/custom_input_ts/dummy_timeseries_2.csv'
+        usecols:
+          - 'value2'
+    anomalies:
+      - position: middle
+        length: 100
+        kinds:
+          - kind: "platform"
+            value: 0.0
+  
+  - name: custom-input-example-trend-anomaly
+    length: 1000
+    semi-supervised: true
+    supervised: true
+    base-oscillations:
+      - kind: custom-input
+        input-timeseries-path-train: 'tests/custom_input_ts/dummy_timeseries.csv'
+        input-timeseries-path-test: 'tests/custom_input_ts/dummy_timeseries_2.csv'
+        usecols:
+          - 'value1'
+      - kind: custom-input
+        input-timeseries-path-train: 'tests/custom_input_ts/dummy_timeseries.csv'
+        input-timeseries-path-test: 'tests/custom_input_ts/dummy_timeseries_2.csv'
+        usecols:
+          - 'value2'
+    anomalies:
+      - position: end
+        length: 100
+        channel: 0
+        kinds:
+          - kind: trend
+            oscillation:
+              kind: sine
+  
+  - name: custom-input-example-creep-variance-transition
+    length: 1000
+    semi-supervised: true
+    supervised: true
+    base-oscillations:
+      - kind: custom-input
+        input-timeseries-path-train: 'tests/custom_input_ts/dummy_timeseries.csv'
+        input-timeseries-path-test: 'tests/custom_input_ts/dummy_timeseries_2.csv'
+        usecols:
+          - 'value1'
+      - kind: custom-input
+        input-timeseries-path-train: 'tests/custom_input_ts/dummy_timeseries.csv'
+        input-timeseries-path-test: 'tests/custom_input_ts/dummy_timeseries_2.csv'
+        usecols:
+          - 'value2'
+    anomalies:
+      - exact-position: 460
+        length: 540
+        creep-length: 500
+        channel: 0
+        kinds:
+          - kind: variance
+            variance: 5.0
+  
