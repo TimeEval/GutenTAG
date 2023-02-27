@@ -33,7 +33,7 @@ class TestIntegrationAnomalyTypes(TestIntegration):
                                              ["value-0", "is_anomaly"])
 
     def test_creeping_variance_anomaly_from_config(self):
-        self._compare_expected_and_generated("tests/configs/example-config-creep-variance.yaml",
+        self._compare_expected_and_generated("tests/configs/example-config-creeping-variance.yaml",
                                              "tests/generated/example-ts-creeping-variance.csv",
                                              ["value-0", "is_anomaly"])
 

@@ -137,9 +137,9 @@ None
 
 ## Creeping Anomaly
 
-Some anomaly types (`amplitude`, `mean`, and `variance`) allow for a transition into the anomaly - a creeping. 
-Therefore, the additional parameter `creeping-length` for an anomaly is introduced. It takes `creeping-length` points 
-from the overall `length` anomaly points and creates a linear transition into the `length - creeping-length` anomaly. 
+Some anomaly types (`amplitude`, `mean`, and `variance`) allow for a transition into the anomaly - a creeping.
+Therefore, the additional parameter `creeping-length` for an anomaly is introduced. It takes `creeping-length` points
+from the overall `length` anomaly points and creates a linear transition into the `length - creeping-length` anomaly.
 
 ### Example
 
