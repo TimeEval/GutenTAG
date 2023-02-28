@@ -29,7 +29,7 @@ properties:
     type: integer
     minimum: 1
     description: Length of the anomaly region. For extrema, this must be 1.
-  creep-length:
+  creeping-length:
     type: integer
     minimum: 0
     description: Length of the transition region before the anomaly.

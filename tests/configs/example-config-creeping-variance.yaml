@@ -1,13 +1,14 @@
 timeseries:
-  - name: mean
+  - name: variance
     length: 1000
     base-oscillations:
       - kind: sine
+        frequency: 2
     anomalies:
       - position: middle
         length: 340
-        creep-length: 300
+        creeping-length: 300
         channel: 0
         kinds:
-          - kind: mean
-            offset: 1.0
+          - kind: variance
+            variance: 1.0

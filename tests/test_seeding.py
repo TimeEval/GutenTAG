@@ -39,16 +39,16 @@ class TestSeeding(unittest.TestCase):
 
     def _assert_df_equal(self, df1: pd.DataFrame, df2: pd.DataFrame, columns: Optional[List[str]] = None) -> None:
         if columns is None:
-            columns = np.union1d(df1.columns, df2.columns)
+            columns = np.union1d(df1.columns, df2.columns).tolist()
         for column in columns:
             assert_series_equal(df1[column], df2[column])
 
-    def test_reproducable(self):
+    def test_reproducible(self):
         df1 = self._create_and_generate(self.config_single_sine, seed=42)[0].timeseries
         df2 = self._create_and_generate(self.config_single_sine, seed=42)[0].timeseries
         self._assert_df_equal(df1, df2)
 
-    def test_reproducable_diff_config(self):
+    def test_reproducible_diff_config(self):
         df1 = self._create_and_generate(self.config_single_ecg, seed=42)[0].timeseries
         df2 = self._create_and_generate(self.config_multiple, seed=42)[1].timeseries
         self._assert_df_equal(df1, df2)

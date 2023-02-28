@@ -31,10 +31,10 @@ class AnomalyVariance(BaseAnomaly):
         else:
             length = anomaly_protocol.end - anomaly_protocol.start
             variance_diff = self.variance - base.variance
-            creep = self.generate_creep(anomaly_protocol) * variance_diff + base.variance  # from 0 to variance_diff
-            creep /= self.variance * base.amplitude  # get relative transition from base variance to anomaly variance
+            creeping = self.generate_creeping(anomaly_protocol) * variance_diff + base.variance  # from 0 to variance_diff
+            creeping /= self.variance * base.amplitude  # get relative transition from base variance to anomaly variance
             subsequence_noise = base.generate_noise(anomaly_protocol.ctx.to_bo(), self.variance * base.amplitude, length)
-            base.noise[anomaly_protocol.start:anomaly_protocol.end] = subsequence_noise * creep
+            base.noise[anomaly_protocol.start:anomaly_protocol.end] = subsequence_noise * creeping
         return anomaly_protocol
 
     @property

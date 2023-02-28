@@ -19,7 +19,7 @@ timeseries:
         [channel: Int]
         [position: Enum[beginning,middle,end]]
         [exact-position: Int]
-        [creep-length: Int]
+        [creeping-length: Int]
         kinds:
           - kind: Enum[extremum,frequency,mean,pattern,pattern-shift,platform,variance,amplitude,trend,mode-correlation]
             # corresponding parameters from [Introduction -> Anomaly Types](introduction#anomaly-types)

@@ -25,17 +25,17 @@ class AnomalyAmplitude(BaseAnomaly):
             return anomaly_protocol
 
         length = anomaly_protocol.end - anomaly_protocol.start
-        if anomaly_protocol.creep_length == 0:
+        if anomaly_protocol.creeping_length == 0:
             transition_length = int(length * 0.2)
             plateau = np.ones(int(length * 0.6))
             start_transition = norm.pdf(np.linspace(-3, 0, transition_length), scale=1.05)
             end_transition = norm.pdf(np.linspace(0, 3, transition_length), scale=1.05)
             amplitude_bell = np.concatenate([start_transition / start_transition.max(), plateau, end_transition / end_transition.max()])
         else:
-            anomaly_length = length - anomaly_protocol.creep_length
-            creep = self.generate_creep(anomaly_protocol, custom_anomaly_length=int(anomaly_length * 0.8))
+            anomaly_length = length - anomaly_protocol.creeping_length
+            creeping = self.generate_creeping(anomaly_protocol, custom_anomaly_length=int(anomaly_length * 0.8))
             end_transition = norm.pdf(np.linspace(0, 3, int(anomaly_length * 0.2)), scale=1.05)
-            amplitude_bell = np.concatenate([creep, end_transition / end_transition.max()])
+            amplitude_bell = np.concatenate([creeping, end_transition / end_transition.max()])
         if self.amplitude_factor < 1.0:
             amplitude_bell = MinMaxScaler(feature_range=(1.0, 2.0 - self.amplitude_factor)).fit_transform(amplitude_bell.reshape(-1, 1)).reshape(-1)
             amplitude_bell = amplitude_bell * -1 + 2
