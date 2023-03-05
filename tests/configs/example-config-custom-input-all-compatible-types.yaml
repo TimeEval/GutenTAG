@@ -108,7 +108,7 @@ timeseries:
         usecols:
           - 'value2'
     anomalies:
-      - position: end
+      - position: beginning
         length: 100
         channel: 0
         kinds:

@@ -1,1 +1,1 @@
-plotly
+plotly==5.13.1

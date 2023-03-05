@@ -179,7 +179,7 @@ These parameters can be set for all base oscillations.
 Enables the user to add synthetic labeled anomalies to a time series file.
 
 The current requirements on the data are:
-* Tolumn headers: timestamp, value_col_name0, value_col_name1, ...
+* Column headers: timestamp, value_col_name0, value_col_name1, ...
 * Selection of columns to use
 * No anomalies (and no labels) present
 * The input file path(s) may be specified relative to the project root folder

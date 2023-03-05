@@ -10,4 +10,4 @@ from ..base_oscillations.random_walk import random_walk
 from ..base_oscillations.sawtooth import sawtooth
 from ..base_oscillations.sine import sine
 from ..base_oscillations.square import square
-from ..base_oscillations.custom_input import custom_input # not sure if this is correct. random_walk is imported similarly wihout the function being defined aas random_walk though.
+from ..base_oscillations.custom_input import custom_input  # not sure if this is correct. random_walk is imported similarly wihout the function being defined aas random_walk though.
