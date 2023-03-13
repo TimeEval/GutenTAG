@@ -38,7 +38,7 @@ class TimeSeries:
 
         if self.semi_supervised:
             semi_supervised_consolidator = Consolidator(self.base_oscillations, [],
-            semi_supervised=self.semi_supervised
+                semi_supervised=self.semi_supervised
             )
             self.semi_supervised_timeseries, self.semi_train_labels = semi_supervised_consolidator.generate(
                 GenerationContext(seed=self._create_new_seed(random_seed))
@@ -46,7 +46,7 @@ class TimeSeries:
 
         if self.supervised:
             supervised_consolidator = Consolidator(self.base_oscillations, self.anomalies,
-            supervised=self.supervised
+                supervised=self.supervised
             )
             self.supervised_timeseries, self.train_labels = supervised_consolidator.generate(
                 GenerationContext(seed=self._create_new_seed(random_seed))

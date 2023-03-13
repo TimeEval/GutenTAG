@@ -405,8 +405,15 @@ oneOf:
         type: string
         description: |
           timeseries from input file path used for a test set.
-      usecols:
-        type: array
+      use-column-test:
+        type: [string, integer]
         description: |
-          list of column(s) of the input file(s) to use
+          column of the test data input file(s) to use
+      use-column-train:
+        type: [string, integer]
+        description: |
+          column of the training data input file(s) to use
+      required:
+        - use-column-test
+        - input-timeseries-path-test
     additionalProperties: false

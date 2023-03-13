@@ -180,18 +180,20 @@ Enables the user to add synthetic labeled anomalies to a time series file.
 
 The current requirements on the data are:
 * Column headers: timestamp, value_col_name0, value_col_name1, ...
-* Selection of columns to use
+* Always select the column for test data creation
+* Optionally select column for training data creation
 * No anomalies (and no labels) present
 * The input file path(s) may be specified relative to the project root folder
 
 
 **Parameters**
 
-| Name                       | Type  |Description                                                                                                   |
-|:---------------------------|:------|:-------------------------------------------------------------------------------------------------------------|
-| input-timeseries-path-test | String| location of an input time-series csv file relative to the project root folder used to make test set          |
-| input-timeseries-path-train| String| location of an input time-series csv file relative to the project root folder used to make train set         |
-| usecols                    | List  | columns from input file to use                                                                               |
+| Name                       | Type        |Description                                                                                                   |
+|:---------------------------|:------------|:-------------------------------------------------------------------------------------------------------------|
+| input-timeseries-path-test | String      | location of an input time-series csv file relative to the project root folder used to make test set          |
+| input-timeseries-path-train| String      | location of an input time-series csv file relative to the project root folder used to make train set         |
+| use-column-test            | Int, String | columns from test input file to use                                                                          |
+| use-column-train           | Int, String | columns from train input file to use                                                                         |
 
 ## Formula
 

@@ -75,8 +75,8 @@ class PARAMETERS:
     COMPLEXITY = "complexity"
     INPUT_TIMESERIES_PATH_TRAIN = "input-timeseries-path-train"
     INPUT_TIMESERIES_PATH_TEST = "input-timeseries-path-test"
-    USECOLS = "usecols"
-
+    USE_COLUMN_TRAIN = "use-column-train"
+    USE_COLUMN_TEST = "use-column-test"
 
 class CONFIG_SCHEMA:
     BASE_ID = "guten-tag-generation-config.schema.yaml"

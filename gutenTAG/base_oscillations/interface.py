@@ -33,7 +33,8 @@ class BaseOscillationInterface(ABC):
         self.complexity = kwargs.get(PARAMETERS.COMPLEXITY, default_values[BASE_OSCILLATIONS][PARAMETERS.COMPLEXITY])
         self.input_timeseries_path_train = kwargs.get(PARAMETERS.INPUT_TIMESERIES_PATH_TRAIN, default_values[BASE_OSCILLATIONS][PARAMETERS.INPUT_TIMESERIES_PATH_TRAIN])
         self.input_timeseries_path_test = kwargs.get(PARAMETERS.INPUT_TIMESERIES_PATH_TEST, default_values[BASE_OSCILLATIONS][PARAMETERS.INPUT_TIMESERIES_PATH_TEST])
-        self.usecols = kwargs.get(PARAMETERS.USECOLS,default_values[BASE_OSCILLATIONS][PARAMETERS.USECOLS])
+        self.use_column_train = kwargs.get(PARAMETERS.USE_COLUMN_TRAIN,default_values[BASE_OSCILLATIONS][PARAMETERS.USE_COLUMN_TRAIN])
+        self.use_column_test = kwargs.get(PARAMETERS.USE_COLUMN_TEST,default_values[BASE_OSCILLATIONS][PARAMETERS.USE_COLUMN_TEST])    
 
         self.timeseries: Optional[np.ndarray] = None
         self.noise: Optional[np.ndarray] = None
