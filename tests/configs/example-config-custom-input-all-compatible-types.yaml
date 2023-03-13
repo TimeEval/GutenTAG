@@ -32,11 +32,12 @@ timeseries:
         input-timeseries-path-test: 'tests/custom_input_ts/dummy_timeseries_2.csv'
         usecols:
           - 'value1'
-      - kind: custom-input
-        input-timeseries-path-train: 'tests/custom_input_ts/dummy_timeseries.csv'
-        input-timeseries-path-test: 'tests/custom_input_ts/dummy_timeseries_2.csv'
-        usecols:
           - 'value2'
+      # - kind: custom-input
+      #   input-timeseries-path-train: 'tests/custom_input_ts/dummy_timeseries.csv'
+      #   input-timeseries-path-test: 'tests/custom_input_ts/dummy_timeseries_2.csv'
+      #   usecols:
+      #     - 'value2'
     anomalies:
       - position: beginning
         length: 1
