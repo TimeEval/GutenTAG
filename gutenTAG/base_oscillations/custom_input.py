@@ -67,7 +67,7 @@ class CustomInput(BaseOscillationInterface):
             df = pd.read_csv(input_timeseries_path_test, usecols=usecols, index_col=TIMESTAMP)
         if len(df) < length:
             raise ValueError("Number of rows in the input timeseries file is less than the desired length")
-        return df.iloc[:, 0]
+        return df.iloc[:length, 0]
     
 
 BaseOscillation.register(CustomInput.KIND, CustomInput)
