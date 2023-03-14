@@ -71,14 +71,14 @@ class CustomInput(BaseOscillationInterface):
             test_columns = [TIMESTAMP, use_column_test]
             index_column_test = TIMESTAMP
         else:
-            test_columns = [0, use_column_test]
+            test_columns = [0, int(use_column_test)]
             index_column_test = 0
 
         if isinstance(use_column_train,str):
             train_columns = [TIMESTAMP, use_column_train]
             index_column_train = TIMESTAMP
         else:
-            train_columns = [0, use_column_train]
+            train_columns = [0, int(use_column_train)]
             index_column_train = 0
 
 
