@@ -53,8 +53,8 @@ class BaseOscillationInterface(ABC):
                 trend_series = self.trend.timeseries
         return trend_series
 
-    def generate_timeseries_and_variations(self, ctx: BOGenerationContext, semi_supervised: Optional[bool] = None, supervised: Optional[bool] =  None, **kwargs):
-        self.timeseries = self.generate_only_base(ctx, semi_supervised=semi_supervised, supervised=supervised, **kwargs)
+    def generate_timeseries_and_variations(self, ctx: BOGenerationContext, **kwargs):
+        self.timeseries = self.generate_only_base(ctx, **kwargs)
         self.trend_series = self._generate_trend(ctx.to_trend())
         self.noise = self.generate_noise(ctx, self.variance * self.amplitude, self.length)
 

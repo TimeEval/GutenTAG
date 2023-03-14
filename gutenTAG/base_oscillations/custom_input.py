@@ -66,6 +66,7 @@ class CustomInput(BaseOscillationInterface):
         use_column_train = use_column_train or self.use_column_train
         use_column_test = use_column_test or self.use_column_test
         
+        
         if isinstance(use_column_test,str):
             test_columns = [TIMESTAMP, use_column_test]
             index_column_test = TIMESTAMP
