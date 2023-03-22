@@ -68,8 +68,8 @@ class CustomInput(BaseOscillationInterface):
         
         
         if isinstance(use_column_test,str):
-            test_columns = [TIMESTAMP, use_column_test]
-            index_column_test = TIMESTAMP
+            test_columns: Union[Sequence[str], Sequence[int]] = [TIMESTAMP, use_column_test]
+            index_column_test: Union[str, int] = TIMESTAMP
         else:
             test_columns = [0, int(use_column_test)]
             index_column_test = 0
