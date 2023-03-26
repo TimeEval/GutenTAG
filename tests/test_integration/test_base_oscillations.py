@@ -27,6 +27,11 @@ class TestIntegrationBaseOscillations(TestIntegration):
         self._compare_expected_and_generated("tests/configs/example-config-rmj.yaml",
                                              "tests/generated/example-ts-rmj.csv",
                                              ["value-0", "value-1", "is_anomaly"])
+        
+    def test_custom_input_from_config(self):
+        self._compare_expected_and_generated("tests/configs/example-config-custom-input.yaml",
+                                             "tests/generated/example-ts-custom-input.csv",
+                                             ["value-0", "value-1","is_anomaly"])
 
     def test_cbf_from_config(self):
         self._compare_expected_and_generated("tests/configs/example-config-cbf.yaml",

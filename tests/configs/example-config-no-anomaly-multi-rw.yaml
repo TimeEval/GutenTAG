@@ -1,7 +1,0 @@
-timeseries:
-  - name: rw
-    length: 1000
-    channels: 2
-    base-oscillations:
-      - kind: random-walk
-      
