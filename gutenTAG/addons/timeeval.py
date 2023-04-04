@@ -73,10 +73,11 @@ class TimeEvalAddOn(BaseAddOn):
         })
 
     def finalize(self, ctx: AddOnFinalizeContext) -> None:
-        df = pd.DataFrame(columns=columns)
         # add metadata
+        metadata = []
         for ts_obj in ctx.get_data(self.key):
-            df = df.append(ts_obj["datasets"], ignore_index=True)
+            metadata += ts_obj["datasets"]
+        df = pd.DataFrame(metadata, columns=columns)
         self._set_global_vals(df)
         self.df = df
         if ctx.should_save and ctx.output_folder is not None:
