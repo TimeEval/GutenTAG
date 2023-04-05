@@ -1,4 +1,4 @@
-from typing import Optional, List, Union
+from typing import Optional, List, Sequence, Union
 
 import numpy as np
 import pandas as pd
@@ -68,15 +68,15 @@ class CustomInput(BaseOscillationInterface):
         
         
         if isinstance(use_column_test,str):
-            test_columns: Union[Sequence[str], Sequence[int]] = [TIMESTAMP, use_column_test]
+            test_columns: List[Union[str, int]] = [TIMESTAMP, use_column_test]
             index_column_test: Union[str, int] = TIMESTAMP
         else:
             test_columns = [0, int(use_column_test)]
             index_column_test = 0
-
+    
         if isinstance(use_column_train,str):
-            train_columns = [TIMESTAMP, use_column_train]
-            index_column_train = TIMESTAMP
+            train_columns: List[Union[str, int]] = [TIMESTAMP, use_column_train]
+            index_column_train: Union[str, int] = TIMESTAMP
         else:
             train_columns = [0, int(use_column_train)]
             index_column_train = 0
