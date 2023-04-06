@@ -9,5 +9,6 @@ build
 .mypy_cache
 .pytest_cache
 venv
+.venv
 .coverage*
 coverage.xml

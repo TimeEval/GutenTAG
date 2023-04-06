@@ -10,6 +10,7 @@ BASE_OSCILLATION = "base-oscillation"
 BASE_OSCILLATIONS = BASE_OSCILLATION + "s"
 TIMESERIES = "timeseries"
 ANOMALIES = "anomalies"
+TIMESTAMP = "timestamp"
 
 
 class BASE_OSCILLATION_NAMES:
@@ -25,6 +26,7 @@ class BASE_OSCILLATION_NAMES:
     SQUARE = "square"
     SAWTOOTH = "sawtooth"
     DIRICHLET = "dirichlet"
+    CUSTOM_INPUT = "custom-input"
 
 
 class ANOMALY_TYPE_NAMES:
@@ -71,7 +73,11 @@ class PARAMETERS:
     WIDTH = "width"
     PERIODICITY = "periodicity"
     COMPLEXITY = "complexity"
-
+    INPUT_TIMESERIES_PATH_TRAIN = "input-timeseries-path-train"
+    INPUT_TIMESERIES_PATH_TEST = "input-timeseries-path-test"
+    USE_COLUMN_TRAIN = "use-column-train"
+    USE_COLUMN_TEST = "use-column-test"
+    
 
 class CONFIG_SCHEMA:
     BASE_ID = "guten-tag-generation-config.schema.yaml"

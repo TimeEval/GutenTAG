@@ -1,5 +1,6 @@
 from .base_oscillation import BaseOscillation
 from .cosine import Cosine
+from .custom_input import CustomInput
 from .cylinder_bell_funnel import CylinderBellFunnel
 from .dirichlet import Dirichlet
 from .ecg import ECG

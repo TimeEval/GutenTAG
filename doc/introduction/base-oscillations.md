@@ -175,6 +175,26 @@ These parameters can be set for all base oscillations.
 | complexity  | Float | The number of bits used to generate the sequence. This controls the length of the repeating sequence and its complexity. |
 | smoothing   | Float | Smoothing factor for convolutional smoothing of the generated bit sequence (highly recommended). Default is 0.01.        |
 
+## Custom Input
+Enables the user to add synthetic labeled anomalies to a time series file.
+
+The current requirements on the data are:
+* Column headers: timestamp, value_col_name0, value_col_name1, ...
+* Always select the column for test data creation
+* Optionally select column for training data creation
+* No anomalies (and no labels) present
+* The input file path(s) may be specified relative to the project root folder
+
+
+**Parameters**
+
+| Name                       | Type        |Description                                                                                                   |
+|:---------------------------|:------------|:-------------------------------------------------------------------------------------------------------------|
+| input-timeseries-path-test | String      | location of an input time-series csv file relative to the project root folder used to make test set          |
+| input-timeseries-path-train| String      | location of an input time-series csv file relative to the project root folder used to make train set         |
+| use-column-test            | Int, String | columns from test input file to use                                                                          |
+| use-column-train           | Int, String | columns from train input file to use                                                                         |
+
 ## Formula
 
 **Parameters**

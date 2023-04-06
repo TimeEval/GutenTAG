@@ -11,13 +11,17 @@ class Consolidator:
     def __init__(self,
                  base_oscillations: List[BaseOscillationInterface],
                  anomalies: List[Anomaly],
-                 random_seed: Optional[int] = None):
+                 random_seed: Optional[int] = None,
+                 semi_supervised: Optional[bool] = None,
+                 supervised: Optional[bool] = None):
         self.consolidated_channels: List[BaseOscillationInterface] = base_oscillations
         self.anomalies: List[Anomaly] = anomalies
         self.generated_anomalies: List[Tuple[AnomalyProtocol, int]] = []
         self.timeseries: Optional[np.ndarray] = None
         self.labels: Optional[np.ndarray] = None
         self.random_seed: Optional[int] = random_seed
+        self.semi_supervised: Optional[bool] = semi_supervised
+        self.supervised: Optional[bool] =  supervised
 
     def add_channel(self, channel: BaseOscillationInterface):
         self.consolidated_channels.append(channel)
@@ -28,7 +32,10 @@ class Consolidator:
     def generate(self, ctx: GenerationContext) -> Tuple[np.ndarray, np.ndarray]:
         channels: List[np.ndarray] = []
         for c, bo in enumerate(self.consolidated_channels):
-            bo.generate_timeseries_and_variations(ctx.to_bo(c, channels))  # type: ignore  # timeseries gets set in generate_timeseries_and_variations()
+            bo.generate_timeseries_and_variations(ctx.to_bo(c, channels),
+                                                  semi_supervised=self.semi_supervised,
+                                                  supervised=self.supervised,
+                                                  )  # type: ignore  # timeseries gets set in generate_timeseries_and_variations()
             if bo.timeseries is not None:
                 channels.append(bo.timeseries)
         self.timeseries = self._stack_channels(channels)

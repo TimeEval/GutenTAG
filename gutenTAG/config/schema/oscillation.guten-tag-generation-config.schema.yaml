@@ -22,6 +22,7 @@ properties:
       - square
       - dirichlet
       - mls
+      - custom-input
     description: Kind of the base oscillation.
 oneOf:
   - properties:
@@ -380,4 +381,39 @@ oneOf:
         description: |
           Smoothing factor for convolutional smoothing of the generated bit sequence (highly recommended).
           Default is 0.01.
+    additionalProperties: false
+  - properties:
+      trend:
+        description: Trend to add to the base oscillation
+        $ref: "#"
+      offset:
+        type: number
+        description: Constant offset added to the base oscillation.
+      variance:
+        type: number
+        description: |
+          Variance of the signal relative to signal value.
+          This is also called white noise.
+          If set to 0, there is no noise.
+      kind:
+        const: custom-input
+      input-timeseries-path-train:
+        type: string
+        description: |
+          timeseries from input file path used for a (semi-)supevised training set.
+      input-timeseries-path-test:
+        type: string
+        description: |
+          timeseries from input file path used for a test set.
+      use-column-test:
+        type: [string, integer]
+        description: |
+          column of the test data input file(s) to use
+      use-column-train:
+        type: [string, integer]
+        description: |
+          column of the training data input file(s) to use
+      required:
+        - use-column-test
+        - input-timeseries-path-test
     additionalProperties: false

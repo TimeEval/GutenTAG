@@ -1,0 +1,23 @@
+timeseries:
+  - name: example-ts-custom-input
+    length: 1000
+    semi-supervised: false
+    supervised: false
+    base-oscillations:
+      - kind: custom-input
+        input-timeseries-path-train: 'tests/custom_input_ts/dummy_timeseries.csv'
+        input-timeseries-path-test: 'tests/custom_input_ts/dummy_timeseries_2.csv'
+        use-column-test: 1
+        use-column-train: 1
+      - kind: custom-input
+        input-timeseries-path-train: 'tests/custom_input_ts/dummy_timeseries.csv'
+        input-timeseries-path-test: 'tests/custom_input_ts/dummy_timeseries_2.csv'
+        use-column-test: 'value2'
+        use-column-train: 'value2'
+    anomalies:
+      - position: middle
+        length: 200
+        channel: 0
+        kinds:
+          - kind: amplitude
+            amplitude_factor: 2.0
