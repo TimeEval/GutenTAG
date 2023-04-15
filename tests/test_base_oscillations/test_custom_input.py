@@ -117,3 +117,13 @@ class TestCustomInput(unittest.TestCase):
         timeseries = gen.generate_only_base(self.ctx, supervised=True)
         self.assertEqual(len(timeseries), 100)
         assert_array_equal(timeseries, self.expected_train)
+
+    def test_input_too_short(self):
+        with self.assertRaises(ValueError) as e:
+            CustomInput().generate_only_base(
+                ctx=self.ctx,
+                length=10_000,
+                input_timeseries_path_test=str(self.input_path1),
+                use_column_test=1,
+            )
+        self.assertRegex(str(e.exception).lower(), "less than the desired length")
