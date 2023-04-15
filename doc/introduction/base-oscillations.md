@@ -27,21 +27,21 @@ However, noise and other random parameters differ between channels.
 
 Parameters for a new time series.
 
-|Name|Type|Description|
-|----|----|-----------|
-|name|String|Optional name for timeseries|
-|length|Int|Length of entire time series|
-|channels|Int|Number of dimensions|
-|semi-supervised|Bool|Whether a train file without anomalies should be generated|
-|supervised|Bool|Whether the train file should contain labels|
+| Name            | Type   | Description                                                |
+|-----------------|--------|------------------------------------------------------------|
+| name            | String | Optional name for timeseries                               |
+| length          | Int    | Length of entire time series                               |
+| channels        | Int    | Number of dimensions                                       |
+| semi-supervised | Bool   | Whether a train file without anomalies should be generated |
+| supervised      | Bool   | Whether the train file should contain labels               |
 
 These parameters can be set for all base oscillations.
 
-|Name|Type|Description|
-|----|----|-----------|
-|variance|Float|Noise factor dependent on amplitude|
-|trend|Object|Defines another base oscillation as trend that gets added to its parent object. Can be recursively used!|
-|offset|Float|Gets added to the generated time series|
+| Name     | Type   | Description                                                                                              |
+|----------|--------|----------------------------------------------------------------------------------------------------------|
+| variance | Float  | Noise factor dependent on amplitude                                                                      |
+| trend    | Object | Defines another base oscillation as trend that gets added to its parent object. Can be recursively used! |
+| offset   | Float  | Gets added to the generated time series                                                                  |
 
 ## Sine
 
@@ -49,11 +49,11 @@ These parameters can be set for all base oscillations.
 
 **Parameters**
 
-|Name|Type|Description|
-|----|----|-----------|
-|frequency|Float|Number of sine waves per 100 points|
-|amplitude|Float|+/- deviation from 0|
-|freq-mod|Float|Factor (of base frequency) of the frequency modulation that changes the amplitude of the sine wave over time. The carrier wave always has an amplitude of 1.|
+| Name      | Type  | Description                                                                                                                                                  |
+|-----------|-------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| frequency | Float | Number of sine waves per 100 points                                                                                                                          |
+| amplitude | Float | +/- deviation from 0                                                                                                                                         |
+| freq-mod  | Float | Factor (of base frequency) of the frequency modulation that changes the amplitude of the sine wave over time. The carrier wave always has an amplitude of 1. |
 
 ## Cosine
 
@@ -86,10 +86,10 @@ These parameters can be set for all base oscillations.
 
 **Parameters**
 
-|Name|Type|Description|
-|----|----|-----------|
-|amplitude|Float|+/- deviation from 0|
-|smoothing|Float|`0.01` Smoothing factor for convolution dependent on length|
+| Name      | Type  | Description                                                 |
+|-----------|-------|-------------------------------------------------------------|
+| amplitude | Float | +/- deviation from 0                                        |
+| smoothing | Float | `0.01` Smoothing factor for convolution dependent on length |
 
 
 ## Cylinder Bell Funnel
@@ -98,12 +98,12 @@ These parameters can be set for all base oscillations.
 
 **Parameters**
 
-|Name|Type|Description|
-|----|----|-----------|
-|avg-pattern-length|Int|Average length of pattern in time series|
-|amplitude|Float|Average amplitude of pattern in time series|
-|variance-pattern-length|Float|Variance of pattern length in time series|
-|variance-amplitude|Float|Variance of amplitude of pattern in time series|
+| Name                    | Type  | Description                                     |
+|-------------------------|-------|-------------------------------------------------|
+| avg-pattern-length      | Int   | Average length of pattern in time series        |
+| amplitude               | Float | Average amplitude of pattern in time series     |
+| variance-pattern-length | Float | Variance of pattern length in time series       |
+| variance-amplitude      | Float | Variance of amplitude of pattern in time series |
 
 ## ECG
 
@@ -111,9 +111,9 @@ These parameters can be set for all base oscillations.
 
 **Parameters**
 
-|Name|Type|Description|
-|----|----|-----------|
-|frequency|Float|Number of hear beats per 100 points|
+| Name      | Type  | Description                         |
+|-----------|-------|-------------------------------------|
+| frequency | Float | Number of hear beats per 100 points |
 
 
 ## Polynomial
