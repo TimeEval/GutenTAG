@@ -10,7 +10,6 @@ BASE_OSCILLATION = "base-oscillation"
 BASE_OSCILLATIONS = BASE_OSCILLATION + "s"
 TIMESERIES = "timeseries"
 ANOMALIES = "anomalies"
-TIMESTAMP = "timestamp"
 
 
 class BASE_OSCILLATION_NAMES:
@@ -77,7 +76,7 @@ class PARAMETERS:
     INPUT_TIMESERIES_PATH_TEST = "input-timeseries-path-test"
     USE_COLUMN_TRAIN = "use-column-train"
     USE_COLUMN_TEST = "use-column-test"
-    
+
 
 class CONFIG_SCHEMA:
     BASE_ID = "guten-tag-generation-config.schema.yaml"

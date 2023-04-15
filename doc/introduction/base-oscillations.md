@@ -14,6 +14,7 @@ The generator comes with the following base oscillations in [gutenTAG/base_oscil
 - sawtooth
 - dirichlet
 - mls
+- custom-input
 
 Base oscillations can have an underlying trend.
 This trend can be any of the above base oscillations.
@@ -26,21 +27,21 @@ However, noise and other random parameters differ between channels.
 
 Parameters for a new time series.
 
-|Name|Type|Description|
-|----|----|-----------|
-|name|String|Optional name for timeseries|
-|length|Int|Length of entire time series|
-|channels|Int|Number of dimensions|
-|semi-supervised|Bool|Whether a train file without anomalies should be generated|
-|supervised|Bool|Whether the train file should contain labels|
+| Name            | Type   | Description                                                |
+|-----------------|--------|------------------------------------------------------------|
+| name            | String | Optional name for timeseries                               |
+| length          | Int    | Length of entire time series                               |
+| channels        | Int    | Number of dimensions                                       |
+| semi-supervised | Bool   | Whether a train file without anomalies should be generated |
+| supervised      | Bool   | Whether the train file should contain labels               |
 
 These parameters can be set for all base oscillations.
 
-|Name|Type|Description|
-|----|----|-----------|
-|variance|Float|Noise factor dependent on amplitude|
-|trend|Object|Defines another base oscillation as trend that gets added to its parent object. Can be recursively used!|
-|offset|Float|Gets added to the generated time series|
+| Name     | Type   | Description                                                                                              |
+|----------|--------|----------------------------------------------------------------------------------------------------------|
+| variance | Float  | Noise factor dependent on amplitude                                                                      |
+| trend    | Object | Defines another base oscillation as trend that gets added to its parent object. Can be recursively used! |
+| offset   | Float  | Gets added to the generated time series                                                                  |
 
 ## Sine
 
@@ -48,11 +49,11 @@ These parameters can be set for all base oscillations.
 
 **Parameters**
 
-|Name|Type|Description|
-|----|----|-----------|
-|frequency|Float|Number of sine waves per 100 points|
-|amplitude|Float|+/- deviation from 0|
-|freq-mod|Float|Factor (of base frequency) of the frequency modulation that changes the amplitude of the sine wave over time. The carrier wave always has an amplitude of 1.|
+| Name      | Type  | Description                                                                                                                                                  |
+|-----------|-------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| frequency | Float | Number of sine waves per 100 points                                                                                                                          |
+| amplitude | Float | +/- deviation from 0                                                                                                                                         |
+| freq-mod  | Float | Factor (of base frequency) of the frequency modulation that changes the amplitude of the sine wave over time. The carrier wave always has an amplitude of 1. |
 
 ## Cosine
 
@@ -85,10 +86,10 @@ These parameters can be set for all base oscillations.
 
 **Parameters**
 
-|Name|Type|Description|
-|----|----|-----------|
-|amplitude|Float|+/- deviation from 0|
-|smoothing|Float|`0.01` Smoothing factor for convolution dependent on length|
+| Name      | Type  | Description                                                 |
+|-----------|-------|-------------------------------------------------------------|
+| amplitude | Float | +/- deviation from 0                                        |
+| smoothing | Float | `0.01` Smoothing factor for convolution dependent on length |
 
 
 ## Cylinder Bell Funnel
@@ -97,12 +98,12 @@ These parameters can be set for all base oscillations.
 
 **Parameters**
 
-|Name|Type|Description|
-|----|----|-----------|
-|avg-pattern-length|Int|Average length of pattern in time series|
-|amplitude|Float|Average amplitude of pattern in time series|
-|variance-pattern-length|Float|Variance of pattern length in time series|
-|variance-amplitude|Float|Variance of amplitude of pattern in time series|
+| Name                    | Type  | Description                                     |
+|-------------------------|-------|-------------------------------------------------|
+| avg-pattern-length      | Int   | Average length of pattern in time series        |
+| amplitude               | Float | Average amplitude of pattern in time series     |
+| variance-pattern-length | Float | Variance of pattern length in time series       |
+| variance-amplitude      | Float | Variance of amplitude of pattern in time series |
 
 ## ECG
 
@@ -110,9 +111,9 @@ These parameters can be set for all base oscillations.
 
 **Parameters**
 
-|Name|Type|Description|
-|----|----|-----------|
-|frequency|Float|Number of hear beats per 100 points|
+| Name      | Type  | Description                         |
+|-----------|-------|-------------------------------------|
+| frequency | Float | Number of hear beats per 100 points |
 
 
 ## Polynomial
@@ -175,25 +176,27 @@ These parameters can be set for all base oscillations.
 | complexity  | Float | The number of bits used to generate the sequence. This controls the length of the repeating sequence and its complexity. |
 | smoothing   | Float | Smoothing factor for convolutional smoothing of the generated bit sequence (highly recommended). Default is 0.01.        |
 
-## Custom Input
+## Custom Input (`custom-input`)
+
 Enables the user to add synthetic labeled anomalies to a time series file.
 
 The current requirements on the data are:
-* Column headers: timestamp, value_col_name0, value_col_name1, ...
+
+* Column headers
 * Always select the column for test data creation
 * Optionally select column for training data creation
 * No anomalies (and no labels) present
-* The input file path(s) may be specified relative to the project root folder
+* The input file path(s) may be specified relative to the working directory
 
 
 **Parameters**
 
-| Name                       | Type        |Description                                                                                                   |
-|:---------------------------|:------------|:-------------------------------------------------------------------------------------------------------------|
-| input-timeseries-path-test | String      | location of an input time-series csv file relative to the project root folder used to make test set          |
-| input-timeseries-path-train| String      | location of an input time-series csv file relative to the project root folder used to make train set         |
-| use-column-test            | Int, String | columns from test input file to use                                                                          |
-| use-column-train           | Int, String | columns from train input file to use                                                                         |
+| Name                        | Type        | Description                                                                                        |
+|:----------------------------|:------------|:---------------------------------------------------------------------------------------------------|
+| input-timeseries-path-test  | String      | location of an input time-series csv file relative to the working directory used to make test set  |
+| input-timeseries-path-train | String      | location of an input time-series csv file relative to the working directory used to make train set |
+| use-column-test             | Int, String | columns from test input file to use                                                                |
+| use-column-train            | Int, String | columns from train input file to use                                                               |
 
 ## Formula
 
