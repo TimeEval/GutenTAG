@@ -1,0 +1,21 @@
+timeseries:
+  - name: nested-trend
+    length: 1000
+    base-oscillations:
+      - kind: ecg
+        amplitude: 2
+        frequency: 2
+        trend:
+          kind: sine
+          frequency: 0.5
+          amplitude: 4
+          trend:
+            kind: polynomial
+            polynomial: [0, -0.001, 0.00005]
+    anomalies:
+      - position: end
+        length: 40
+        channel: 0
+        kinds:
+          - kind: platform
+            value: 20
