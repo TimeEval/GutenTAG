@@ -10,6 +10,7 @@ from ..utils.types import BOGenerationContext
 
 class BaseOscillationInterface(ABC):
     def __init__(self, *args, **kwargs):
+        # parameters
         self.length = kwargs.get(PARAMETERS.LENGTH, default_values[BASE_OSCILLATIONS][PARAMETERS.LENGTH])
         self.frequency = kwargs.get(PARAMETERS.FREQUENCY, default_values[BASE_OSCILLATIONS][PARAMETERS.FREQUENCY])
         self.amplitude = kwargs.get(PARAMETERS.AMPLITUDE, default_values[BASE_OSCILLATIONS][PARAMETERS.AMPLITUDE])
@@ -20,7 +21,6 @@ class BaseOscillationInterface(ABC):
         self.freq_mod = kwargs.get(PARAMETERS.FREQ_MOD, default_values[BASE_OSCILLATIONS][PARAMETERS.FREQ_MOD])
         self.polynomial = kwargs.get(PARAMETERS.POLYNOMIAL, default_values[BASE_OSCILLATIONS][PARAMETERS.POLYNOMIAL])
         self.trend: Optional[BaseOscillationInterface] = kwargs.get(PARAMETERS.TREND, default_values[BASE_OSCILLATIONS][PARAMETERS.TREND])
-        self.offset = kwargs.get(PARAMETERS.OFFSET, default_values[BASE_OSCILLATIONS][PARAMETERS.OFFSET])
         self.smoothing = kwargs.get(PARAMETERS.SMOOTHING, default_values[BASE_OSCILLATIONS][PARAMETERS.SMOOTHING])
         self.channel_diff = kwargs.get(PARAMETERS.CHANNEL_DIFF, default_values[BASE_OSCILLATIONS][PARAMETERS.CHANNEL_DIFF])
         self.channel_offset = kwargs.get(PARAMETERS.CHANNEL_OFFSET, self.amplitude)
@@ -36,9 +36,11 @@ class BaseOscillationInterface(ABC):
         self.use_column_train = kwargs.get(PARAMETERS.USE_COLUMN_TRAIN, default_values[BASE_OSCILLATIONS][PARAMETERS.USE_COLUMN_TRAIN])
         self.use_column_test = kwargs.get(PARAMETERS.USE_COLUMN_TEST, default_values[BASE_OSCILLATIONS][PARAMETERS.USE_COLUMN_TEST])
 
+        # BO components
         self.timeseries: Optional[np.ndarray] = None
         self.noise: Optional[np.ndarray] = None
         self.trend_series: Optional[np.ndarray] = None
+        self.offset = kwargs.get(PARAMETERS.OFFSET, default_values[BASE_OSCILLATIONS][PARAMETERS.OFFSET])
 
     def generate_noise(self, ctx: BOGenerationContext, variance: float, length: int) -> np.ndarray:
         return ctx.rng.normal(0, variance, length)
@@ -50,6 +52,8 @@ class BaseOscillationInterface(ABC):
             self.trend.generate_timeseries_and_variations(ctx)
             if self.trend.timeseries is not None:
                 trend_series = self.trend.timeseries
+            if self.trend.trend_series is not None:
+                trend_series += self.trend.trend_series
         return trend_series
 
     def generate_timeseries_and_variations(self, ctx: BOGenerationContext, **kwargs):

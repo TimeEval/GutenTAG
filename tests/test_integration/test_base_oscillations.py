@@ -58,6 +58,11 @@ class TestIntegrationBaseOscillations(TestIntegration):
                                              "tests/generated/example-ts-trend.csv",
                                              ["value-0", "is_anomaly"])
 
+    def test_nested_trend_from_config(self):
+        self._compare_expected_and_generated("tests/configs/example-config-nested-trend.yaml",
+                                             "tests/generated/example-ts-nested-trend.csv",
+                                             ["value-0", "is_anomaly"])
+
     def test_formula_from_config(self):
         self._compare_expected_and_generated("tests/configs/example-config-formula.yaml",
                                              "tests/generated/example-ts-formula.csv",
