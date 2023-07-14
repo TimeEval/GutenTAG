@@ -2,6 +2,8 @@ import unittest
 from pathlib import Path
 
 import pandas as pd
+import numpy as np
+import os
 from numpy.random import SeedSequence
 from numpy.testing import assert_array_equal
 
@@ -16,11 +18,21 @@ class TestCustomInput(unittest.TestCase):
         self.input_path2 = Path("tests/custom_input_ts/dummy_timeseries_2.csv")
         self.column_idx = 1
         self.length = 100
-        self.expected_test = pd.read_csv(self.input_path1, usecols=[self.column_idx]).iloc[:self.length, 0].values
-        self.expected_train = pd.read_csv(self.input_path2, usecols=[self.column_idx]).iloc[:self.length, 0].values
+        self.expected_test = (
+            pd.read_csv(self.input_path1, usecols=[self.column_idx])
+            .iloc[: self.length, 0]
+            .values
+        )
+        self.expected_train = (
+            pd.read_csv(self.input_path2, usecols=[self.column_idx])
+            .iloc[: self.length, 0]
+            .values
+        )
 
     def test_all_args_specified_just_unsupervised(self):
-        timeseries = CustomInput(supervised=False, semi_supervised=False).generate_only_base(
+        timeseries = CustomInput(
+            supervised=False, semi_supervised=False
+        ).generate_only_base(
             ctx=self.ctx,
             length=self.length,
             input_timeseries_path_test=str(self.input_path1),
@@ -40,7 +52,7 @@ class TestCustomInput(unittest.TestCase):
             use_column_test=self.column_idx,
             input_timeseries_path_train=str(self.input_path2),
             use_column_train=self.column_idx,
-            supervised=True
+            supervised=True,
         )
 
         self.assertEqual(len(timeseries), 100)
@@ -54,7 +66,7 @@ class TestCustomInput(unittest.TestCase):
             use_column_test=self.column_idx,
             input_timeseries_path_train=str(self.input_path2),
             use_column_train=self.column_idx,
-            semi_supervised=True
+            semi_supervised=True,
         )
 
         self.assertEqual(len(timeseries), 100)
@@ -97,7 +109,7 @@ class TestCustomInput(unittest.TestCase):
                 input_timeseries_path_test="wrong-folder/missing-file.csv",
                 use_column_test=1,
                 use_column_train=1,
-                supervised=True
+                supervised=True,
             )
         self.assertRegex(str(e.exception).lower(), "no path.*training timeseries")
 
@@ -129,13 +141,18 @@ class TestCustomInput(unittest.TestCase):
         self.assertRegex(str(e.exception).lower(), "less than the desired length")
 
     def test_integer_conversion(self):
-        df = pd.DataFrame({'data': [1, 2, 3, 4, 5]})
-        df.to_csv('test_data.csv', index=False)
-        custom_input = CustomInput('test_data.csv')
+        df = pd.DataFrame({"data": [1, 2, 3, 4, 5]})
+        df.to_csv("test_data.csv", index=False)
+        custom_input = CustomInput("test_data.csv")
         # test if warning is raised
         with self.assertWarns(UserWarning):
             # Generate the time series data
-            data = custom_input.generate()
+            timeseries = custom_input.generate_only_base(
+                ctx=self.ctx,
+                length=5,
+                input_timeseries_path_test="test_data.csv",
+                use_column_test="data",
+            )
         # test if data is properly converted
-        self.assertEqual(data.dtype, np.float64)
-        os.remove('test_data.csv')
+        self.assertEqual(timeseries.dtype, np.float64)
+        os.remove("test_data.csv")
