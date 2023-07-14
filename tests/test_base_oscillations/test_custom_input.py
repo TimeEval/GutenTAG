@@ -127,3 +127,15 @@ class TestCustomInput(unittest.TestCase):
                 use_column_test=1,
             )
         self.assertRegex(str(e.exception).lower(), "less than the desired length")
+
+    def test_integer_conversion(self):
+        df = pd.DataFrame({'data': [1, 2, 3, 4, 5]})
+        df.to_csv('test_data.csv', index=False)
+        custom_input = CustomInput('test_data.csv')
+        # test if warning is raised
+        with self.assertWarns(UserWarning):
+            # Generate the time series data
+            data = custom_input.generate()
+        # test if data is properly converted
+        self.assertEqual(data.dtype, np.float64)
+        os.remove('test_data.csv')
