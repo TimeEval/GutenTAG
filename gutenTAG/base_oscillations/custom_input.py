@@ -2,6 +2,7 @@ from typing import Optional, List, Union
 
 import numpy as np
 import pandas as pd
+import warnings
 
 from . import BaseOscillation
 from .interface import BaseOscillationInterface
@@ -88,6 +89,9 @@ class CustomInput(BaseOscillationInterface):
 
         if len(df) < length:
             raise ValueError("Number of rows in the input timeseries file is less than the desired length")
+        if df.dtypes[0] == 'int64':
+            df = df.astype(float)
+            warnings.warn("Input data was of integer type and has been automatically converted to float.")
         return df.iloc[:length, 0]
 
 
