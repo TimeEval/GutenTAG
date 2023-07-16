@@ -9,7 +9,13 @@ from ..anomalies import Anomaly, Position, AnomalyKind, BaseAnomaly
 from ..base_oscillations import BaseOscillationInterface, BaseOscillation
 from ..utils.compatibility import Compatibility
 from ..utils.default_values import default_values
-from ..utils.global_variables import BASE_OSCILLATION, BASE_OSCILLATIONS, TIMESERIES, PARAMETERS, ANOMALIES
+from ..utils.global_variables import (
+    BASE_OSCILLATION,
+    BASE_OSCILLATIONS,
+    TIMESERIES,
+    PARAMETERS,
+    ANOMALIES,
+)
 
 
 @dataclass
@@ -25,18 +31,24 @@ class GenerationOptions:
     def from_dict(d: Dict) -> GenerationOptions:
         return GenerationOptions(
             semi_supervised=d.get("semi-supervised", False),
-            supervised=d.get("supervised", False)
+            supervised=d.get("supervised", False),
         )
 
 
-ResultType = List[Tuple[List[BaseOscillationInterface], List[Anomaly], GenerationOptions, Dict]]
+ResultType = List[
+    Tuple[List[BaseOscillationInterface], List[Anomaly], GenerationOptions, Dict]
+]
 
 
-def decode_trend_obj(trend: Dict, length_overwrite: int) -> Optional[BaseOscillationInterface]:
+def decode_trend_obj(
+    trend: Dict, length_overwrite: int
+) -> Optional[BaseOscillationInterface]:
     trend_key = trend.get(PARAMETERS.KIND, None)
     trend[PARAMETERS.LENGTH] = length_overwrite
     if PARAMETERS.TREND in trend:
-        trend[PARAMETERS.TREND] = decode_trend_obj(trend[PARAMETERS.TREND], length_overwrite)
+        trend[PARAMETERS.TREND] = decode_trend_obj(
+            trend[PARAMETERS.TREND], length_overwrite
+        )
     return BaseOscillation.from_key(trend_key, **trend) if trend_key else None
 
 
@@ -70,29 +82,46 @@ class ConfigParser:
         return self.result
 
     def _check_compatibility(self, ts: Dict) -> bool:
-        base_oscillations = ts.get(BASE_OSCILLATIONS, [ts.get(BASE_OSCILLATION)] * ts.get(PARAMETERS.CHANNELS, 0))
+        base_oscillations = ts.get(
+            BASE_OSCILLATIONS,
+            [ts.get(BASE_OSCILLATION)] * ts.get(PARAMETERS.CHANNELS, 0),
+        )
         anomalies = ts.get(ANOMALIES, [])
         for anomaly in anomalies:
-            base_oscillation = base_oscillations[anomaly.get(PARAMETERS.CHANNEL, default_values[ANOMALIES][PARAMETERS.CHANNEL])][PARAMETERS.KIND]
+            base_oscillation = base_oscillations[
+                anomaly.get(
+                    PARAMETERS.CHANNEL, default_values[ANOMALIES][PARAMETERS.CHANNEL]
+                )
+            ][PARAMETERS.KIND]
             for anomaly_kind in anomaly.get(PARAMETERS.KINDS, []):
                 anomaly_kind = anomaly_kind[PARAMETERS.KIND]
                 if not Compatibility.check(anomaly_kind, base_oscillation):
                     if self.skip_errors:
-                        logging.warning(f"Skip generation of time series {ts.get('name', '')} due to incompatible types: {anomaly_kind} -> {base_oscillation}.")
+                        logging.warning(
+                            f"Skip generation of time series {ts.get('name', '')} due to incompatible types: {anomaly_kind} -> {base_oscillation}."
+                        )
                         return False
                     else:
-                        raise ValueError(f"Incompatible types: {anomaly_kind} -> {base_oscillation}.")
+                        raise ValueError(
+                            f"Incompatible types: {anomaly_kind} -> {base_oscillation}."
+                        )
         return True
 
     def _skip_name(self, name: str) -> bool:
         return self.only is not None and name != self.only
 
     def _build_base_oscillations(self, d: Dict) -> List[BaseOscillationInterface]:
-        length = d.get(PARAMETERS.LENGTH, default_values[BASE_OSCILLATIONS][PARAMETERS.LENGTH])
-        bos = d.get(BASE_OSCILLATIONS, [d.get(BASE_OSCILLATION)] * d.get(PARAMETERS.CHANNELS, 0))
+        length = d.get(
+            PARAMETERS.LENGTH, default_values[BASE_OSCILLATIONS][PARAMETERS.LENGTH]
+        )
+        bos = d.get(
+            BASE_OSCILLATIONS, [d.get(BASE_OSCILLATION)] * d.get(PARAMETERS.CHANNELS, 0)
+        )
         return [self._build_single_base_oscillation(bo, length) for bo in bos]
 
-    def _build_single_base_oscillation(self, d: Dict, length: int) -> BaseOscillationInterface:
+    def _build_single_base_oscillation(
+        self, d: Dict, length: int
+    ) -> BaseOscillationInterface:
         base_oscillation_config = deepcopy(d)
         base_oscillation_config[PARAMETERS.LENGTH] = length
         trend = base_oscillation_config.get(PARAMETERS.TREND, {})
@@ -101,15 +130,25 @@ class ConfigParser:
         return BaseOscillation.from_key(key, **base_oscillation_config)
 
     def _build_anomalies(self, d: Dict) -> List[Anomaly]:
-        return [self._build_single_anomaly(anomaly_config) for anomaly_config in d.get(ANOMALIES, [])]
+        return [
+            self._build_single_anomaly(anomaly_config)
+            for anomaly_config in d.get(ANOMALIES, [])
+        ]
 
     def _build_single_anomaly(self, d: Dict) -> Anomaly:
         anomaly = Anomaly(
-            Position(d.get(PARAMETERS.POSITION, default_values[ANOMALIES][PARAMETERS.POSITION])),
+            Position(
+                d.get(
+                    PARAMETERS.POSITION, default_values[ANOMALIES][PARAMETERS.POSITION]
+                )
+            ),
             d.get(PARAMETERS.EXACT_POSITION, None),
             d[PARAMETERS.LENGTH],
             d.get(PARAMETERS.CHANNEL, default_values[ANOMALIES][PARAMETERS.CHANNEL]),
-            d.get(PARAMETERS.CREEPING_LENGTH, default_values[ANOMALIES][PARAMETERS.CREEPING_LENGTH])
+            d.get(
+                PARAMETERS.CREEPING_LENGTH,
+                default_values[ANOMALIES][PARAMETERS.CREEPING_LENGTH],
+            ),
         )
 
         anomaly_kinds = self._build_anomaly_kinds(d, anomaly.anomaly_length)
@@ -119,13 +158,18 @@ class ConfigParser:
         return anomaly
 
     def _build_anomaly_kinds(self, d: Dict, length: int) -> List[BaseAnomaly]:
-        return [self._build_single_anomaly_kind(anomaly_kind, length) for anomaly_kind in d.get(PARAMETERS.KINDS, [])]
+        return [
+            self._build_single_anomaly_kind(anomaly_kind, length)
+            for anomaly_kind in d.get(PARAMETERS.KINDS, [])
+        ]
 
     def _build_single_anomaly_kind(self, d: Dict, length: int) -> BaseAnomaly:
         kind = d[PARAMETERS.KIND]
         if kind == PARAMETERS.TREND:
             parameters = {
-                PARAMETERS.TREND: decode_trend_obj(deepcopy(d[PARAMETERS.OSCILLATION]), length)
+                PARAMETERS.TREND: decode_trend_obj(
+                    deepcopy(d[PARAMETERS.OSCILLATION]), length
+                )
             }
         else:
             parameters = deepcopy(d)
@@ -135,6 +179,8 @@ class ConfigParser:
         except TypeError as ex:
             if "unexpected keyword argument" in str(ex):
                 parameter = str(ex).split("'")[-2]
-                raise ValueError(f"Anomaly kind '{kind}' does not support parameter '{parameter}'") from ex
+                raise ValueError(
+                    f"Anomaly kind '{kind}' does not support parameter '{parameter}'"
+                ) from ex
             else:
                 raise ex

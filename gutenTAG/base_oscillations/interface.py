@@ -11,38 +11,104 @@ from ..utils.types import BOGenerationContext
 class BaseOscillationInterface(ABC):
     def __init__(self, *args, **kwargs):
         # parameters
-        self.length = kwargs.get(PARAMETERS.LENGTH, default_values[BASE_OSCILLATIONS][PARAMETERS.LENGTH])
-        self.frequency = kwargs.get(PARAMETERS.FREQUENCY, default_values[BASE_OSCILLATIONS][PARAMETERS.FREQUENCY])
-        self.amplitude = kwargs.get(PARAMETERS.AMPLITUDE, default_values[BASE_OSCILLATIONS][PARAMETERS.AMPLITUDE])
-        self.variance = kwargs.get(PARAMETERS.VARIANCE, default_values[BASE_OSCILLATIONS][PARAMETERS.VARIANCE])
-        self.avg_pattern_length = kwargs.get(PARAMETERS.AVG_PATTERN_LENGTH, default_values[BASE_OSCILLATIONS][PARAMETERS.AVG_PATTERN_LENGTH])
-        self.variance_pattern_length = kwargs.get(PARAMETERS.VARIANCE_PATTERN_LENGTH, default_values[BASE_OSCILLATIONS][PARAMETERS.VARIANCE_PATTERN_LENGTH])
-        self.variance_amplitude = kwargs.get(PARAMETERS.VARIANCE_AMPLITUDE, default_values[BASE_OSCILLATIONS][PARAMETERS.VARIANCE_AMPLITUDE])
-        self.freq_mod = kwargs.get(PARAMETERS.FREQ_MOD, default_values[BASE_OSCILLATIONS][PARAMETERS.FREQ_MOD])
-        self.polynomial = kwargs.get(PARAMETERS.POLYNOMIAL, default_values[BASE_OSCILLATIONS][PARAMETERS.POLYNOMIAL])
-        self.trend: Optional[BaseOscillationInterface] = kwargs.get(PARAMETERS.TREND, default_values[BASE_OSCILLATIONS][PARAMETERS.TREND])
-        self.smoothing = kwargs.get(PARAMETERS.SMOOTHING, default_values[BASE_OSCILLATIONS][PARAMETERS.SMOOTHING])
-        self.channel_diff = kwargs.get(PARAMETERS.CHANNEL_DIFF, default_values[BASE_OSCILLATIONS][PARAMETERS.CHANNEL_DIFF])
+        self.length = kwargs.get(
+            PARAMETERS.LENGTH, default_values[BASE_OSCILLATIONS][PARAMETERS.LENGTH]
+        )
+        self.frequency = kwargs.get(
+            PARAMETERS.FREQUENCY,
+            default_values[BASE_OSCILLATIONS][PARAMETERS.FREQUENCY],
+        )
+        self.amplitude = kwargs.get(
+            PARAMETERS.AMPLITUDE,
+            default_values[BASE_OSCILLATIONS][PARAMETERS.AMPLITUDE],
+        )
+        self.variance = kwargs.get(
+            PARAMETERS.VARIANCE, default_values[BASE_OSCILLATIONS][PARAMETERS.VARIANCE]
+        )
+        self.avg_pattern_length = kwargs.get(
+            PARAMETERS.AVG_PATTERN_LENGTH,
+            default_values[BASE_OSCILLATIONS][PARAMETERS.AVG_PATTERN_LENGTH],
+        )
+        self.variance_pattern_length = kwargs.get(
+            PARAMETERS.VARIANCE_PATTERN_LENGTH,
+            default_values[BASE_OSCILLATIONS][PARAMETERS.VARIANCE_PATTERN_LENGTH],
+        )
+        self.variance_amplitude = kwargs.get(
+            PARAMETERS.VARIANCE_AMPLITUDE,
+            default_values[BASE_OSCILLATIONS][PARAMETERS.VARIANCE_AMPLITUDE],
+        )
+        self.freq_mod = kwargs.get(
+            PARAMETERS.FREQ_MOD, default_values[BASE_OSCILLATIONS][PARAMETERS.FREQ_MOD]
+        )
+        self.polynomial = kwargs.get(
+            PARAMETERS.POLYNOMIAL,
+            default_values[BASE_OSCILLATIONS][PARAMETERS.POLYNOMIAL],
+        )
+        self.trend: Optional[BaseOscillationInterface] = kwargs.get(
+            PARAMETERS.TREND, default_values[BASE_OSCILLATIONS][PARAMETERS.TREND]
+        )
+        self.smoothing = kwargs.get(
+            PARAMETERS.SMOOTHING,
+            default_values[BASE_OSCILLATIONS][PARAMETERS.SMOOTHING],
+        )
+        self.channel_diff = kwargs.get(
+            PARAMETERS.CHANNEL_DIFF,
+            default_values[BASE_OSCILLATIONS][PARAMETERS.CHANNEL_DIFF],
+        )
         self.channel_offset = kwargs.get(PARAMETERS.CHANNEL_OFFSET, self.amplitude)
-        self.random_seed = kwargs.get(PARAMETERS.RANDOM_SEED, default_values[BASE_OSCILLATIONS][PARAMETERS.RANDOM_SEED])
-        self.formula = kwargs.get(PARAMETERS.FORMULA, default_values[BASE_OSCILLATIONS][PARAMETERS.FORMULA])
-        self.ecg_sim_method = kwargs.get(PARAMETERS.ECG_SIM_METHOD, default_values[BASE_OSCILLATIONS][PARAMETERS.ECG_SIM_METHOD])
-        self.width = kwargs.get(PARAMETERS.WIDTH, default_values[BASE_OSCILLATIONS][PARAMETERS.WIDTH])
-        self.duty = kwargs.get(PARAMETERS.DUTY, default_values[BASE_OSCILLATIONS][PARAMETERS.DUTY])
-        self.periodicity = kwargs.get(PARAMETERS.PERIODICITY, default_values[BASE_OSCILLATIONS][PARAMETERS.PERIODICITY])
-        self.complexity = kwargs.get(PARAMETERS.COMPLEXITY, default_values[BASE_OSCILLATIONS][PARAMETERS.COMPLEXITY])
-        self.input_timeseries_path_train = kwargs.get(PARAMETERS.INPUT_TIMESERIES_PATH_TRAIN, default_values[BASE_OSCILLATIONS][PARAMETERS.INPUT_TIMESERIES_PATH_TRAIN])
-        self.input_timeseries_path_test = kwargs.get(PARAMETERS.INPUT_TIMESERIES_PATH_TEST, default_values[BASE_OSCILLATIONS][PARAMETERS.INPUT_TIMESERIES_PATH_TEST])
-        self.use_column_train = kwargs.get(PARAMETERS.USE_COLUMN_TRAIN, default_values[BASE_OSCILLATIONS][PARAMETERS.USE_COLUMN_TRAIN])
-        self.use_column_test = kwargs.get(PARAMETERS.USE_COLUMN_TEST, default_values[BASE_OSCILLATIONS][PARAMETERS.USE_COLUMN_TEST])
+        self.random_seed = kwargs.get(
+            PARAMETERS.RANDOM_SEED,
+            default_values[BASE_OSCILLATIONS][PARAMETERS.RANDOM_SEED],
+        )
+        self.formula = kwargs.get(
+            PARAMETERS.FORMULA, default_values[BASE_OSCILLATIONS][PARAMETERS.FORMULA]
+        )
+        self.ecg_sim_method = kwargs.get(
+            PARAMETERS.ECG_SIM_METHOD,
+            default_values[BASE_OSCILLATIONS][PARAMETERS.ECG_SIM_METHOD],
+        )
+        self.width = kwargs.get(
+            PARAMETERS.WIDTH, default_values[BASE_OSCILLATIONS][PARAMETERS.WIDTH]
+        )
+        self.duty = kwargs.get(
+            PARAMETERS.DUTY, default_values[BASE_OSCILLATIONS][PARAMETERS.DUTY]
+        )
+        self.periodicity = kwargs.get(
+            PARAMETERS.PERIODICITY,
+            default_values[BASE_OSCILLATIONS][PARAMETERS.PERIODICITY],
+        )
+        self.complexity = kwargs.get(
+            PARAMETERS.COMPLEXITY,
+            default_values[BASE_OSCILLATIONS][PARAMETERS.COMPLEXITY],
+        )
+        self.input_timeseries_path_train = kwargs.get(
+            PARAMETERS.INPUT_TIMESERIES_PATH_TRAIN,
+            default_values[BASE_OSCILLATIONS][PARAMETERS.INPUT_TIMESERIES_PATH_TRAIN],
+        )
+        self.input_timeseries_path_test = kwargs.get(
+            PARAMETERS.INPUT_TIMESERIES_PATH_TEST,
+            default_values[BASE_OSCILLATIONS][PARAMETERS.INPUT_TIMESERIES_PATH_TEST],
+        )
+        self.use_column_train = kwargs.get(
+            PARAMETERS.USE_COLUMN_TRAIN,
+            default_values[BASE_OSCILLATIONS][PARAMETERS.USE_COLUMN_TRAIN],
+        )
+        self.use_column_test = kwargs.get(
+            PARAMETERS.USE_COLUMN_TEST,
+            default_values[BASE_OSCILLATIONS][PARAMETERS.USE_COLUMN_TEST],
+        )
 
         # BO components
         self.timeseries: Optional[np.ndarray] = None
         self.noise: Optional[np.ndarray] = None
         self.trend_series: Optional[np.ndarray] = None
-        self.offset = kwargs.get(PARAMETERS.OFFSET, default_values[BASE_OSCILLATIONS][PARAMETERS.OFFSET])
+        self.offset = kwargs.get(
+            PARAMETERS.OFFSET, default_values[BASE_OSCILLATIONS][PARAMETERS.OFFSET]
+        )
 
-    def generate_noise(self, ctx: BOGenerationContext, variance: float, length: int) -> np.ndarray:
+    def generate_noise(
+        self, ctx: BOGenerationContext, variance: float, length: int
+    ) -> np.ndarray:
         return ctx.rng.normal(0, variance, length)
 
     def _generate_trend(self, ctx: BOGenerationContext) -> np.ndarray:
@@ -59,7 +125,9 @@ class BaseOscillationInterface(ABC):
     def generate_timeseries_and_variations(self, ctx: BOGenerationContext, **kwargs):
         self.timeseries = self.generate_only_base(ctx, **kwargs)
         self.trend_series = self._generate_trend(ctx.to_trend())
-        self.noise = self.generate_noise(ctx, self.variance * self.amplitude, self.length)
+        self.noise = self.generate_noise(
+            ctx, self.variance * self.amplitude, self.length
+        )
 
     def is_periodic(self) -> bool:
         periods = self.get_timeseries_periods()
@@ -88,7 +156,9 @@ class BaseOscillationInterface(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def generate_only_base(self, ctx: BOGenerationContext, *args, **kwargs) -> np.ndarray:
+    def generate_only_base(
+        self, ctx: BOGenerationContext, *args, **kwargs
+    ) -> np.ndarray:
         raise NotImplementedError()
 
     @classmethod

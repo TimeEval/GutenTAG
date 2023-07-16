@@ -18,11 +18,15 @@ class AnomalyModeCorrelation(BaseAnomaly):
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
         if anomaly_protocol.base_oscillation_kind == RandomModeJump.KIND:
             timeseries = anomaly_protocol.base_oscillation.timeseries
-            subsequence = timeseries[anomaly_protocol.start:anomaly_protocol.end] * -1
+            subsequence = timeseries[anomaly_protocol.start : anomaly_protocol.end] * -1
             anomaly_protocol.subsequences.append(subsequence)
         else:
-            self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind)
-            self.logger.warning("A `mode_correlation` anomaly can be injected in only a `random_mode_jump` base oscillation!")
+            self.logger.warn_false_combination(
+                self.__class__.__name__, anomaly_protocol.base_oscillation_kind
+            )
+            self.logger.warning(
+                "A `mode_correlation` anomaly can be injected in only a `random_mode_jump` base oscillation!"
+            )
         return anomaly_protocol
 
     @property

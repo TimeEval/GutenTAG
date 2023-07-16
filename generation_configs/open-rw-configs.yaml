@@ -1,0 +1,602 @@
+$schema: "generation-config-schema/guten-tag-generation-config.schema.yaml"
+
+#############################
+# Definitions
+#############################
+# base oscillations
+base:
+  - &base-ts
+    length: 10000
+    channels: 1
+    semi-supervised: true
+    supervised: true
+  - &base-osci
+    frequency: 5.0
+    amplitude: 1.0
+    variance: 0.05
+
+sinus:
+  - &sinus-0
+    <<: *base-osci
+    kind: "sinus"
+  - &sinus-1
+    <<: *sinus-0
+    frequency: 2.3
+    amplitude: 2.5
+    offset: -2.0
+    freq-mod: 0.5
+  - &sinus-2
+    <<: *sinus-0
+    frequency: 12.4
+    amplitude: 0.5
+    offset: 1.3
+    freq-mod: 0.01
+  - &sinus-linear-trend
+    <<: *sinus-1
+    trend:
+      kind: "polynomial"
+      polynomial: [ 2, 2 ]
+  - &sinus-other-trend
+    <<: *sinus-0
+    amplitude: 2
+    variance: 0.1
+    trend:
+      kind: "sinus"
+      frequency: 0.1
+      amplitude: 0.5
+      variance: 0
+  - &sinus-low-freq
+    <<: *base-osci
+    kind: "sinus"
+    frequency: 0.1
+    amplitude: 0.5
+
+ecg:
+  - &ecg-0
+    <<: *base-osci
+    kind: "ecg"
+  - &ecg-1
+    <<: *ecg-0
+    frequency: 6.5
+  - &ecg-trend
+    <<: *ecg-0
+    frequency: 1
+    trend:
+      kind: "polynomial"
+      polynomial: [8, 4, 2, 8]
+
+random_walk:
+  - &rw-0
+    <<: *base-osci
+    kind: "random_walk"
+    variance: 0.0
+  - &rw-1
+    <<: *rw-0
+    amplitude: 2.5
+    offset: -2.0
+    smoothing: 0.1
+  - &rw-2
+    <<: *rw-0
+    amplitude: 0.5
+    offset: 1.3
+    variance: 0.05
+  - &rw-no-smoothing
+    <<: *rw-0
+    smoothing: 0
+    offset: 3.2
+  - &rw-linear-trend
+    <<: *rw-0
+    amplitude: 1
+    trend:
+      kind: "polynomial"
+      polynomial: [3, 3]
+      amplitude: 2
+  - &rw-other-trend
+    <<: *rw-2
+    trend:
+      kind: "sinus"
+      frequency: 0.05
+      amplitude: 0.25
+      variance: 0
+
+cylinder_bell_funnel:
+  - &cbf-0
+    <<: *base-osci
+    kind: "cylinder_bell_funnel"
+    avg-pattern-length: 100
+    variance-pattern-length: 0.2
+    variance-amplitude: 0.1
+    offset: -3
+  - &cbf-1
+    <<: *cbf-0
+    avg-pattern-length: 160
+    variance-amplitude: 5
+    offset: 12.4
+  - &cbf-linear-trend
+    <<: *cbf-1
+    trend:
+      kind: "polynomial"
+      polynomial: [2, 2]
+      amplitude: 2
+  - &cbf-other-trend
+    <<: *cbf-1
+    trend:
+      kind: "polynomial"
+      polynomial: [-8, 8, 2, -10]
+      amplitude: 2
+
+polynomial:
+  - &poly-0
+    <<: *base-osci
+    kind: "polynomial"
+    polynomial: [-8, 8, 2, -10]
+    offset: -2
+  - &poly-1
+    <<: *poly-0
+    polynomial: [1, 1, -8, -4, 1]
+  - &poly-other-trend
+    <<: *poly-0
+    variance: 0.1
+    offset: 34.2
+    trend:
+      kind: "sinus"
+      frequency: 0.1
+      amplitude: 0.5
+  - &poly-linear
+    <<: *poly-0
+    polynomial: [ 0.2, 0.2 ]
+  - &poly-linear-strong
+    <<: *poly-0
+    polynomial: [ 2, 2 ]
+  - &poly-quadratic
+    <<: *poly-0
+    polynomial: [ 0.2, 0.2, 10 ]
+
+# anomalies
+anomaly_kinds:
+  - &local-extremum
+    length: 1
+    kinds:
+      - kind: "extremum"
+        parameters:
+          min: true
+          local: true
+          context_window: 50
+  - &global-extremum
+    length: 1
+    kinds:
+      - kind: "extremum"
+        parameters:
+          min: false
+          local: false
+  - &frequency
+    length: 100
+    kinds:
+      - kind: "frequency"
+        parameters:
+          frequency_factor: 2.0
+  - &mean
+    length: 100
+    kinds:
+      - kind: "mean"
+        parameters:
+          offset: 1.0
+  - &pattern
+    length: 100
+    kinds:
+      - kind: "pattern"
+        parameters:
+          sinusoid_k: 10.0
+          cbf_pattern_factor: 2
+  - &pattern-shift
+    length: 100
+    kinds:
+      - kind: "pattern-shift"
+        parameters:
+          shift_by: 10
+          transition_window: 10
+  - &platform
+    length: 100
+    kinds:
+      - kind: "platform"
+        parameters:
+          value: 0.0
+  - &variance-large
+    length: 100
+    kinds:
+      - kind: "variance"
+        parameters:
+          variance: 0.3
+  - &variance-small
+    length: 100
+    kinds:
+      - kind: "variance"
+        parameters:
+          variance: 0.03
+  - &amplitude-larger
+    length: 100
+    kinds:
+      - kind: "amplitude"
+        parameters:
+          amplitude_factor: 2
+  - &amplitude-smaller
+    length: 100
+    kinds:
+      - kind: "amplitude"
+        parameters:
+          amplitude_factor: 0.5
+  - &trend-anomaly-sinus
+    length: 100
+    kinds:
+      - kind: "trend"
+        parameters:
+          kind: "sinus"
+          frequency: 1
+          amplitude: 1.0
+          variance: 0.0
+  - &trend-anomaly-linear
+    length: 100
+    kinds:
+      - kind: "trend"
+        parameters:
+          kind: "polynomial"
+          polynomial: [0.2, 0.2]
+
+
+#############################
+# Time series declarations
+#############################
+timeseries:
+  # same-count
+  - name: poly-same-count-1
+    <<: *base-ts
+    base-oscillation:
+      <<: *poly-1
+    anomalies:
+      - position: middle
+        <<: *variance-large
+  - name: poly-same-count-2
+    <<: *base-ts
+    base-oscillation:
+      <<: *poly-1
+    anomalies:
+      - position: middle
+        <<: *variance-large
+      - position: middle
+        <<: *variance-large
+  - name: poly-same-count-5
+    <<: *base-ts
+    base-oscillation:
+      <<: *poly-1
+    anomalies:
+      - position: middle
+        <<: *variance-large
+      - position: middle
+        <<: *variance-large
+      - position: end
+        <<: *variance-large
+      - position: end
+        <<: *variance-large
+      - position: end
+        <<: *variance-large
+  - name: poly-same-count-10
+    <<: *base-ts
+    base-oscillation:
+      <<: *poly-1
+    anomalies:
+      - position: middle
+        <<: *variance-large
+      - position: middle
+        <<: *variance-large
+      - position: middle
+        <<: *variance-large
+      - position: middle
+        <<: *variance-large
+      - position: middle
+        <<: *variance-large
+      - position: end
+        <<: *variance-large
+      - position: end
+        <<: *variance-large
+      - position: end
+        <<: *variance-large
+      - position: end
+        <<: *variance-large
+      - position: end
+        <<: *variance-large
+
+  # diff-count
+  - name: poly-diff-count-1
+    <<: *base-ts
+    base-oscillation:
+      *poly-1
+    anomalies:
+      - position: middle
+        <<: *global-extremum
+  - name: poly-diff-count-2
+    <<: *base-ts
+    base-oscillation:
+      *poly-1
+    anomalies:
+      - position: middle
+        <<: *global-extremum
+      - position: end
+        <<: *variance-large
+  - name: poly-diff-count-3
+    <<: *base-ts
+    base-oscillation:
+      *poly-1
+    anomalies:
+      - position: beginning
+        <<: *global-extremum
+      - position: middle
+        <<: *mean
+      - position: end
+        <<: *variance-large
+  - name: poly-diff-count-4
+    <<: *base-ts
+    base-oscillation:
+      *poly-1
+    anomalies:
+      - position: beginning
+        <<: *local-extremum
+      - position: middle
+        <<: *mean
+      - position: end
+        <<: *variance-large
+      - position: end
+        <<: *platform
+  - name: poly-diff-count-5
+    <<: *base-ts
+    base-oscillation:
+      *poly-1
+    anomalies:
+      - position: beginning
+        <<: *local-extremum
+      - position: middle
+        <<: *mean
+      - position: middle
+        <<: *variance-large
+      - position: end
+        <<: *platform
+      - position: end
+        <<: *trend-anomaly-sinus
+
+  # combined
+  - name: poly-combined-diff-1
+    <<: *base-ts
+    base-oscillation:
+      *poly-1
+    anomalies:
+      - position: beginning
+        <<: *variance-large
+      - position: middle
+        <<: *variance-large
+      - position: middle
+        <<: *variance-large
+      - position: end
+        <<: *mean
+      - position: end
+        <<: *variance-large
+      - position: end
+        <<: *variance-large
+  - name: poly-combined-diff-2
+    <<: *base-ts
+    base-oscillation:
+      *poly-1
+    anomalies:
+      - position: beginning
+        <<: *platform
+      - position: middle
+        <<: *platform
+      - position: middle
+        length: 200
+        kinds:
+          - kind: "trend"
+            parameters:
+              kind: "sinus"
+              frequency: 0.725
+              amplitude: 0.25
+              variance: 0.0
+      - position: middle
+        <<: *platform
+      - position: end
+        <<: *platform
+      - position: end
+        <<: *platform
+  - name: poly-combined-diff-3
+    <<: *base-ts
+    base-oscillation:
+      *poly-0
+    anomalies:
+      - position: beginning
+        <<: *local-extremum
+      - position: middle
+        <<: *local-extremum
+      - position: middle
+        length: 100
+        kinds:
+          - kind: "mean"
+            parameters:
+              offset: 0.2
+      - position: middle
+        <<: *local-extremum
+      - position: end
+        <<: *local-extremum
+      - position: end
+        length: 1
+        kinds:
+          - kind: "extremum"
+            parameters:
+              min: false
+              local: true
+              context_window: 50
+
+  # length
+  - name: poly-length-1
+    <<: *base-ts
+    base-oscillation:
+      *poly-0
+    anomalies:
+      - position: middle
+        <<: *global-extremum
+  - name: poly-length-10
+    <<: *base-ts
+    base-oscillation:
+      *poly-0
+    anomalies:
+      - position: middle
+        <<: *variance-large
+        length: 10
+  - name: poly-length-50
+    <<: *base-ts
+    base-oscillation:
+      *poly-0
+    anomalies:
+      - position: middle
+        <<: *variance-large
+        length: 50
+  - name: poly-length-100
+    <<: *base-ts
+    base-oscillation:
+      *poly-0
+    anomalies:
+      - position: middle
+        <<: *variance-large
+        length: 100
+  - name: poly-length-500
+    <<: *base-ts
+    base-oscillation:
+      *poly-0
+    anomalies:
+      - position: middle
+        <<: *variance-large
+        length: 500
+  - name: poly-length-1000
+    <<: *base-ts
+    base-oscillation:
+      *poly-0
+    anomalies:
+      - position: middle
+        <<: *variance-large
+        length: 1000
+
+  # trend
+  - name: poly-trend-linear
+    <<: *base-ts
+    base-oscillation:
+      <<: *poly-0
+      trend:
+        <<: *poly-linear
+    anomalies:
+      - position: middle
+        <<: *variance-large
+  - name: poly-trend-quadratic
+    <<: *base-ts
+    base-oscillation:
+      <<: *poly-0
+      trend:
+        <<: *poly-quadratic
+    anomalies:
+      - position: middle
+        <<: *variance-large
+  - name: poly-trend-sinus
+    <<: *base-ts
+    base-oscillation:
+      <<: *poly-0
+      trend:
+        <<: *sinus-low-freq
+    anomalies:
+      - position: middle
+        <<: *variance-large
+
+  # anomaly-type
+  - name: poly-type-extremum
+    <<: *base-ts
+    base-oscillation:
+      *poly-0
+    anomalies:
+      - position: middle
+        length: 1
+        <<: *global-extremum
+  - name: poly-type-mean
+    <<: *base-ts
+    base-oscillation:
+      *poly-0
+    anomalies:
+      - position: middle
+        <<: *mean
+  - name: poly-type-platform
+    <<: *base-ts
+    base-oscillation:
+      *poly-0
+    anomalies:
+      - position: middle
+        <<: *platform
+  - name: poly-type-trend
+    <<: *base-ts
+    base-oscillation:
+      *poly-0
+    anomalies:
+      - position: middle
+        <<: *trend-anomaly-linear
+  - name: poly-type-variance
+    <<: *base-ts
+    base-oscillation:
+      *poly-0
+    anomalies:
+      - position: middle
+        <<: *variance-large
+
+  # channels
+  - name: poly-channels-all-of-3
+    <<: *base-ts
+    channels: 3
+    base-oscillation:
+      *poly-1
+    anomalies:
+      - exact-position: 5000
+        channel: 0
+        <<: *mean
+      - exact-position: 5000
+        channel: 1
+        <<: *mean
+      - exact-position: 5000
+        channel: 2
+        <<: *mean
+  - name: poly-channels-single-of-2
+    <<: *base-ts
+    channels: 2
+    base-oscillation:
+      *poly-1
+    anomalies:
+      - position: middle
+        channel: 0
+        <<: *mean
+  - name: poly-channels-single-of-5
+    <<: *base-ts
+    channels: 5
+    base-oscillation:
+      *poly-1
+    anomalies:
+      - position: middle
+        channel: 0
+        <<: *mean
+  - name: poly-channels-single-of-10
+    <<: *base-ts
+    channels: 10
+    base-oscillation:
+      *poly-1
+    anomalies:
+      - position: middle
+        channel: 0
+        <<: *mean
+  - name: poly-channels-single-of-20
+    <<: *base-ts
+    channels: 20
+    base-oscillation:
+      *poly-1
+    anomalies:
+      - position: middle
+        channel: 0
+        <<: *mean

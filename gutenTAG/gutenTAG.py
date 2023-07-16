@@ -15,7 +15,11 @@ from .addons import import_addons, AddOnProcessContext, AddOnFinalizeContext, Ba
 from .config import ConfigParser, ConfigValidator
 from .generator import Overview, TimeSeries
 from .timeseries import TrainingType, TimeSeries as ExtTimeSeries
-from .utils.global_variables import UNSUPERVISED_FILENAME, SUPERVISED_FILENAME, SEMI_SUPERVISED_FILENAME
+from .utils.global_variables import (
+    UNSUPERVISED_FILENAME,
+    SUPERVISED_FILENAME,
+    SEMI_SUPERVISED_FILENAME,
+)
 from .utils.tqdm_joblib import tqdm_joblib
 
 
@@ -27,7 +31,9 @@ class _GenerationContext:
     seed: Optional[int] = None
     addons: Sequence[BaseAddOn] = ()
 
-    def to_addon_process_ctx(self, timeseries: TimeSeries, config: Dict) -> AddOnProcessContext:
+    def to_addon_process_ctx(
+        self, timeseries: TimeSeries, config: Dict
+    ) -> AddOnProcessContext:
         return AddOnProcessContext(
             timeseries=timeseries,
             config=config,
@@ -37,10 +43,9 @@ class _GenerationContext:
 
 
 class GutenTAG:
-    def __init__(self,
-                 n_jobs: int = 1,
-                 seed: Optional[int] = None,
-                 addons: Sequence[str] = ()):
+    def __init__(
+        self, n_jobs: int = 1, seed: Optional[int] = None, addons: Sequence[str] = ()
+    ):
         self._overview = Overview()
         self._timeseries: List[TimeSeries] = []
         self._n_jobs = n_jobs
@@ -52,12 +57,16 @@ class GutenTAG:
         self.seed = seed
         self.addons: Dict[str, BaseAddOn] = {}
 
-    def load_config_json(self, json_config_path: os.PathLike, only: Optional[str] = None) -> GutenTAG:
+    def load_config_json(
+        self, json_config_path: os.PathLike, only: Optional[str] = None
+    ) -> GutenTAG:
         with open(json_config_path, "r") as f:
             config = json.load(f)
         return self.load_config_dict(config, only)
 
-    def load_config_yaml(self, yaml_config_path: os.PathLike, only: Optional[str] = None) -> GutenTAG:
+    def load_config_yaml(
+        self, yaml_config_path: os.PathLike, only: Optional[str] = None
+    ) -> GutenTAG:
         with open(yaml_config_path, "r") as f:
             config = yaml.load(f, Loader=yaml.FullLoader)
         return self.load_config_dict(config, only)
@@ -67,7 +76,9 @@ class GutenTAG:
         # the validator's ones.
         config_parser = ConfigParser(only=only)
         timeseries = []
-        for base_oscillations, anomalies, options, ts_config in config_parser.parse(config):
+        for base_oscillations, anomalies, options, ts_config in config_parser.parse(
+            config
+        ):
             ts = TimeSeries(base_oscillations, anomalies, **options.to_dict())
             timeseries.append(ts)
         ConfigValidator().validate(config)
@@ -78,13 +89,19 @@ class GutenTAG:
 
     def remove_by_name(self, name: Union[str, Callable[[str], bool]]) -> GutenTAG:
         if isinstance(name, str):
-            self._timeseries = [ts for ts in self._timeseries if ts.dataset_name != name]
+            self._timeseries = [
+                ts for ts in self._timeseries if ts.dataset_name != name
+            ]
         else:
-            self._timeseries = [ts for ts in self._timeseries if not name(ts.dataset_name)]
+            self._timeseries = [
+                ts for ts in self._timeseries if not name(ts.dataset_name)
+            ]
         self._overview.remove_dataset_by_name(name)
         return self
 
-    def use_addon(self, addon: str, insert_location: Union[str, int] = "last") -> GutenTAG:
+    def use_addon(
+        self, addon: str, insert_location: Union[str, int] = "last"
+    ) -> GutenTAG:
         if addon not in self._registered_addons:
             if insert_location == "last":
                 self._registered_addons.append(addon)
@@ -95,18 +112,23 @@ class GutenTAG:
             else:
                 ValueError(f"insert_position={insert_location} unknown!")
         else:
-            ValueError(f"'{addon}' already loaded at position {self._registered_addons.index(addon)}")
+            ValueError(
+                f"'{addon}' already loaded at position {self._registered_addons.index(addon)}"
+            )
         return self
 
-    def generate(self,
-                 return_timeseries: bool = False,
-                 output_folder: Optional[os.PathLike] = None,
-                 plot: bool = False) -> Optional[List[ExtTimeSeries]]:
+    def generate(
+        self,
+        return_timeseries: bool = False,
+        output_folder: Optional[os.PathLike] = None,
+        plot: bool = False,
+    ) -> Optional[List[ExtTimeSeries]]:
         n_jobs = self._n_jobs
         if n_jobs != 1 and plot:
             warnings.warn(
                 f"Cannot generate time series in parallel while plotting ('n_jobs' was set to {n_jobs})! Falling "
-                f"back to serial generation.")
+                f"back to serial generation."
+            )
             n_jobs = 1
 
         # prepare
@@ -116,7 +138,12 @@ class GutenTAG:
             folder.mkdir(exist_ok=True)
 
         addon_types = import_addons(list(self._registered_addons))
-        addons = [addon() for addon in tqdm(addon_types, desc="Initializing addons", total=len(addon_types))]
+        addons = [
+            addon()
+            for addon in tqdm(
+                addon_types, desc="Initializing addons", total=len(addon_types)
+            )
+        ]
         for name, addon in zip(self._registered_addons, addons):
             self.addons[name] = addon
 
@@ -129,7 +156,9 @@ class GutenTAG:
             return_timeseries=return_timeseries,
         )
         with tqdm_joblib(tqdm(desc="Generating datasets", total=len(self._timeseries))):
-            results: List[Tuple[Dict, Dict[str, Any], Optional[List[ExtTimeSeries]]]] = Parallel(n_jobs=n_jobs)(
+            results: List[
+                Tuple[Dict, Dict[str, Any], Optional[List[ExtTimeSeries]]]
+            ] = Parallel(n_jobs=n_jobs)(
                 delayed(self.internal_generate)(ctx, ts, config)
                 for ts, config in zip(self._timeseries, self._overview.datasets)
             )
@@ -140,9 +169,7 @@ class GutenTAG:
         if folder is not None:
             self._overview.save_to_output_dir(folder)
         finalize_ctx = AddOnFinalizeContext(
-            overview=self._overview,
-            plot=plot,
-            output_folder=output_folder
+            overview=self._overview, plot=plot, output_folder=output_folder
         )
         finalize_ctx.fill_store(data_dicts)
         for addon in tqdm(addons, desc="Finalizing addons", total=len(addons)):
@@ -153,7 +180,9 @@ class GutenTAG:
         return None
 
     @staticmethod
-    def internal_generate(ctx: _GenerationContext, ts: TimeSeries, config: Dict) -> Tuple[Dict, Dict[str, Any], Optional[List[ExtTimeSeries]]]:
+    def internal_generate(
+        ctx: _GenerationContext, ts: TimeSeries, config: Dict
+    ) -> Tuple[Dict, Dict[str, Any], Optional[List[ExtTimeSeries]]]:
         ts.generate(ctx.seed)
         addon_ctx = ctx.to_addon_process_ctx(ts, config)
         for addon in ctx.addons:
@@ -181,34 +210,45 @@ class GutenTAG:
         ts.to_csv(dataset_folder / UNSUPERVISED_FILENAME, TrainingType.TEST)
 
         if ts.supervised:
-            ts.to_csv(dataset_folder / SUPERVISED_FILENAME, TrainingType.TRAIN_ANOMALIES)
+            ts.to_csv(
+                dataset_folder / SUPERVISED_FILENAME, TrainingType.TRAIN_ANOMALIES
+            )
 
         if ts.semi_supervised:
-            ts.to_csv(dataset_folder / SEMI_SUPERVISED_FILENAME, TrainingType.TRAIN_NO_ANOMALIES)
+            ts.to_csv(
+                dataset_folder / SEMI_SUPERVISED_FILENAME,
+                TrainingType.TRAIN_NO_ANOMALIES,
+            )
 
     @staticmethod
-    def from_json(path: os.PathLike,
-                  n_jobs: int = 1,
-                  seed: Optional[int] = None,
-                  addons: Sequence[str] = (),
-                  only: Optional[str] = None) -> GutenTAG:
+    def from_json(
+        path: os.PathLike,
+        n_jobs: int = 1,
+        seed: Optional[int] = None,
+        addons: Sequence[str] = (),
+        only: Optional[str] = None,
+    ) -> GutenTAG:
         gt = GutenTAG(n_jobs=n_jobs, seed=seed, addons=addons)
         return gt.load_config_json(path, only=only)
 
     @staticmethod
-    def from_yaml(path: os.PathLike,
-                  n_jobs: int = 1,
-                  seed: Optional[int] = None,
-                  addons: Sequence[str] = (),
-                  only: Optional[str] = None) -> GutenTAG:
+    def from_yaml(
+        path: os.PathLike,
+        n_jobs: int = 1,
+        seed: Optional[int] = None,
+        addons: Sequence[str] = (),
+        only: Optional[str] = None,
+    ) -> GutenTAG:
         gt = GutenTAG(n_jobs=n_jobs, seed=seed, addons=addons)
         return gt.load_config_yaml(path, only=only)
 
     @staticmethod
-    def from_dict(config: Dict,
-                  n_jobs: int = 1,
-                  seed: Optional[int] = None,
-                  addons: Sequence[str] = (),
-                  only: Optional[str] = None) -> GutenTAG:
+    def from_dict(
+        config: Dict,
+        n_jobs: int = 1,
+        seed: Optional[int] = None,
+        addons: Sequence[str] = (),
+        only: Optional[str] = None,
+    ) -> GutenTAG:
         gt = GutenTAG(n_jobs=n_jobs, seed=seed, addons=addons)
         return gt.load_config_dict(config, only=only)

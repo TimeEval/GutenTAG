@@ -19,7 +19,9 @@ class AnomalyPlatform(BaseAnomaly):
 
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
         if anomaly_protocol.base_oscillation_kind == RandomModeJump.KIND:
-            self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind)
+            self.logger.warn_false_combination(
+                self.__class__.__name__, anomaly_protocol.base_oscillation_kind
+            )
             return anomaly_protocol
 
         length = anomaly_protocol.end - anomaly_protocol.start

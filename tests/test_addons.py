@@ -4,7 +4,12 @@ from pathlib import Path
 import numpy as np
 
 from gutenTAG import GutenTAG
-from gutenTAG.addons import AddOnProcessContext, AddOnFinalizeContext, BaseAddOn, import_addons
+from gutenTAG.addons import (
+    AddOnProcessContext,
+    AddOnFinalizeContext,
+    BaseAddOn,
+    import_addons,
+)
 from gutenTAG.addons.timeeval import TimeEvalAddOn
 
 
@@ -43,7 +48,9 @@ class TestAddons(unittest.TestCase):
         self.assertRegex(str(ex.exception), r"is not a compatible AddOn")
 
     def test_timeeval_addon_rmj(self):
-        gutentag = GutenTAG.from_yaml(Path("tests/configs/example-config-rmj.yaml"), seed=42)
+        gutentag = GutenTAG.from_yaml(
+            Path("tests/configs/example-config-rmj.yaml"), seed=42
+        )
         gutentag.generate()
         addon = TimeEvalAddOn()
         self._execute_addon(gutentag, addon)
@@ -65,7 +72,9 @@ class TestAddons(unittest.TestCase):
         self.assertEqual(df["period_size"][0], 20)
 
     def test_timeeval_addon_sine(self):
-        gutentag = GutenTAG.from_yaml(Path("tests/configs/example-config-ecg.yaml"), seed=42)
+        gutentag = GutenTAG.from_yaml(
+            Path("tests/configs/example-config-ecg.yaml"), seed=42
+        )
         gutentag.generate()
         addon = TimeEvalAddOn()
         self._execute_addon(gutentag, addon)

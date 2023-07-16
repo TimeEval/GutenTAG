@@ -87,7 +87,7 @@ class CONFIG_SCHEMA:
         "anomaly.guten-tag-generation-config.schema.yaml",
         "anomaly-kind.guten-tag-generation-config.schema.yaml",
         "formula.guten-tag-generation-config.schema.yaml",
-        "oscillation.guten-tag-generation-config.schema.yaml"
+        "oscillation.guten-tag-generation-config.schema.yaml",
     ]
 
     @staticmethod

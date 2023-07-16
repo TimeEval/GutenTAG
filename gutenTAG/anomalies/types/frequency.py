@@ -20,8 +20,8 @@ class AnomalyFrequency(BaseAnomaly):
             ecg = anomaly_protocol.base_oscillation
             subsequence = ecg.generate_only_base(
                 anomaly_protocol.ctx.to_bo(),
-                frequency=ecg.frequency * self.frequency_factor
-            )[anomaly_protocol.start:anomaly_protocol.end]
+                frequency=ecg.frequency * self.frequency_factor,
+            )[anomaly_protocol.start : anomaly_protocol.end]
             anomaly_protocol.subsequences.append(subsequence)
 
         elif anomaly_protocol.base_oscillation.is_periodic():
@@ -31,12 +31,14 @@ class AnomalyFrequency(BaseAnomaly):
                 anomaly_protocol.ctx.to_bo(),
                 length=length,
                 frequency=bo.frequency * self.frequency_factor,
-                freq_mod=bo.freq_mod
+                freq_mod=bo.freq_mod,
             )
             anomaly_protocol.subsequences.append(subsequence)
 
         else:
-            self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind)
+            self.logger.warn_false_combination(
+                self.__class__.__name__, anomaly_protocol.base_oscillation_kind
+            )
 
         return anomaly_protocol
 

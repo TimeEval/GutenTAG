@@ -1,0 +1,22 @@
+timeseries:
+  - name: sinus-pattern-to-low
+    length: 1000
+    channels: 1
+    base-oscillation:
+      kind: "sinus"
+      frequency: 5.0
+      amplitude: 2
+      variance: 0.1
+      trend:
+        kind: sinus
+        frequency: .1
+        amplitude: .5
+        variance: 0
+    anomalies:
+      - position: end
+        channel: 0
+        length: 100
+        kinds:
+          - kind: pattern
+            parameters:
+              sinusoid_k: 10.0

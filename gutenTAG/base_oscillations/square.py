@@ -6,9 +6,17 @@ from scipy import signal
 
 from . import BaseOscillation
 from .interface import BaseOscillationInterface
-from .utils.math_func_support import prepare_base_signal, generate_periodic_signal, calc_n_periods
+from .utils.math_func_support import (
+    prepare_base_signal,
+    generate_periodic_signal,
+    calc_n_periods,
+)
 from ..utils.default_values import default_values
-from ..utils.global_variables import BASE_OSCILLATION_NAMES, PARAMETERS, BASE_OSCILLATIONS
+from ..utils.global_variables import (
+    BASE_OSCILLATION_NAMES,
+    PARAMETERS,
+    BASE_OSCILLATIONS,
+)
 from ..utils.types import BOGenerationContext
 
 
@@ -21,14 +29,17 @@ class Square(BaseOscillationInterface):
     def get_timeseries_periods(self) -> Optional[int]:
         return calc_n_periods(self.length, self.frequency)
 
-    def generate_only_base(self,
-                           ctx: BOGenerationContext,
-                           length: Optional[int] = None,
-                           frequency: Optional[float] = None,
-                           amplitude: Optional[float] = None,
-                           freq_mod: Optional[float] = None,
-                           duty: Optional[float] = None,
-                           *args, **kwargs) -> np.ndarray:
+    def generate_only_base(
+        self,
+        ctx: BOGenerationContext,
+        length: Optional[int] = None,
+        frequency: Optional[float] = None,
+        amplitude: Optional[float] = None,
+        freq_mod: Optional[float] = None,
+        duty: Optional[float] = None,
+        *args,
+        **kwargs
+    ) -> np.ndarray:
         n: int = length or self.length  # in points
         f: float = frequency or self.frequency  # in Hz
         a: float = amplitude or self.amplitude
@@ -38,11 +49,13 @@ class Square(BaseOscillationInterface):
         return square(n, f, a, v_freq_mod, v_duty)
 
 
-def square(length: int = default_values[BASE_OSCILLATIONS][PARAMETERS.LENGTH],
-           frequency: float = default_values[BASE_OSCILLATIONS][PARAMETERS.FREQUENCY],
-           amplitude: float = default_values[BASE_OSCILLATIONS][PARAMETERS.AMPLITUDE],
-           freq_mod: float = default_values[BASE_OSCILLATIONS][PARAMETERS.FREQ_MOD],
-           duty: float = default_values[BASE_OSCILLATIONS][PARAMETERS.DUTY]) -> np.ndarray:
+def square(
+    length: int = default_values[BASE_OSCILLATIONS][PARAMETERS.LENGTH],
+    frequency: float = default_values[BASE_OSCILLATIONS][PARAMETERS.FREQUENCY],
+    amplitude: float = default_values[BASE_OSCILLATIONS][PARAMETERS.AMPLITUDE],
+    freq_mod: float = default_values[BASE_OSCILLATIONS][PARAMETERS.FREQ_MOD],
+    duty: float = default_values[BASE_OSCILLATIONS][PARAMETERS.DUTY],
+) -> np.ndarray:
     base_ts = prepare_base_signal(length, frequency)
     func = partial(signal.square, duty=duty)
     return generate_periodic_signal(base_ts, func, amplitude, freq_mod)

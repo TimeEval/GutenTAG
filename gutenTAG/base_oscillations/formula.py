@@ -9,7 +9,11 @@ import numpy as np
 from . import BaseOscillation
 from .interface import BaseOscillationInterface
 from ..utils.default_values import default_values
-from ..utils.global_variables import BASE_OSCILLATION_NAMES, BASE_OSCILLATIONS, PARAMETERS
+from ..utils.global_variables import (
+    BASE_OSCILLATION_NAMES,
+    BASE_OSCILLATIONS,
+    PARAMETERS,
+)
 from ..utils.types import BOGenerationContext
 
 
@@ -30,13 +34,19 @@ class Formula(BaseOscillationInterface):
     def get_timeseries_periods(self) -> Optional[int]:
         return None
 
-    def generate_only_base(self, ctx: BOGenerationContext, *args, **kwargs) -> np.ndarray:
+    def generate_only_base(
+        self, ctx: BOGenerationContext, *args, **kwargs
+    ) -> np.ndarray:
         c = ctx.previous_channels if ctx.previous_channels else []
         return formula(c, self.formula)
 
 
-def formula(previous_channels: List[np.ndarray] = (),
-            formula_dict: Dict[str, Any] = default_values[BASE_OSCILLATIONS][PARAMETERS.FORMULA]) -> np.ndarray:
+def formula(
+    previous_channels: List[np.ndarray] = (),
+    formula_dict: Dict[str, Any] = default_values[BASE_OSCILLATIONS][
+        PARAMETERS.FORMULA
+    ],
+) -> np.ndarray:
     return FormulaParser(formula_dict).parse(previous_channels).execute()
 
 
@@ -88,11 +98,10 @@ class Operation(NamedTuple):
         elif type(operand) == dict:
             operand = FormulaObj.from_dict(operand, prev_channels)
         else:
-            raise ValueError("The Operand in Operation has to be either `float` or an `object`")
-        return Operation(
-            kind=kind,
-            operand=operand
-        )
+            raise ValueError(
+                "The Operand in Operation has to be either `float` or an `object`"
+            )
+        return Operation(kind=kind, operand=operand)
 
 
 class Aggregation(NamedTuple):
@@ -106,10 +115,7 @@ class Aggregation(NamedTuple):
     def from_dict(d: Dict) -> Aggregation:
         kind = AggregationType(d.get(KIND))
         axis = d.get(AXIS, None)
-        return Aggregation(
-            kind=kind,
-            axis=axis
-        )
+        return Aggregation(kind=kind, axis=axis)
 
 
 class FormulaObj(NamedTuple):
@@ -138,7 +144,9 @@ class FormulaObj(NamedTuple):
         base = d.get(BASE)
         operation = d.get(OPERATION, None)
         aggregation = d.get(AGGREGATION, None)
-        assert operation is None or aggregation is None, "Only one `operation` or `aggregation` can be set, not both!"
+        assert (
+            operation is None or aggregation is None
+        ), "Only one `operation` or `aggregation` can be set, not both!"
 
         if type(base) == dict:
             base = FormulaObj.from_dict(base, prev_channels=prev_channels)
@@ -150,7 +158,7 @@ class FormulaObj(NamedTuple):
                 return FormulaObj(
                     base=base,
                     prev_channels=prev_channels,
-                    operation=Operation.from_dict(operation, prev_channels)
+                    operation=Operation.from_dict(operation, prev_channels),
                 )
             else:
                 raise ValueError("The Operation has to be an `object`.")
@@ -159,7 +167,7 @@ class FormulaObj(NamedTuple):
                 return FormulaObj(
                     base=base,
                     prev_channels=prev_channels,
-                    aggregation=Aggregation.from_dict(aggregation)
+                    aggregation=Aggregation.from_dict(aggregation),
                 )
             else:
                 raise ValueError("The Aggregation has to be an `object`.")

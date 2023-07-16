@@ -21,7 +21,9 @@ class AddOnProcessContext:
     def should_save(self) -> bool:
         return self.output_folder is not None
 
-    def copy(self, timeseries: Optional[TimeSeries] = None, config: Optional[Dict] = None) -> AddOnProcessContext:
+    def copy(
+        self, timeseries: Optional[TimeSeries] = None, config: Optional[Dict] = None
+    ) -> AddOnProcessContext:
         return AddOnProcessContext(
             timeseries=timeseries or self.timeseries,
             config=config or self.config,
@@ -70,13 +72,18 @@ class BaseAddOn:
 
 def import_addons(addons: List[str]) -> List[Type[BaseAddOn]]:
     builtin_module = "gutenTAG.addons.builtin"
-    module_classes = [(addon.rsplit(".", 1) if "." in addon else (builtin_module, addon)) for addon in addons]
+    module_classes = [
+        (addon.rsplit(".", 1) if "." in addon else (builtin_module, addon))
+        for addon in addons
+    ]
 
     def load_addon(package, cls):
         try:
             module = importlib.import_module(package)
         except ImportError as ex:
-            raise ValueError(f"Package '{package}' for AddOn {cls} could not be loaded!") from ex
+            raise ValueError(
+                f"Package '{package}' for AddOn {cls} could not be loaded!"
+            ) from ex
 
         try:
             addon_cls = module.__dict__[cls]
@@ -84,8 +91,10 @@ def import_addons(addons: List[str]) -> List[Type[BaseAddOn]]:
             raise ValueError(f"AddOn {cls} not found in package '{package}'!")
 
         if not issubclass(addon_cls, BaseAddOn):
-            raise ValueError(f"Trying to load addon {package}.{cls}, but it is not a compatible AddOn! GutenTAG "
-                             "AddOns must inherit from gutenTAG.addons.BaseAddOn!")
+            raise ValueError(
+                f"Trying to load addon {package}.{cls}, but it is not a compatible AddOn! GutenTAG "
+                "AddOns must inherit from gutenTAG.addons.BaseAddOn!"
+            )
 
         return addon_cls
 

@@ -5,7 +5,6 @@ import numpy as np
 
 from . import BaseAnomaly
 from .. import AnomalyProtocol
-from ...base_oscillations import ECG, Sine, Cosine
 
 
 @dataclass
@@ -22,27 +21,36 @@ class AnomalyPatternShift(BaseAnomaly):
 
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
         if anomaly_protocol.base_oscillation.is_periodic():
-            assert abs(self.shift_by) <= self.transition_window, \
-                "The parameter 'shift_by' must not be larger than 'transition_window' in absolute terms! Guten Tag!"
+            assert (
+                abs(self.shift_by) <= self.transition_window
+            ), "The parameter 'shift_by' must not be larger than 'transition_window' in absolute terms! Guten Tag!"
 
             base = anomaly_protocol.base_oscillation
 
-            subsequence = base.timeseries[anomaly_protocol.start:anomaly_protocol.end]
-            transition_start = np.interp(np.linspace(0, self.transition_window, self.transition_window + self.shift_by),
-                                         np.arange(self.transition_window), subsequence[:self.transition_window])
-            shifted = subsequence[self.transition_window:-self.transition_window]
-            transition_end = np.interp(np.linspace(0, self.transition_window, self.transition_window - self.shift_by),
-                                       np.arange(self.transition_window), subsequence[-self.transition_window:])
+            subsequence = base.timeseries[anomaly_protocol.start : anomaly_protocol.end]
+            transition_start = np.interp(
+                np.linspace(
+                    0, self.transition_window, self.transition_window + self.shift_by
+                ),
+                np.arange(self.transition_window),
+                subsequence[: self.transition_window],
+            )
+            shifted = subsequence[self.transition_window : -self.transition_window]
+            transition_end = np.interp(
+                np.linspace(
+                    0, self.transition_window, self.transition_window - self.shift_by
+                ),
+                np.arange(self.transition_window),
+                subsequence[-self.transition_window :],
+            )
 
-            subsequence = np.concatenate([
-                transition_start,
-                shifted,
-                transition_end
-            ])
+            subsequence = np.concatenate([transition_start, shifted, transition_end])
 
             anomaly_protocol.subsequences.append(subsequence)
         else:
-            self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind)
+            self.logger.warn_false_combination(
+                self.__class__.__name__, anomaly_protocol.base_oscillation_kind
+            )
         return anomaly_protocol
 
     @property

@@ -29,7 +29,7 @@ class AnomalyProtocol:
         return self.ctx.rng
 
     @property
-    def base_oscillation(self) -> 'BaseOscillationInterface':  # type: ignore # otherwise we have a circular import
+    def base_oscillation(self) -> "BaseOscillationInterface":  # type: ignore # noqa: F821 # otherwise we have a circular import
         return self.ctx.base_oscillation
 
     @property
@@ -58,16 +58,28 @@ class BaseAnomaly(ABC):
     def requires_period_start_position(self) -> bool:
         return False
 
-    def generate_creeping(self, anomaly_protocol: AnomalyProtocol, custom_anomaly_length: Optional[int] = None) -> np.ndarray:
+    def generate_creeping(
+        self,
+        anomaly_protocol: AnomalyProtocol,
+        custom_anomaly_length: Optional[int] = None,
+    ) -> np.ndarray:
         creeping_length = anomaly_protocol.creeping_length
-        anomaly_length = anomaly_protocol.length_without_creeping if custom_anomaly_length is None else custom_anomaly_length
-        return np.concatenate([
-            np.linspace(0, 1, creeping_length),  # creep
-            np.ones(anomaly_length)           # anomaly
-        ])
+        anomaly_length = (
+            anomaly_protocol.length_without_creeping
+            if custom_anomaly_length is None
+            else custom_anomaly_length
+        )
+        return np.concatenate(
+            [
+                np.linspace(0, 1, creeping_length),  # creep
+                np.ones(anomaly_length),  # anomaly
+            ]
+        )
 
     def turn_off_trend(self, anomaly_protocol):
-        anomaly_protocol.base_oscillation.trend_series[anomaly_protocol.start:anomaly_protocol.end] = 0
+        anomaly_protocol.base_oscillation.trend_series[
+            anomaly_protocol.start : anomaly_protocol.end
+        ] = 0
 
     @staticmethod
     @abstractmethod

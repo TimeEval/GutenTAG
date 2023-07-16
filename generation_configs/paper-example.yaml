@@ -1,0 +1,74 @@
+$schema: "generation-config-schema/guten-tag-generation-config.schema.yaml"
+
+timeseries:
+  - name: ecg-extremum-pattern
+    length: 800
+    channels: 1
+    semi-supervised: true
+    base-oscillation:
+      kind: "ecg"
+      frequency: 5
+      amplitude: 2
+      variance: 0.1
+    anomalies:
+      - exact-position: 535
+        channel: 0
+        length: 20
+        kinds:
+          - kind: pattern
+            parameters: {}
+
+      - exact-position: 702
+        channel: 0
+        length: 1
+        kinds:
+          - kind: extremum
+            parameters:
+              min: false
+              local: true
+              context_window: 10
+  - name: ecg-extremum-pattern-shift
+    length: 800
+    channels: 1
+    semi-supervised: true
+    base-oscillation:
+      kind: "ecg"
+      frequency: 5
+      amplitude: 2
+      variance: 0.1
+    anomalies:
+      - exact-position: 535
+        channel: 0
+        length: 20
+        kinds:
+          - kind: pattern-shift
+            parameters:
+              shift_by: -5
+              transition_window: 5
+
+      - exact-position: 702
+        channel: 0
+        length: 1
+        kinds:
+          - kind: extremum
+            parameters:
+              min: false
+              local: true
+              context_window: 10
+  - name: comut
+    length: 800
+    channels: 2
+    semi-supervised: true
+    base-oscillation:
+      kind: random_mode_jump
+      frequency: 75
+      variance: 0.1
+      channel_diff: 0.25
+      channel_offset: 1
+    anomalies:
+      - exact-position: 640
+        channel: 1
+        length: 20
+        kinds:
+          - kind: mode_correlation
+            parameters: {}

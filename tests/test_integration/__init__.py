@@ -16,9 +16,14 @@ class TestIntegration(unittest.TestCase):
         assert df_generated is not None, "DataFrame should have been returned"
         return df_generated[0].timeseries
 
-    def _compare_expected_and_generated(self, config_path: str, expected_path: str, columns: List[str]):
-        expected_ts = pd.read_csv(expected_path, index_col="timestamp",
-                                  dtype={'value-0': np.float64, 'is_anomaly': np.int8})
+    def _compare_expected_and_generated(
+        self, config_path: str, expected_path: str, columns: List[str]
+    ):
+        expected_ts = pd.read_csv(
+            expected_path,
+            index_col="timestamp",
+            dtype={"value-0": np.float64, "is_anomaly": np.int8},
+        )
 
         df_generated = self._load_config_and_generate(config_path)
         for column in columns:

@@ -239,7 +239,7 @@ operand: Union[float, FormulaObj]
 **Aggregation**
 
 The alternative to the `Operation` is the `Aggregation` field. This field defines an aggregation operation on the `base`. Its result is either a scalar or an array. It consists of two fields: `kind`, and `axis`.
-The `kind` field defines the kind of aggregation performed on a numpy array. The optional `axis` field defines the axis of the array the aggregation is performed on. If no `axis` is defined, the aggregation will return a scalar. 
+The `kind` field defines the kind of aggregation performed on a numpy array. The optional `axis` field defines the axis of the array the aggregation is performed on. If no `axis` is defined, the aggregation will return a scalar.
 
 ```yaml
 # Aggregation
