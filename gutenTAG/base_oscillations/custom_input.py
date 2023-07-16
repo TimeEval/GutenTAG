@@ -2,6 +2,7 @@ from typing import Optional, Union
 
 import numpy as np
 import pandas as pd
+import warnings
 
 from . import BaseOscillation
 from .interface import BaseOscillationInterface
@@ -29,7 +30,7 @@ class CustomInput(BaseOscillationInterface):
         semi_supervised: Optional[bool] = None,
         supervised: Optional[bool] = None,
         *args,
-        **kwargs
+        **kwargs,
     ) -> np.ndarray:
         """Generates a numpy array of timeseries data from a CSV file based on the specified parameters.
 
@@ -98,6 +99,12 @@ class CustomInput(BaseOscillationInterface):
         if len(df) < length:
             raise ValueError(
                 "Number of rows in the input timeseries file is less than the desired length"
+            )
+        col_type = df.dtypes[0]
+        if col_type != np.float_:
+            df = df.astype(np.float_)
+            warnings.warn(
+                f"Input data was of {col_type} type and has been automatically converted to float."
             )
         return df.iloc[:length, 0]
 
