@@ -11,9 +11,10 @@ defaults:
     shell: bash -l {0}
 
 jobs:
-  typecheck:
-    name: Typecheck GutenTAG on ubuntu with python 3.7
+  check:
+    name: Run checks for GutenTAG on ubuntu with python 3.7
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
       - name: Setup Miniconda
@@ -28,6 +29,10 @@ jobs:
       - name: Typcheck with mypy
         run: |
           python setup.py typecheck
+      - name: Lint with flake8
+        run: |
+          flake8 . --count --show-source --statistics
+
   test:
     name: Test GutenTAG on ${{ matrix.os }} with python ${{ matrix.python_version }}
     runs-on: ${{ matrix.os }}
