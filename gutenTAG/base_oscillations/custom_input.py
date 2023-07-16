@@ -2,6 +2,7 @@ from typing import Optional, List, Union
 
 import numpy as np
 import pandas as pd
+import warnings
 
 from . import BaseOscillation
 from .interface import BaseOscillationInterface
@@ -18,16 +19,19 @@ class CustomInput(BaseOscillationInterface):
     def get_timeseries_periods(self) -> Optional[int]:
         return None
 
-    def generate_only_base(self,
-                           ctx: BOGenerationContext,
-                           input_timeseries_path_test: str = None,
-                           use_column_test: Union[str, int] = None,
-                           length: Optional[int] = None,
-                           input_timeseries_path_train: Optional[str] = None,
-                           use_column_train: Optional[Union[str, int]] = None,
-                           semi_supervised: Optional[bool] = None,
-                           supervised: Optional[bool] = None,
-                           *args, **kwargs) -> np.ndarray:
+    def generate_only_base(
+        self,
+        ctx: BOGenerationContext,
+        input_timeseries_path_test: str = None,
+        use_column_test: Union[str, int] = None,
+        length: Optional[int] = None,
+        input_timeseries_path_train: Optional[str] = None,
+        use_column_train: Optional[Union[str, int]] = None,
+        semi_supervised: Optional[bool] = None,
+        supervised: Optional[bool] = None,
+        *args,
+        **kwargs,
+    ) -> np.ndarray:
         """Generates a numpy array of timeseries data from a CSV file based on the specified parameters.
 
         The following requirements must be met by the input file:
@@ -69,14 +73,20 @@ class CustomInput(BaseOscillationInterface):
             If the number of rows in the input timeseries file is less than the desired length.
         """
         length = length or self.length
-        input_timeseries_path_train = input_timeseries_path_train or self.input_timeseries_path_train
-        input_timeseries_path_test = input_timeseries_path_test or self.input_timeseries_path_test
+        input_timeseries_path_train = (
+            input_timeseries_path_train or self.input_timeseries_path_train
+        )
+        input_timeseries_path_test = (
+            input_timeseries_path_test or self.input_timeseries_path_test
+        )
         use_column_train = use_column_train or self.use_column_train
         use_column_test = use_column_test or self.use_column_test
 
         if semi_supervised or supervised:
             if input_timeseries_path_train is None:
-                raise ValueError("No path to an input timeseries file for the training timeseries specified!")
+                raise ValueError(
+                    "No path to an input timeseries file for the training timeseries specified!"
+                )
 
             df = pd.read_csv(input_timeseries_path_train, usecols=[use_column_train])
 
@@ -87,7 +97,15 @@ class CustomInput(BaseOscillationInterface):
             df = pd.read_csv(input_timeseries_path_test, usecols=[use_column_test])
 
         if len(df) < length:
-            raise ValueError("Number of rows in the input timeseries file is less than the desired length")
+            raise ValueError(
+                "Number of rows in the input timeseries file is less than the desired length"
+            )
+        col_type = df.dtypes[0]
+        if col_type != np.float_:
+            df = df.astype(float)
+            warnings.warn(
+                f"Input data was of {col_type} type and has been automatically converted to float."
+            )
         return df.iloc[:length, 0]
 
 
