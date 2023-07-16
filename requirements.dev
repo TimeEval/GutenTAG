@@ -5,7 +5,7 @@ pytest
 pytest-cov
 mypy==0.920
 freezegun
-flake8==6.0
+flake8==5.0.4
 black==23.1
 pre-commit==3.3
 
