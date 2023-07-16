@@ -94,6 +94,8 @@ If you use GutenTAG in your project or research, please cite our demonstration p
 }
 ```
 
-## To-Do
+## Contributing
 
-- [ ] negation anomaly (does a pattern not appear)
+We welcome contributions to GutenTAG.
+If you have spotted an issue with GutenTAG or if you want to enhance it, please open an issue first.
+See [Contributing](CONTRIBUTING.md) for details.

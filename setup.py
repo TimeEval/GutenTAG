@@ -33,8 +33,14 @@ class PyTestCommand(Command):
         import pytest
         from pytest import ExitCode
 
-        exit_code = pytest.main(["--cov-report=term", "--cov-report=xml:coverage.xml",
-                                 f"--cov={PYTHON_NAME}", "tests"])
+        exit_code = pytest.main(
+            [
+                "--cov-report=term",
+                "--cov-report=xml:coverage.xml",
+                f"--cov={PYTHON_NAME}",
+                "tests",
+            ]
+        )
         if exit_code == ExitCode.TESTS_FAILED:
             raise ValueError("Tests failed!")
         elif exit_code == ExitCode.INTERRUPTED:
@@ -76,12 +82,16 @@ class CleanCommand(Command):
         pass
 
     def run(self):
-        files = [
-            ".coverage*",
-            "coverage.xml"
+        files = [".coverage*", "coverage.xml"]
+        dirs = [
+            "build",
+            "dist",
+            "*.egg-info",
+            "**/__pycache__",
+            ".mypy_cache",
+            ".pytest_cache",
+            "**/.ipynb_checkpoints",
         ]
-        dirs = ["build", "dist", "*.egg-info", "**/__pycache__", ".mypy_cache",
-                ".pytest_cache", "**/.ipynb_checkpoints"]
         for d in dirs:
             for filename in glob.glob(d):
                 shutil.rmtree(filename, ignore_errors=True)
@@ -107,12 +117,18 @@ if __name__ == "__main__":
         license="MIT",
         classifiers=[
             "License :: OSI Approved :: MIT License",
+            "Programming Language :: Python",
             "Programming Language :: Python :: 3",
             "Programming Language :: Python :: 3.7",
             "Programming Language :: Python :: 3.8",
             "Programming Language :: Python :: 3.9",
             "Programming Language :: Python :: 3.10",
-            "Programming Language :: Python :: 3.11"
+            "Programming Language :: Python :: 3.11",
+            "Typing :: Typed",
+            "Topic :: Software Development",
+            "Topic :: Scientific/Engineering",
+            "Intended Audience :: Science/Research",
+            "Intended Audience :: Developers",
         ],
         packages=find_packages(exclude=("tests", "tests.*")),
         package_data={"gutenTAG": ["py.typed", "config/schema/*"]},
@@ -122,13 +138,9 @@ if __name__ == "__main__":
         cmdclass={
             "test": PyTestCommand,
             "typecheck": MyPyCheckCommand,
-            "clean": CleanCommand
+            "clean": CleanCommand,
         },
         zip_safe=False,
         # provides="gutenTAG",
-        entry_points={
-            "console_scripts": [
-                "gutenTAG=gutenTAG.__main__:cli"
-            ]
-        }
+        entry_points={"console_scripts": ["gutenTAG=gutenTAG.__main__:cli"]},
     )
