@@ -92,7 +92,7 @@ jobs:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
     needs:
       - test
-      - typecheck
+      - check
     runs-on: ubuntu-latest
 
     steps:
@@ -117,7 +117,7 @@ jobs:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
     needs:
       - test
-      - typecheck
+      - check
     runs-on: ubuntu-latest
 
     steps:
