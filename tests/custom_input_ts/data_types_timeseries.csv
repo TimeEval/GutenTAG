@@ -1,0 +1,6 @@
+ints,strings,bools,floats,nulls
+1,a,true,0.187,
+2,b,false,4.123,
+3,c,false,-7896.1,
+4,doc,false,325.1,
+-1,ester,true,897.123,
