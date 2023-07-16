@@ -1,1 +1,1 @@
-from .timeeval import TimeEvalAddOn
+from .timeeval import TimeEvalAddOn  # noqa: F401

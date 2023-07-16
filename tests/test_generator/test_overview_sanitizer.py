@@ -13,12 +13,7 @@ class TestOverviewSanitizer(TestCase):
                 {
                     "name": "ecg",
                     "length": np.int_(100),
-                    "base-oscillations": [
-                        {
-                            "kind": "ecg",
-                            "frequency": np.float_(2)
-                        }
-                    ],
+                    "base-oscillations": [{"kind": "ecg", "frequency": np.float_(2)}],
                     "anomalies": [
                         {
                             "position": "middle",
@@ -29,11 +24,11 @@ class TestOverviewSanitizer(TestCase):
                                     "kind": "pattern-shift",
                                     "shift_by": np.int_(5),
                                     "transition_window": np.int_(10),
-                                    "some_array": np.array([1.2, 2.3])
+                                    "some_array": np.array([1.2, 2.3]),
                                 }
-                            ]
+                            ],
                         }
-                    ]
+                    ],
                 }
             ]
         }
@@ -43,12 +38,7 @@ class TestOverviewSanitizer(TestCase):
                 {
                     "name": "ecg",
                     "length": 100,
-                    "base-oscillations": [
-                        {
-                            "kind": "ecg",
-                            "frequency": 2.0
-                        }
-                    ],
+                    "base-oscillations": [{"kind": "ecg", "frequency": 2.0}],
                     "anomalies": [
                         {
                             "position": "middle",
@@ -59,11 +49,11 @@ class TestOverviewSanitizer(TestCase):
                                     "kind": "pattern-shift",
                                     "shift_by": 5,
                                     "transition_window": 10,
-                                    "some_array": [1.2, 2.3]
+                                    "some_array": [1.2, 2.3],
                                 }
-                            ]
+                            ],
                         }
-                    ]
+                    ],
                 }
             ]
         }

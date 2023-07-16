@@ -19,16 +19,29 @@ class DictSanitizer:
         Taken from [numpyencoder](https://github.com/hmallen/numpyencoder/blob/f8199a61ccde25f829444a9df4b21bcb2d1de8f2/numpyencoder/numpyencoder.py)
         """
 
-        if isinstance(obj, (np.int_, np.intc, np.intp, np.int8,
-                            np.int16, np.int32, np.int64, np.uint8,
-                            np.uint16, np.uint32, np.uint64)):
+        if isinstance(
+            obj,
+            (
+                np.int_,
+                np.intc,
+                np.intp,
+                np.int8,
+                np.int16,
+                np.int32,
+                np.int64,
+                np.uint8,
+                np.uint16,
+                np.uint32,
+                np.uint64,
+            ),
+        ):
             return int(obj)
 
         elif isinstance(obj, (np.float_, np.float16, np.float32, np.float64)):
             return float(obj)
 
         elif isinstance(obj, (np.complex_, np.complex64, np.complex128)):
-            return {'real': obj.real, 'imag': obj.imag}
+            return {"real": obj.real, "imag": obj.imag}
 
         elif isinstance(obj, (np.ndarray,)):
             return obj.tolist()
@@ -58,7 +71,9 @@ class Overview:
         self.seed: Optional[int] = None
 
         try:
-            self.git_commit_sha = git.Repo(search_parent_directories=True).head.object.hexsha
+            self.git_commit_sha = git.Repo(
+                search_parent_directories=True
+            ).head.object.hexsha
         except git.InvalidGitRepositoryError:
             self.git_commit_sha = None
 
@@ -81,7 +96,9 @@ class Overview:
         overview: Dict[str, Any] = dict()
         overview["generated-timeseries"] = []
         for i, dataset in enumerate(self.datasets):
-            dataset["generation-id"] = dataset.get("base_oscillation", {}).get("title", i)
+            dataset["generation-id"] = dataset.get("base_oscillation", {}).get(
+                "title", i
+            )
             overview["generated-timeseries"].append(dataset)
 
         overview["meta"] = {}

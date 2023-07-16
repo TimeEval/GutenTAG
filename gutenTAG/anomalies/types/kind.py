@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Dict
+from typing import Any, Dict
 
 from .amplitude import AnomalyAmplitude
 from .extremum import AnomalyExtremum
@@ -27,31 +27,35 @@ class AnomalyKind(Enum):
     Trend = ANOMALY_TYPE_NAMES.TREND
     ModeCorrelation = ANOMALY_TYPE_NAMES.MODE_CORRELATION
 
-    def create(self, parameters: Dict) -> BaseAnomaly:
+    def create(self, parameters: Dict[str, Any]) -> BaseAnomaly:  # noqa: C901
         if self == AnomalyKind.Platform:
-            anomaly: BaseAnomaly = AnomalyPlatform(AnomalyPlatform.get_parameter_class()(**parameters))
+            return self._instantiate_anomaly(AnomalyPlatform, parameters)
         elif self == AnomalyKind.Frequency:
-            anomaly = AnomalyFrequency(AnomalyFrequency.get_parameter_class()(**parameters))
+            return self._instantiate_anomaly(AnomalyFrequency, parameters)
         elif self == AnomalyKind.Extremum:
-            anomaly = AnomalyExtremum(AnomalyExtremum.get_parameter_class()(**parameters))
+            return self._instantiate_anomaly(AnomalyExtremum, parameters)
         elif self == AnomalyKind.Variance:
-            anomaly = AnomalyVariance(AnomalyVariance.get_parameter_class()(**parameters))
+            return self._instantiate_anomaly(AnomalyVariance, parameters)
         elif self == AnomalyKind.Mean:
-            anomaly = AnomalyMean(AnomalyMean.get_parameter_class()(**parameters))
+            return self._instantiate_anomaly(AnomalyMean, parameters)
         elif self == AnomalyKind.Pattern:
-            anomaly = AnomalyPattern(AnomalyPattern.get_parameter_class()(**parameters))
+            return self._instantiate_anomaly(AnomalyPattern, parameters)
         elif self == AnomalyKind.PatternShift:
-            anomaly = AnomalyPatternShift(AnomalyPatternShift.get_parameter_class()(**parameters))
+            return self._instantiate_anomaly(AnomalyPatternShift, parameters)
         elif self == AnomalyKind.Amplitude:
-            anomaly = AnomalyAmplitude(AnomalyAmplitude.get_parameter_class()(**parameters))
+            return self._instantiate_anomaly(AnomalyAmplitude, parameters)
         elif self == AnomalyKind.Trend:
-            anomaly = AnomalyTrend(AnomalyTrend.get_parameter_class()(**parameters))
+            return self._instantiate_anomaly(AnomalyTrend, parameters)
         elif self == AnomalyKind.ModeCorrelation:
-            anomaly = AnomalyModeCorrelation(AnomalyModeCorrelation.get_parameter_class()())
+            return self._instantiate_anomaly(AnomalyModeCorrelation, parameters)
         else:
-            raise ValueError(f"AnomalyKind {self.value} is not supported, yet! Guten Tag!")
+            raise ValueError(
+                f"AnomalyKind {self.value} is not supported, yet! Guten Tag!"
+            )
 
-        return anomaly
+    @staticmethod
+    def _instantiate_anomaly(cls, parameters: Dict[str, Any]) -> BaseAnomaly:
+        return cls(cls.get_parameter_class()(**parameters))
 
     @classmethod
     def has_value(cls, v: str) -> bool:

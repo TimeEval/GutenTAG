@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 import jsonschema
 from jsonschema import RefResolver
@@ -6,8 +6,14 @@ from jsonschema import RefResolver
 from ..anomalies import AnomalyKind
 from ..base_oscillations import BaseOscillation
 from ..config.schema_loader import ConfigSchemaLoader, FileSystemConfigSchemaLoader
-from ..utils.global_variables import CONFIG_SCHEMA, TIMESERIES, PARAMETERS, ANOMALIES, BASE_OSCILLATION, \
-    BASE_OSCILLATIONS
+from ..utils.global_variables import (
+    CONFIG_SCHEMA,
+    TIMESERIES,
+    PARAMETERS,
+    ANOMALIES,
+    BASE_OSCILLATION,
+    BASE_OSCILLATIONS,
+)
 
 
 class GutenTAGParseError(BaseException):
@@ -17,7 +23,9 @@ class GutenTAGParseError(BaseException):
             prefix = ""
         if prefix:
             prefix = f" {prefix}"
-        super(GutenTAGParseError, self).__init__(f"Error in generation configuration{prefix}: {msg}")
+        super(GutenTAGParseError, self).__init__(
+            f"Error in generation configuration{prefix}: {msg}"
+        )
 
 
 class ConfigValidator:
@@ -36,9 +44,7 @@ class ConfigValidator:
         # create resolver containing all schema parts
         self.base_schema = base_schema
         self.resolver = RefResolver(
-            base_uri=base_schema_name,
-            referrer=base_schema,
-            store=schema_parts
+            base_uri=base_schema_name, referrer=base_schema, store=schema_parts
         )
 
     def validate(self, config: Dict) -> None:
@@ -58,40 +64,67 @@ class ConfigValidator:
                 raise GutenTAGParseError(log_prefix, f"Missing '{ANOMALIES}' property.")
 
             if BASE_OSCILLATION not in ts and BASE_OSCILLATIONS not in ts:
-                raise GutenTAGParseError(log_prefix, f"Missing '{BASE_OSCILLATIONS}' property.")
+                raise GutenTAGParseError(
+                    log_prefix, f"Missing '{BASE_OSCILLATIONS}' property."
+                )
 
             if BASE_OSCILLATION in ts and PARAMETERS.CHANNELS not in ts:
                 raise GutenTAGParseError(
                     log_prefix,
-                    f"If a single '{BASE_OSCILLATION}' is defined, the property '{PARAMETERS.CHANNELS}' is required."
+                    f"If a single '{BASE_OSCILLATION}' is defined, the property '{PARAMETERS.CHANNELS}' is required.",
                 )
 
             # check base oscillations
-            bos = ts.get(BASE_OSCILLATIONS, [ts.get(BASE_OSCILLATION)] * ts.get(PARAMETERS.CHANNELS, 0))
+            bos = ts.get(
+                BASE_OSCILLATIONS,
+                [ts.get(BASE_OSCILLATION)] * ts.get(PARAMETERS.CHANNELS, 0),
+            )
             for i, bo in enumerate(bos):
-                log_prefix_bo = f"{log_prefix} BO {i}"
-                if PARAMETERS.KIND not in bo:
-                    raise GutenTAGParseError(log_prefix_bo, f"Missing required property '{PARAMETERS.KIND}'.")
-                bo_kind = bo[PARAMETERS.KIND]
-                if bo_kind not in BaseOscillation.key_mapping:
-                    raise GutenTAGParseError(log_prefix_bo, f"Base oscillation kind '{bo_kind}' is not supported!")
+                ConfigValidator._validate_bo(i, bo, log_prefix)
 
             # check anomaly definitions
             anoms = ts.get(ANOMALIES, [])
             for i, anom in enumerate(anoms):
-                log_prefix_anom = f"{log_prefix} Anom {i}"
-                if PARAMETERS.KINDS not in anom:
-                    raise GutenTAGParseError(log_prefix_anom, f"Missing required property '{PARAMETERS.KINDS}'.")
-                if PARAMETERS.LENGTH not in anom:
-                    raise GutenTAGParseError(log_prefix_anom, f"Missing required property '{PARAMETERS.LENGTH}'.")
+                ConfigValidator._validate_anomaly(i, anom, log_prefix)
 
-                kinds = anom.get(PARAMETERS.KINDS, [])
-                for j, anom_kind in enumerate(kinds):
-                    log_prefix_kind = f"{log_prefix_anom} Kind {j}"
-                    if PARAMETERS.KIND not in anom_kind:
-                        raise GutenTAGParseError(log_prefix_kind, f"Missing required property '{PARAMETERS.KIND}'.")
-                    if not AnomalyKind.has_value(anom_kind[PARAMETERS.KIND]):
-                        raise GutenTAGParseError(
-                            log_prefix_kind,
-                            f"Anomaly kind '{anom_kind[PARAMETERS.KIND]}' is not supported!"
-                        )
+    @staticmethod
+    def _validate_bo(i: int, bo: Dict[str, Any], log_prefix: str) -> None:
+        log_prefix_bo = f"{log_prefix} BO {i}"
+        if PARAMETERS.KIND not in bo:
+            raise GutenTAGParseError(
+                log_prefix_bo, f"Missing required property '{PARAMETERS.KIND}'."
+            )
+        bo_kind = bo[PARAMETERS.KIND]
+        if bo_kind not in BaseOscillation.key_mapping:
+            raise GutenTAGParseError(
+                log_prefix_bo,
+                f"Base oscillation kind '{bo_kind}' is not supported!",
+            )
+
+    @staticmethod
+    def _validate_anomaly(i: int, anom: Dict[str, Any], log_prefix: str) -> None:
+        log_prefix_anom = f"{log_prefix} Anom {i}"
+        if PARAMETERS.KINDS not in anom:
+            raise GutenTAGParseError(
+                log_prefix_anom,
+                f"Missing required property '{PARAMETERS.KINDS}'.",
+            )
+        if PARAMETERS.LENGTH not in anom:
+            raise GutenTAGParseError(
+                log_prefix_anom,
+                f"Missing required property '{PARAMETERS.LENGTH}'.",
+            )
+
+        kinds = anom.get(PARAMETERS.KINDS, [])
+        for j, anom_kind in enumerate(kinds):
+            log_prefix_kind = f"{log_prefix_anom} Kind {j}"
+            if PARAMETERS.KIND not in anom_kind:
+                raise GutenTAGParseError(
+                    log_prefix_kind,
+                    f"Missing required property '{PARAMETERS.KIND}'.",
+                )
+            if not AnomalyKind.has_value(anom_kind[PARAMETERS.KIND]):
+                raise GutenTAGParseError(
+                    log_prefix_kind,
+                    f"Anomaly kind '{anom_kind[PARAMETERS.KIND]}' is not supported!",
+                )

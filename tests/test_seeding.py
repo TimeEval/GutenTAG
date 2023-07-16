@@ -15,29 +15,37 @@ class TestSeeding(unittest.TestCase):
             "name": "sine-ts",
             "length": 500,
             "base-oscillations": [{"kind": "sine", "frequency": 1.5}],
-            "anomalies": [{"position": "beginning", "length": 5, "kinds": [{"kind": "frequency", "frequency_factor": 2}]}]
+            "anomalies": [
+                {
+                    "position": "beginning",
+                    "length": 5,
+                    "kinds": [{"kind": "frequency", "frequency_factor": 2}],
+                }
+            ],
         }
         config_ecg = {
             "name": "ecg-ts",
             "length": 1000,
             "base-oscillations": [{"kind": "ecg", "frequency": 10}],
-            "anomalies": [{"position": "middle", "length": 100, "kinds": [{"kind": "platform", "value": -1}]}]
+            "anomalies": [
+                {
+                    "position": "middle",
+                    "length": 100,
+                    "kinds": [{"kind": "platform", "value": -1}],
+                }
+            ],
         }
-        self.config_single_sine = {
-            "timeseries": [config_sine]
-        }
-        self.config_single_ecg = {
-            "timeseries": [config_ecg]
-        }
-        self.config_multiple = {
-            "timeseries": [config_sine, config_ecg]
-        }
+        self.config_single_sine = {"timeseries": [config_sine]}
+        self.config_single_ecg = {"timeseries": [config_ecg]}
+        self.config_multiple = {"timeseries": [config_sine, config_ecg]}
 
     def _create_and_generate(self, config: dict, seed: int) -> List[TimeSeries]:
         gutentag = GutenTAG.from_dict(config, seed=seed)
         return gutentag.generate(return_timeseries=True)  # type: ignore  # shouldn't be None and if so raise the error later on
 
-    def _assert_df_equal(self, df1: pd.DataFrame, df2: pd.DataFrame, columns: Optional[List[str]] = None) -> None:
+    def _assert_df_equal(
+        self, df1: pd.DataFrame, df2: pd.DataFrame, columns: Optional[List[str]] = None
+    ) -> None:
         if columns is None:
             columns = np.union1d(df1.columns, df2.columns).tolist()
         for column in columns:

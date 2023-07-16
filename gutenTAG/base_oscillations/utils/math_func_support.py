@@ -44,7 +44,12 @@ def prepare_base_signal(n: int, f: float) -> np.ndarray:
     return base
 
 
-def generate_periodic_signal(base: np.ndarray, func: Callable[[np.ndarray], np.ndarray], a: float, freq_mod: Optional[float] = None):
+def generate_periodic_signal(
+    base: np.ndarray,
+    func: Callable[[np.ndarray], np.ndarray],
+    a: float,
+    freq_mod: Optional[float] = None,
+):
     """Generates a periodic signal based on the base signal (should already contain the frequency) and applying the
     supplied mathematical function. ``freq_mod`` can be used to modulate the signal amplitude with another frequency.
 

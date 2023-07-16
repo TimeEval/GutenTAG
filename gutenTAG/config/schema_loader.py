@@ -15,7 +15,6 @@ class ConfigSchemaLoader(abc.ABC):
 
 
 class FileSystemConfigSchemaLoader(ConfigSchemaLoader):
-
     def __init__(self, base_path: Path = CONFIG_SCHEMA.SCHEMA_FOLDER_PATH):
         super().__init__()
         self.base_path = base_path
@@ -30,6 +29,7 @@ class FileSystemConfigSchemaLoader(ConfigSchemaLoader):
     def from_packaged_schema() -> "ConfigSchemaLoader":
         current_path = Path(os.path.dirname(__file__)).absolute()
         return FileSystemConfigSchemaLoader(current_path / "schema")
+
 
 # We could add a second method of loading the schema using the python package structure similar to
 # https://github.com/pallets/jinja/blob/c3a61d6ef654f389ea2bdeddce0ffc74d656be8b/src/jinja2/loaders.py#L238

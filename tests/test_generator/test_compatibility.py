@@ -10,11 +10,7 @@ class TestCompatibility(TestCase):
                 {
                     "name": "ecg",
                     "length": 100,
-                    "base-oscillations": [
-                        {
-                            "kind": "ecg"
-                        }
-                    ],
+                    "base-oscillations": [{"kind": "ecg"}],
                     "anomalies": [
                         {
                             "position": "middle",
@@ -24,11 +20,11 @@ class TestCompatibility(TestCase):
                                 {
                                     "kind": "pattern-shift",
                                     "shift_by": 5,
-                                    "transition_window": 10
+                                    "transition_window": 10,
                                 }
-                            ]
+                            ],
                         }
-                    ]
+                    ],
                 }
             ]
         }
@@ -37,11 +33,7 @@ class TestCompatibility(TestCase):
                 {
                     "name": "ecg",
                     "length": 100,
-                    "base-oscillations": [
-                        {
-                            "kind": "ecg"
-                        }
-                    ],
+                    "base-oscillations": [{"kind": "ecg"}],
                     "anomalies": [
                         {
                             "position": "middle",
@@ -51,14 +43,14 @@ class TestCompatibility(TestCase):
                                 {
                                     "kind": "pattern-shift",
                                     "shift_by": 5,
-                                    "transition_window": 10
+                                    "transition_window": 10,
                                 },
                                 {
                                     "kind": "mode-correlation",
-                                }
-                            ]
+                                },
+                            ],
                         }
-                    ]
+                    ],
                 }
             ]
         }

@@ -20,13 +20,17 @@ class AnomalyMean(BaseAnomaly):
 
     def generate(self, anomaly_protocol: AnomalyProtocol) -> AnomalyProtocol:
         if anomaly_protocol.base_oscillation_kind == RandomModeJump.KIND:
-            self.logger.warn_false_combination(self.__class__.__name__, anomaly_protocol.base_oscillation_kind)
+            self.logger.warn_false_combination(
+                self.__class__.__name__, anomaly_protocol.base_oscillation_kind
+            )
             return anomaly_protocol
 
         base = anomaly_protocol.base_oscillation
         ts: np.ndarray = base.timeseries
         creeping = self.generate_creeping(anomaly_protocol)
-        subsequence = ts[anomaly_protocol.start:anomaly_protocol.end] + self.offset * creeping
+        subsequence = (
+            ts[anomaly_protocol.start : anomaly_protocol.end] + self.offset * creeping
+        )
         anomaly_protocol.subsequences.append(subsequence)
         return anomaly_protocol
 

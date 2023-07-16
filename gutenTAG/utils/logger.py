@@ -8,7 +8,9 @@ class GutenTagLogger:
         self.logger.addHandler(logging.StreamHandler())
 
     def warn_false_combination(self, anomaly: str, base_oscillation: str):
-        self.logger.warning(f"You tried to generate '{anomaly}' on '{base_oscillation}'. That doesn't work! Guten Tag!")
+        self.logger.warning(
+            f"You tried to generate '{anomaly}' on '{base_oscillation}'. That doesn't work! Guten Tag!"
+        )
 
 
 if __name__ == "__main__":

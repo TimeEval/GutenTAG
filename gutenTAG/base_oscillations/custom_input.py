@@ -1,4 +1,4 @@
-from typing import Optional, List, Union
+from typing import Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -102,7 +102,7 @@ class CustomInput(BaseOscillationInterface):
             )
         col_type = df.dtypes[0]
         if col_type != np.float_:
-            df = df.astype(float)
+            df = df.astype(np.float_)
             warnings.warn(
                 f"Input data was of {col_type} type and has been automatically converted to float."
             )

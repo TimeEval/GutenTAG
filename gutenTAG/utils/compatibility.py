@@ -19,16 +19,34 @@ class Compatibility:
             [1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1],  # variance
             [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],  # mode_correlation
         ],
-        columns=[BASE_OSCILLATION_NAMES.SINE, BASE_OSCILLATION_NAMES.COSINE, BASE_OSCILLATION_NAMES.SQUARE,
-                 BASE_OSCILLATION_NAMES.RANDOM_WALK, BASE_OSCILLATION_NAMES.CYLINDER_BELL_FUNNEL,
-                 BASE_OSCILLATION_NAMES.ECG, BASE_OSCILLATION_NAMES.POLYNOMIAL, BASE_OSCILLATION_NAMES.RANDOM_MODE_JUMP,
-                 BASE_OSCILLATION_NAMES.FORMULA, BASE_OSCILLATION_NAMES.SAWTOOTH, BASE_OSCILLATION_NAMES.DIRICHLET,
-                 BASE_OSCILLATION_NAMES.MLS, BASE_OSCILLATION_NAMES.CUSTOM_INPUT],
-        index=[ANOMALY_TYPE_NAMES.AMPLITUDE, ANOMALY_TYPE_NAMES.EXTREMUM, ANOMALY_TYPE_NAMES.FREQUENCY,
-               ANOMALY_TYPE_NAMES.MEAN, ANOMALY_TYPE_NAMES.PATTERN, ANOMALY_TYPE_NAMES.PATTERN_SHIFT,
-               ANOMALY_TYPE_NAMES.PLATFORM, ANOMALY_TYPE_NAMES.TREND, ANOMALY_TYPE_NAMES.VARIANCE,
-               ANOMALY_TYPE_NAMES.MODE_CORRELATION],
-        dtype=bool
+        columns=[
+            BASE_OSCILLATION_NAMES.SINE,
+            BASE_OSCILLATION_NAMES.COSINE,
+            BASE_OSCILLATION_NAMES.SQUARE,
+            BASE_OSCILLATION_NAMES.RANDOM_WALK,
+            BASE_OSCILLATION_NAMES.CYLINDER_BELL_FUNNEL,
+            BASE_OSCILLATION_NAMES.ECG,
+            BASE_OSCILLATION_NAMES.POLYNOMIAL,
+            BASE_OSCILLATION_NAMES.RANDOM_MODE_JUMP,
+            BASE_OSCILLATION_NAMES.FORMULA,
+            BASE_OSCILLATION_NAMES.SAWTOOTH,
+            BASE_OSCILLATION_NAMES.DIRICHLET,
+            BASE_OSCILLATION_NAMES.MLS,
+            BASE_OSCILLATION_NAMES.CUSTOM_INPUT,
+        ],
+        index=[
+            ANOMALY_TYPE_NAMES.AMPLITUDE,
+            ANOMALY_TYPE_NAMES.EXTREMUM,
+            ANOMALY_TYPE_NAMES.FREQUENCY,
+            ANOMALY_TYPE_NAMES.MEAN,
+            ANOMALY_TYPE_NAMES.PATTERN,
+            ANOMALY_TYPE_NAMES.PATTERN_SHIFT,
+            ANOMALY_TYPE_NAMES.PLATFORM,
+            ANOMALY_TYPE_NAMES.TREND,
+            ANOMALY_TYPE_NAMES.VARIANCE,
+            ANOMALY_TYPE_NAMES.MODE_CORRELATION,
+        ],
+        dtype=bool,
     )
 
     @staticmethod
@@ -38,6 +56,6 @@ class Compatibility:
         except KeyError:
             warnings.warn(
                 message=f"No compatibility information for BO {base_oscillation} and anomaly {anomaly} found!",
-                category=UserWarning
+                category=UserWarning,
             )
             return False
