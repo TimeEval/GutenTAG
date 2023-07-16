@@ -7,7 +7,7 @@ mypy==0.920
 freezegun
 flake8==6.0
 black==23.1
-pre-commit=3.3
+pre-commit==3.3
 
 types-PyYAML
 types-jsonschema
