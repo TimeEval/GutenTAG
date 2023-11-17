@@ -33,12 +33,11 @@ class BaseAddOn:
 
 ### Implemented Add-Ons
 
-GutenTAG already comes with an add-on for the TimeEval [^1] [^2] tool. This add-on creates a `datasets.csv` meta-file in the output directory. This file is necessary to import the generated datasets into the TimeEval tool. Use it as follows:
+GutenTAG already comes with an add-on for the [TimeEval](https://github.com/TimeEval/timeeval) tool.
+This add-on creates a `datasets.csv` meta-file in the output directory.
+This file is necessary to import the generated datasets into the TimeEval tool.
+Use it as follows:
 
 ```shell
 python -m gutenTAG --config-yaml config.yaml --addons gutenTAG.addons.timeeval.TimeEvalAddOn
 ```
-
-[^1]: HPI Gitlab: https://gitlab.hpi.de/akita/bp2020fn1/timeeval/
-
-[^2]: HPI Github: https://github.com/HPI-Information-Systems/timeeval

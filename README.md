@@ -1,11 +1,11 @@
 <div align="center">
-    <img width="400px" src="https://github.com/HPI-Information-Systems/gutentag/raw/main/logo_transparent.png" alt="TimeEval logo"/>
+    <img width="400px" src="https://github.com/TimeEval/gutentag/raw/main/logo_transparent.png" alt="TimeEval logo"/>
     <p>
     A good <strong>T</strong>imeseries <strong>A</strong>nomaly <strong>G</strong>enerator.
     </p>
 
-[![CI](https://github.com/HPI-Information-Systems/gutentag/actions/workflows/build.yml/badge.svg)](https://github.com/HPI-Information-Systems/gutentag/actions/workflows/build.yml)
-[![codecov](https://codecov.io/gh/HPI-Information-Systems/gutentag/branch/main/graph/badge.svg?token=6QXOCY4TS2)](https://codecov.io/gh/HPI-Information-Systems/gutentag)
+[![CI](https://github.com/TimeEval/gutentag/actions/workflows/build.yml/badge.svg)](https://github.com/TimeEval/gutentag/actions/workflows/build.yml)
+[![codecov](https://codecov.io/gh/TimeEval/gutentag/branch/main/graph/badge.svg?token=6QXOCY4TS2)](https://codecov.io/gh/TimeEval/gutentag)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![PyPI package](https://badge.fury.io/py/timeeval-gutenTAG.svg)](https://badge.fury.io/py/timeeval-gutenTAG)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -67,7 +67,7 @@ A GutenTAG time series consists of a single (univariate) or multiple (multivaria
 
    You should see the following time series:
 
-   ![Example unsupervised time series with two anomalies](https://github.com/HPI-Information-Systems/gutentag/raw/main/example-ts.png)
+   ![Example unsupervised time series with two anomalies](https://github.com/TimeEval/gutentag/raw/main/example-ts.png)
 
 ## Documentation
 

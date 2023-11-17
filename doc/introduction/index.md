@@ -18,12 +18,9 @@ You can install GutenTAG from the official Python Package Index or from source.
 - Installation from source:
 
   ```bash
-  # clone GutenTAG repository from gitlab or extract the archive
-  git clone git@gitlab.hpi.de:akita/guten-tag.git #or unzip guten-tag.zip
-  # or for github:
-  git clone git@github.com:HPI-Information-Systems/gutentag.git
+  git clone git@github.com:TimeEval/GutenTAG.git
 
-  cd guten-tag
+  cd GutenTAG
 
   # (optionally) create a new conda environment with Python 3
   conda create -n gutentag python=3.8
