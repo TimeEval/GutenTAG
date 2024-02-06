@@ -83,6 +83,8 @@ jobs:
     - name: Upload Coverage to Codecov
       if: ${{ matrix.python_version == '3.11' && matrix.os == 'ubuntu-latest' }}
       uses: codecov/codecov-action@v4
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       with:
         files: coverage.xml
         flags: unittests
