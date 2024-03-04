@@ -10,3 +10,9 @@ timeseries:
         kinds:
           - kind: amplitude
             amplitude_factor: 2.0
+      - position: end
+        length: 47
+        channel: 0
+        kinds:
+          - kind: amplitude
+            amplitude_factor: 2.0
