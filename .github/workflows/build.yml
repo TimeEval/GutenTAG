@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup Miniconda
-        uses: conda-incubator/setup-miniconda@v3.0.2
+        uses: conda-incubator/setup-miniconda@v3.0.3
         with:
           use-mamba: true
           auto-update-conda: true
@@ -47,7 +47,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Setup Miniconda
-      uses: conda-incubator/setup-miniconda@v3.0.2
+      uses: conda-incubator/setup-miniconda@v3.0.3
       with:
         use-mamba: true
         auto-update-conda: true
@@ -100,7 +100,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Setup Miniconda
-      uses: conda-incubator/setup-miniconda@v3.0.2
+      uses: conda-incubator/setup-miniconda@v3.0.3
       with:
         use-mamba: true
         auto-update-conda: true
@@ -154,7 +154,7 @@ jobs:
         find dist -type f -exec mv {} dist/ \;
         find dist/* -type d -exec rmdir {} \; || true
     - name: Publish package to PyPi
-      uses: pypa/gh-action-pypi-publish@v1.8.11
+      uses: pypa/gh-action-pypi-publish@v1.8.12
       with:
         user: __token__
         password: ${{ secrets.PYPI_API_TOKEN }}
