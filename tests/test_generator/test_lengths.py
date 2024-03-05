@@ -27,9 +27,8 @@ class TestLengths(unittest.TestCase):
 
     def update_config(self, l: int, include_creeping: bool = False):
         self.config["timeseries"][0]["anomalies"][0]["length"] = l
-        if include_creeping:
-            cl = int(round(l * self.creeping_factor))
-            self.config["timeseries"][0]["anomalies"][0]["creeping-length"] = cl
+        cl = int(round(l * self.creeping_factor)) if include_creeping else 0
+        self.config["timeseries"][0]["anomalies"][0]["creeping-length"] = cl
 
     def __run(self):
         res = False
