@@ -30,9 +30,9 @@ class TestLengths(unittest.TestCase):
         self, length: int, include_creeping: bool = False
     ) -> Dict[str, Any]:
         config = self.config.copy()
-        config["timeseries"][0]["anomalies"][0]["length"] = length
+        config["timeseries"][0]["anomalies"][0]["length"] = length  # type: ignore
         cl = int(round(length * self.creeping_factor)) if include_creeping else 0
-        config["timeseries"][0]["anomalies"][0]["creeping-length"] = cl
+        config["timeseries"][0]["anomalies"][0]["creeping-length"] = cl  # type: ignore
         return config
 
     def _run_and_validate(self, config: Dict[str, Any]) -> None:
@@ -40,7 +40,7 @@ class TestLengths(unittest.TestCase):
         gutentag.load_config_dict(config)
         ts = gutentag.generate(return_timeseries=True)
         self.assertIsNotNone(ts)
-        self.assertEqual(len(ts), 1)
+        self.assertEqual(len(ts), 1)  # type: ignore
 
     def test_lengths(self) -> None:
         for i in range(25, 50):
