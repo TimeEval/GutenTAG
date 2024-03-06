@@ -32,8 +32,9 @@ class AnomalyAmplitude(BaseAnomaly):
 
         length = anomaly_protocol.end - anomaly_protocol.start
         if anomaly_protocol.creeping_length == 0:
-            transition_length = int(length * 0.2)
-            plateau = np.ones(int(length * 0.6))
+            transition_length = int(round(length * 0.2))
+            plateau_length = length - 2 * transition_length
+            plateau = np.ones(plateau_length)
             start_transition = norm.pdf(
                 np.linspace(-3, 0, transition_length), scale=1.05
             )
@@ -47,11 +48,13 @@ class AnomalyAmplitude(BaseAnomaly):
             )
         else:
             anomaly_length = length - anomaly_protocol.creeping_length
+            creeping_length = int(round(anomaly_length * 0.8))
             creeping = self.generate_creeping(
-                anomaly_protocol, custom_anomaly_length=int(anomaly_length * 0.8)
+                anomaly_protocol, custom_anomaly_length=creeping_length
             )
+            end_transition_length = anomaly_length - creeping_length
             end_transition = norm.pdf(
-                np.linspace(0, 3, int(anomaly_length * 0.2)), scale=1.05
+                np.linspace(0, 3, end_transition_length), scale=1.05
             )
             amplitude_bell = np.concatenate(
                 [creeping, end_transition / end_transition.max()]
