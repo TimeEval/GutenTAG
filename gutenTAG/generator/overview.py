@@ -40,7 +40,7 @@ class DictSanitizer:
         elif isinstance(obj, (float, np.float16, np.float32, np.float64)):
             return float(obj)
 
-        elif isinstance(obj, (np.complex64, np.complex128, np.complex160, np.complex192, np.complex256, np.complex512)):
+        elif isinstance(obj, (np.complex64, np.complex128, np.complex256)):
             return {"real": obj.real, "imag": obj.imag}
 
         elif isinstance(obj, (np.ndarray,)):
