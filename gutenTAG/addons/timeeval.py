@@ -129,7 +129,7 @@ class TimeEvalAddOn(BaseAddOn):
         dataset["trend"] = (
             config.get(BASE_OSCILLATION, {})
             .get(PARAMETERS.TREND, {})
-            .get(PARAMETERS.KIND, np.NAN)
+            .get(PARAMETERS.KIND, np.nan)
         )
         dataset["period_size"] = TimeEvalAddOn._calc_period_size(
             config.get(BASE_OSCILLATION, config.get(BASE_OSCILLATIONS, [{}])),
@@ -142,8 +142,8 @@ class TimeEvalAddOn(BaseAddOn):
         df["collection_name"] = "GutenTAG"
         df["dataset_type"] = "synthetic"
         df["datetime_index"] = False
-        df["split_at"] = np.NAN
-        df["stationarity"] = np.NAN
+        df["split_at"] = np.nan
+        df["stationarity"] = np.nan
 
     @staticmethod
     def _calc_contamination(anomalies: Iterable[Dict], ts_length: int) -> float:
@@ -180,7 +180,7 @@ class TimeEvalAddOn(BaseAddOn):
                 BASE_OSCILLATION_NAMES.DIRICHLET,
                 BASE_OSCILLATION_NAMES.MLS,
             ]:
-                periods.append(np.NAN)
+                periods.append(np.nan)
             elif kind in [
                 BASE_OSCILLATION_NAMES.SINE,
                 BASE_OSCILLATION_NAMES.COSINE,
