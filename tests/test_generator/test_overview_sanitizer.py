@@ -12,18 +12,18 @@ class TestOverviewSanitizer(TestCase):
             "timeseries": [
                 {
                     "name": "ecg",
-                    "length": np.int_(100),
-                    "base-oscillations": [{"kind": "ecg", "frequency": np.float_(2)}],
+                    "length": np.int32(100),
+                    "base-oscillations": [{"kind": "ecg", "frequency": np.float64(2)}],
                     "anomalies": [
                         {
                             "position": "middle",
-                            "length": np.int_(40),
-                            "channel": np.int_(0),
+                            "length": np.int32(40),
+                            "channel": np.int32(0),
                             "kinds": [
                                 {
                                     "kind": "pattern-shift",
-                                    "shift_by": np.int_(5),
-                                    "transition_window": np.int_(10),
+                                    "shift_by": np.int32(5),
+                                    "transition_window": np.int32(10),
                                     "some_array": np.array([1.2, 2.3]),
                                 }
                             ],

@@ -217,7 +217,7 @@ def gen_bo_diversity_series():
             for bo, times in zip(bo_tuple, times_mapping[i]):
                 bo_defs.extend(random_bo(bo) for _ in range(times))
             for anom_pos in range(i):
-                pos_begin = np.sum(times_mapping[i][:anom_pos], dtype=np.int_)
+                pos_begin = np.sum(times_mapping[i][:anom_pos], dtype=np.int32)
                 pos_end = pos_begin + times_mapping[i][anom_pos]
                 pos = np.random.randint(pos_begin, pos_end)
                 timeseries.append(

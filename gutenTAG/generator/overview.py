@@ -22,7 +22,7 @@ class DictSanitizer:
         if isinstance(
             obj,
             (
-                np.int_,
+                int,
                 np.intc,
                 np.intp,
                 np.int8,
@@ -37,16 +37,16 @@ class DictSanitizer:
         ):
             return int(obj)
 
-        elif isinstance(obj, (np.float_, np.float16, np.float32, np.float64)):
+        elif isinstance(obj, (float, np.float16, np.float32, np.float64)):
             return float(obj)
 
-        elif isinstance(obj, (np.complex_, np.complex64, np.complex128)):
+        elif isinstance(obj, (np.complex64, np.complex128, np.complex160, np.complex192, np.complex256, np.complex512)):
             return {"real": obj.real, "imag": obj.imag}
 
         elif isinstance(obj, (np.ndarray,)):
             return obj.tolist()
 
-        elif isinstance(obj, (np.bool_)):
+        elif isinstance(obj, (bool, np.bool8)):
             return bool(obj)
 
         elif isinstance(obj, (np.void)):
