@@ -154,7 +154,7 @@ class TestCustomInput(unittest.TestCase):
                     use_column_test=tpe,
                 )
             #  data is properly converted
-            self.assertEqual(timeseries.dtype, np.float_)
+            self.assertEqual(timeseries.dtype, np.float64)
 
     def test_convert_to_float_with_warning(self):
         for tpe in ["ints", "bools"]:
@@ -168,7 +168,7 @@ class TestCustomInput(unittest.TestCase):
             # warning is raised
             self.assertRegex(str(w.warning), "automatically converted to float")
             #  data is properly converted
-            self.assertEqual(timeseries.dtype, np.float_)
+            self.assertEqual(timeseries.dtype, np.float64)
 
     def test_error_on_string_type(self):
         with self.assertRaises(ValueError) as e:

@@ -101,8 +101,8 @@ class CustomInput(BaseOscillationInterface):
                 "Number of rows in the input timeseries file is less than the desired length"
             )
         col_type = df.dtypes[0]
-        if col_type != np.float_:
-            df = df.astype(np.float_)
+        if col_type != np.float64:
+            df = df.astype(np.float64)
             warnings.warn(
                 f"Input data was of {col_type} type and has been automatically converted to float."
             )
