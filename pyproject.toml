@@ -1,0 +1,84 @@
+[project]
+name = "timeeval-GutenTAG"
+description = "A good Timeseries Anomaly Generator."
+license = {file="LICENSE"}
+authors= [
+    {"name" = "Phillip Wenig", email = "phillip.wenig@hpi.de"},
+    {"name" = "Sebastian Schmidl", email = "sebastian.schmidl@hpi.de"}
+]
+classifiers=[
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Typing :: Typed",
+    "Topic :: Software Development",
+    "Topic :: Scientific/Engineering",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+]
+dynamic = ["readme", "version", "requires-python", "scripts", "dependencies"]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.coverage.run]
+branch = false
+parallel = true
+omit = ["**/__main__.py"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "\\.\\.\\.",
+    "def __repr__",
+    "pass",
+    "if __name__ == .__main__.:",
+]
+fail_under = 80
+skip_covered = true
+sort = "Cover"
+
+[tool.mypy]
+python_version = "3.9"
+show_error_codes = true
+
+[[tool.mypy.overrides]]
+module = [
+    "sklearn.*",
+    "matplotlib.*",
+    "pandas.*",
+    "tqdm.*",
+    "psutil.*",
+    "prts.*",
+    "statsmodels.*",
+    "joblib.*",
+    "numpyencoder.*",
+    "scipy.*",
+    "neurokit2.*"
+]
+ignore_missing_imports = true
+
+[tool.flake8]
+exclude = [
+    ".git",
+    "__pycache__",
+    "build",
+    "dist",
+    "doc"
+]
+max-complexity = 10
+hang-closing = false
+max-line-length = 88
+extend-select = ["B950"]
+extend-ignore = ["E203", "E501"]
+per-file-ignores = [
+    "__init__.py:F401",
+    "gutenTAG/api/*:F401"
+]
