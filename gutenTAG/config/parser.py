@@ -64,7 +64,6 @@ class ConfigParser:
             name = ts.get(PARAMETERS.NAME, f"ts_{i}")
 
             bos, n_channel = self._extract_bos(ts, name)
-            print(bos, n_channel)
 
             if self._skip_name(name) or not self._check_compatibility(ts, name, bos, n_channel):
                 continue
