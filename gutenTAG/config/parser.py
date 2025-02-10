@@ -116,7 +116,7 @@ class ConfigParser:
 
     def _extract_bos(self, d: Dict, name: str) -> Tuple[List[Dict], int]:
         if BASE_OSCILLATIONS in d:
-            base_oscillations = d.get(BASE_OSCILLATIONS)
+            base_oscillations: List[Dict] = d.get(BASE_OSCILLATIONS)  # type: ignore
         elif BASE_OSCILLATION in d and PARAMETERS.CHANNELS not in d:
             self._report_error(
                 name,
@@ -129,7 +129,7 @@ class ConfigParser:
                     name,
                     f"'{BASE_OSCILLATION}' must be a single object."
                 )
-            base_oscillations = [bo_template] * d.get(PARAMETERS.CHANNELS, 0)
+            base_oscillations = [bo_template] * d.get(PARAMETERS.CHANNELS, 0)  # type: ignore
 
         n_channels = len(base_oscillations)
         if n_channels == 0:
@@ -178,12 +178,13 @@ class ConfigParser:
         return anomaly
 
     def _build_anomaly_kinds(self, d: Dict, length: int, ts_name: str) -> List[BaseAnomaly]:
-        return [
+        potential_anomalies = [
             self._build_single_anomaly_kind(anomaly_kind, length, ts_name)
             for anomaly_kind in d.get(PARAMETERS.KINDS, [])
         ]
+        return [anomaly for anomaly in potential_anomalies if anomaly is not None]
 
-    def _build_single_anomaly_kind(self, d: Dict, length: int, ts_name: str) -> BaseAnomaly:
+    def _build_single_anomaly_kind(self, d: Dict, length: int, ts_name: str) -> Optional[BaseAnomaly]:
         kind = d[PARAMETERS.KIND]
         if kind == PARAMETERS.TREND:
             parameters = {
@@ -199,20 +200,13 @@ class ConfigParser:
         except TypeError as ex:
             if "unexpected keyword argument" in str(ex):
                 parameter = str(ex).split("'")[-2]
-                self._report_error(
-                    ts_name,
-                    f"Anomaly kind '{kind}' does not support parameter '{parameter}'.",
-                    cause=ex
-                )
+                raise ValueError(f"Time series {ts_name}: Anomaly kind '{kind}' does not support parameter '{parameter}'.") from ex
             else:
                 raise ex
 
-    def _report_error(self, name: str, msg: str, warning_msg: Optional[str] = None, cause: Optional[Exception] = None) -> None:
+    def _report_error(self, name: str, msg: str, warning_msg: Optional[str] = None) -> None:
         warning_msg = warning_msg or msg
         if self.skip_errors:
             logging.warning(warning_msg)
         else:
-            if cause:
-                raise ValueError(f"Time series {name}: {msg}") from cause
-            else:
-                raise ValueError(f"Time series {name}: {msg}")
+            raise ValueError(f"Time series {name}: {msg}")

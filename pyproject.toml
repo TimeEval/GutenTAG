@@ -21,7 +21,9 @@ classifiers=[
     "Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
 ]
-dynamic = ["readme", "version", "requires-python", "scripts", "dependencies"]
+dynamic = [
+    "readme", "version", "requires-python", "scripts", "dependencies", "entry-points"
+]
 
 [build-system]
 requires = ["setuptools"]
