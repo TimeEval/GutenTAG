@@ -65,7 +65,9 @@ class ConfigParser:
 
             bos, n_channel = self._extract_bos(ts, name)
 
-            if self._skip_name(name) or not self._check_compatibility(ts, name, bos, n_channel):
+            if self._skip_name(name) or not self._check_compatibility(
+                ts, name, bos, n_channel
+            ):
                 continue
 
             raw_ts_config = deepcopy(ts)
@@ -83,15 +85,18 @@ class ConfigParser:
 
         return self.result
 
-    def _check_compatibility(self, ts: Dict, name: str, bos: list[dict], n_channels: int) -> bool:
+    def _check_compatibility(
+        self, ts: Dict, name: str, bos: list[dict], n_channels: int
+    ) -> bool:
         anomalies = ts.get(ANOMALIES, [])
         for anomaly in anomalies:
-            channel = anomaly.get(PARAMETERS.CHANNEL, default_values[ANOMALIES][PARAMETERS.CHANNEL])
+            channel = anomaly.get(
+                PARAMETERS.CHANNEL, default_values[ANOMALIES][PARAMETERS.CHANNEL]
+            )
             if channel >= n_channels:
-                    self._report_error(
-                        name,
-                        f"Invalid channel index: {channel} >= {n_channels}."
-                    )
+                self._report_error(
+                    name, f"Invalid channel index: {channel} >= {n_channels}."
+                )
             base_oscillation = bos[channel][PARAMETERS.KIND]
             for anomaly_kind in anomaly.get(PARAMETERS.KINDS, []):
                 anomaly_kind = anomaly_kind[PARAMETERS.KIND]
@@ -107,7 +112,9 @@ class ConfigParser:
     def _skip_name(self, name: str) -> bool:
         return self.only is not None and name != self.only
 
-    def _build_base_oscillations(self, d: Dict, bos: list[dict]) -> List[BaseOscillationInterface]:
+    def _build_base_oscillations(
+        self, d: Dict, bos: list[dict]
+    ) -> List[BaseOscillationInterface]:
         length = d.get(
             PARAMETERS.LENGTH, default_values[BASE_OSCILLATIONS][PARAMETERS.LENGTH]
         )
@@ -119,14 +126,13 @@ class ConfigParser:
         elif BASE_OSCILLATION in d and PARAMETERS.CHANNELS not in d:
             self._report_error(
                 name,
-                f"'{BASE_OSCILLATION}' requires parameter '{PARAMETERS.CHANNELS}'."
+                f"'{BASE_OSCILLATION}' requires parameter '{PARAMETERS.CHANNELS}'.",
             )
         else:
             bo_template = d.get(BASE_OSCILLATION)
             if isinstance(bo_template, list):
                 self._report_error(
-                    name,
-                    f"'{BASE_OSCILLATION}' must be a single object."
+                    name, f"'{BASE_OSCILLATION}' must be a single object."
                 )
             base_oscillations = [bo_template] * d.get(PARAMETERS.CHANNELS, 0)  # type: ignore
 
@@ -134,7 +140,7 @@ class ConfigParser:
         if n_channels == 0:
             self._report_error(
                 name,
-                f"No base oscillations defined. Please provide either '{BASE_OSCILLATION}' and '{PARAMETERS.CHANNELS}' or '{BASE_OSCILLATIONS}'."
+                f"No base oscillations defined. Please provide either '{BASE_OSCILLATION}' and '{PARAMETERS.CHANNELS}' or '{BASE_OSCILLATIONS}'.",
             )
         return base_oscillations, n_channels
 
@@ -176,14 +182,18 @@ class ConfigParser:
 
         return anomaly
 
-    def _build_anomaly_kinds(self, d: Dict, length: int, ts_name: str) -> List[BaseAnomaly]:
+    def _build_anomaly_kinds(
+        self, d: Dict, length: int, ts_name: str
+    ) -> List[BaseAnomaly]:
         potential_anomalies = [
             self._build_single_anomaly_kind(anomaly_kind, length, ts_name)
             for anomaly_kind in d.get(PARAMETERS.KINDS, [])
         ]
         return [anomaly for anomaly in potential_anomalies if anomaly is not None]
 
-    def _build_single_anomaly_kind(self, d: Dict, length: int, ts_name: str) -> Optional[BaseAnomaly]:
+    def _build_single_anomaly_kind(
+        self, d: Dict, length: int, ts_name: str
+    ) -> Optional[BaseAnomaly]:
         kind = d[PARAMETERS.KIND]
         if kind == PARAMETERS.TREND:
             parameters = {
@@ -199,11 +209,15 @@ class ConfigParser:
         except TypeError as ex:
             if "unexpected keyword argument" in str(ex):
                 parameter = str(ex).split("'")[-2]
-                raise ValueError(f"Time series {ts_name}: Anomaly kind '{kind}' does not support parameter '{parameter}'.") from ex
+                raise ValueError(
+                    f"Time series {ts_name}: Anomaly kind '{kind}' does not support parameter '{parameter}'."
+                ) from ex
             else:
                 raise ex
 
-    def _report_error(self, name: str, msg: str, warning_msg: Optional[str] = None) -> None:
+    def _report_error(
+        self, name: str, msg: str, warning_msg: Optional[str] = None
+    ) -> None:
         warning_msg = warning_msg or msg
         if self.skip_errors:
             logging.warning(warning_msg)
