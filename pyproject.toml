@@ -17,15 +17,17 @@ classifiers=[
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Typing :: Typed",
     "Topic :: Software Development",
     "Topic :: Scientific/Engineering",
     "Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
 ]
-requires-python = ">=3.9, <3.12"
+requires-python = ">=3.9, <3.14"
 dependencies = [
-    "numpy>=1.21.6",
+    "numpy>=1.25.0",
     "pandas>=1.3.0",
     "scipy>=1.7.3,<1.15",
     "scikit-learn>=1.0.0",
