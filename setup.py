@@ -15,8 +15,6 @@ VERSION: str = __version__  # noqa
 README = (HERE / "README.md").read_text(encoding="UTF-8")
 DOC_NAME = "GutenTAG"
 PYTHON_NAME = "gutenTAG"
-with open(HERE / "requirements.txt") as fh:
-    REQUIRED = fh.read().splitlines()
 
 
 class PyTestCommand(Command):
@@ -113,9 +111,6 @@ if __name__ == "__main__":
         url="https://github.com/TimeEval/gutentag",
         packages=find_packages(exclude=("tests", "tests.*")),
         package_data={"gutenTAG": ["py.typed", "config/schema/*"]},
-        install_requires=REQUIRED,
-        python_requires=">=3.7",
-        test_suite="tests",
         cmdclass={
             "test": PyTestCommand,
             "typecheck": MyPyCheckCommand,
