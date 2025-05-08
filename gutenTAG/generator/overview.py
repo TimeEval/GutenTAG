@@ -7,7 +7,7 @@ import yaml
 
 
 class DictSanitizer:
-    NUMPY_TYPES = tuple(list(np.core._type_aliases.allTypes.values()) + [np.ndarray])  # type: ignore # mypy does not find allTypes
+    NUMPY_TYPES = tuple(list(np._core._type_aliases.allTypes.values()) + [np.ndarray])  # type: ignore # mypy does not find allTypes
 
     def sanitize(self, obj: Dict) -> Dict:
         for key, value in obj.items():

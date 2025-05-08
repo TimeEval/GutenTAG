@@ -100,7 +100,7 @@ class CustomInput(BaseOscillationInterface):
             raise ValueError(
                 "Number of rows in the input timeseries file is less than the desired length"
             )
-        col_type = df.dtypes[0]
+        col_type = df.dtypes.iloc[0]
         if col_type != np.float64:
             df = df.astype(np.float64)
             warnings.warn(
