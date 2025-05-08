@@ -18,13 +18,15 @@ class TestOverviewSanitizer(TestCase):
                         {
                             "position": "middle",
                             "length": np.int32(40),
-                            "channel": np.int32(0),
+                            "channel": np.int64(0),
                             "kinds": [
                                 {
                                     "kind": "pattern-shift",
                                     "shift_by": np.int32(5),
                                     "transition_window": np.int32(10),
                                     "some_array": np.array([1.2, 2.3]),
+                                    "a_switch": np.bool(True),
+                                    "erased": np.void(b"some complex bytes"),
                                 }
                             ],
                         }
@@ -50,6 +52,8 @@ class TestOverviewSanitizer(TestCase):
                                     "shift_by": 5,
                                     "transition_window": 10,
                                     "some_array": [1.2, 2.3],
+                                    "a_switch": True,
+                                    "erased": None,
                                 }
                             ],
                         }

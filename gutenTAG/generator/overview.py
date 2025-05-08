@@ -46,10 +46,12 @@ class DictSanitizer:
         elif isinstance(obj, (np.ndarray,)):
             return obj.tolist()
 
-        elif isinstance(obj, (bool,)):
+        elif isinstance(obj, (bool, np.bool)):
             return bool(obj)
 
-        elif isinstance(obj, (np.void)):
+        # We eliminate unknown types here. If this is a problem for you, please
+        # create an issue.
+        elif isinstance(obj, np.void):
             return None
 
     def _sanitize_value(self, obj: Any) -> Any:
