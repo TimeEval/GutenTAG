@@ -9,7 +9,7 @@ from ..utils.types import BOGenerationContext
 
 
 class BaseOscillationInterface(ABC):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         # parameters
         self.length = kwargs.get(
             PARAMETERS.LENGTH, default_values[BASE_OSCILLATIONS][PARAMETERS.LENGTH]

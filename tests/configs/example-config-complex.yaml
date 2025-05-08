@@ -1,0 +1,28 @@
+timeseries:
+  - name: bo-dict
+    length: 1000
+    channels: 1
+    semi-supervised: true
+    base-oscillation:
+      kind: sine
+      frequency: 2
+    anomalies:
+      - position: beginning
+        channel: 0
+        length: 20
+        kinds:
+          - kind: frequency
+            frequency_factor: 2.0
+  - name: bo-list
+    length: 1000
+    base-oscillations:
+      - kind: random-walk
+      - kind: sine
+        frequency: 2
+    anomalies:
+      - position: beginning
+        channel: 1
+        length: 20
+        kinds:
+          - kind: frequency
+            frequency_factor: 2.0

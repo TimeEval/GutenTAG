@@ -263,9 +263,9 @@ def gen_anomaly_appearance_series():
                     [random_bo(bo_kind) for _ in range(n_bos)],
                     [
                         {
-                            "exact-position": position + 50
-                            if anom == "extremum"
-                            else position,
+                            "exact-position": (
+                                position + 50 if anom == "extremum" else position
+                            ),
                             "length": 1 if anom == "extremum" else 100,
                             "channel": int(c),
                             "kinds": [random_anomaly(anom)],
@@ -301,9 +301,9 @@ def gen_anomaly_appearance_series():
                     for c in anom_channels:
                         anomaly_defs.append(
                             {
-                                "exact-position": position + 50
-                                if anom == "extremum"
-                                else position,
+                                "exact-position": (
+                                    position + 50 if anom == "extremum" else position
+                                ),
                                 "length": 1 if anom == "extremum" else 100,
                                 "channel": int(c),
                                 "kinds": [random_anomaly(anom)],

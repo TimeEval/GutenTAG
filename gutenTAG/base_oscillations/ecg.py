@@ -36,7 +36,7 @@ class ECG(BaseOscillationInterface):
         frequency: Optional[float] = None,
         amplitude: Optional[float] = None,
         *args,
-        **kwargs
+        **kwargs,
     ) -> np.ndarray:
         length = length or self.length
         frequency = frequency or self.frequency
