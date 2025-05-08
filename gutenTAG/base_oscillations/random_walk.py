@@ -31,7 +31,7 @@ class RandomWalk(BaseOscillationInterface):
         amplitude: Optional[float] = None,
         smoothing: Optional[float] = None,
         *args,
-        **kwargs
+        **kwargs,
     ) -> np.ndarray:
         length = length or self.length
         amplitude = amplitude or self.amplitude

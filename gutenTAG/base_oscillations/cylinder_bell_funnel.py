@@ -36,7 +36,7 @@ class CylinderBellFunnel(BaseOscillationInterface):
         amplitude: Optional[float] = None,
         variance_pattern_length: Optional[int] = None,
         *args,
-        **kwargs
+        **kwargs,
     ) -> np.ndarray:
         length = length or self.length
         variance = variance or self.variance

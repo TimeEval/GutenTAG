@@ -160,10 +160,10 @@ class TimeEvalAddOn(BaseAddOn):
         base: Union[Dict[str, Any], List[Dict[str, Any]]], length: int
     ) -> float:
         bases: List[Dict[str, Any]] = []
-        if type(base) == dict:
-            bases.append(base)  # type: ignore  # does not understand the condition before
-        elif type(base) == list:
-            bases = base  # type: ignore  # does not understand the condition before
+        if isinstance(base, dict):
+            bases.append(base)
+        elif isinstance(base, list):
+            bases = base
 
         periods = []
 

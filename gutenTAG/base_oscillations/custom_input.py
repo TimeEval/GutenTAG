@@ -22,8 +22,8 @@ class CustomInput(BaseOscillationInterface):
     def generate_only_base(
         self,
         ctx: BOGenerationContext,
-        input_timeseries_path_test: str = None,
-        use_column_test: Union[str, int] = None,
+        input_timeseries_path_test: Optional[str] = None,
+        use_column_test: Optional[Union[str, int]] = None,
         length: Optional[int] = None,
         input_timeseries_path_train: Optional[str] = None,
         use_column_train: Optional[Union[str, int]] = None,

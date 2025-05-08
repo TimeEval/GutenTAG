@@ -28,7 +28,7 @@ class Polynomial(BaseOscillationInterface):
         length: Optional[int] = None,
         polynom: Optional[List[float]] = None,
         *args,
-        **kwargs
+        **kwargs,
     ) -> np.ndarray:
         length = length or self.length
         polynom = polynom or self.polynomial

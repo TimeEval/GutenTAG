@@ -46,10 +46,12 @@ class DictSanitizer:
         elif isinstance(obj, (np.ndarray,)):
             return obj.tolist()
 
-        elif isinstance(obj, (bool, np.bool8)):
+        elif isinstance(obj, (bool, np.bool)):
             return bool(obj)
 
-        elif isinstance(obj, (np.void)):
+        # We eliminate unknown types here. If this is a problem for you, please
+        # create an issue.
+        elif isinstance(obj, np.void):
             return None
 
     def _sanitize_value(self, obj: Any) -> Any:
@@ -66,7 +68,7 @@ class Overview:
     FILENAME = "overview.yaml"
     GUTENTAG_LINK = "https://gitlab.hpi.de/akita/guten-tag"
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.datasets: List[Dict] = []
         self.seed: Optional[int] = None
 

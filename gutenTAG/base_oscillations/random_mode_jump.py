@@ -38,7 +38,7 @@ class RandomModeJump(BaseOscillationInterface):
         channel_offset: Optional[float] = None,
         random_seed: Optional[int] = None,
         *args,
-        **kwargs
+        **kwargs,
     ) -> np.ndarray:
         length = length or self.length
         frequency = frequency or self.frequency

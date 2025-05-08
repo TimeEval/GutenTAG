@@ -35,7 +35,7 @@ class Cosine(BaseOscillationInterface):
         amplitude: Optional[float] = None,
         freq_mod: Optional[float] = None,
         *args,
-        **kwargs
+        **kwargs,
     ) -> np.ndarray:
         n: int = length or self.length  # in points
         f: float = frequency or self.frequency  # in Hz
