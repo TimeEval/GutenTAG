@@ -37,7 +37,7 @@ class MLS(BaseOscillationInterface):
         smoothing: Optional[float] = None,
         complexity: Optional[int] = None,
         *args,
-        **kwargs
+        **kwargs,
     ) -> np.ndarray:
         n: int = length or self.length  # in points
         a: float = amplitude or self.amplitude

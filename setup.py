@@ -66,7 +66,7 @@ class MyPyCheckCommand(Command):
         from mypy.main import main as mypy
 
         args = ["--pretty", PYTHON_NAME, "tests"]
-        mypy(None, stdout=sys.stdout, stderr=sys.stderr, args=args)
+        mypy(args=args, stdout=sys.stdout, stderr=sys.stderr)
 
 
 class CleanCommand(Command):

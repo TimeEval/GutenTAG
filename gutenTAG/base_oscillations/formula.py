@@ -81,7 +81,7 @@ class Operation(NamedTuple):
     operand: Union[float, FormulaObj]
 
     def _get_operand(self) -> np.ndarray:
-        if type(self.operand) == float:
+        if isinstance(self.operand, (float, np.floating)):
             return np.array(self.operand)
         return self.operand.execute()
 
@@ -93,9 +93,9 @@ class Operation(NamedTuple):
         kind = OperationType(d.get(KIND))
         operand = d.get(OPERAND)
 
-        if type(operand) == float:
+        if isinstance(operand, (float, np.floating)):
             operand = operand
-        elif type(operand) == dict:
+        elif isinstance(operand, dict):
             operand = FormulaObj.from_dict(operand, prev_channels)
         else:
             raise ValueError(
@@ -125,7 +125,7 @@ class FormulaObj(NamedTuple):
     aggregation: Optional[Aggregation] = None
 
     def _get_base(self) -> np.ndarray:
-        if type(self.base) == int:
+        if isinstance(self.base, (int, np.integer)):
             return self.prev_channels[self.base]
         else:
             return self.base.execute()
@@ -148,13 +148,13 @@ class FormulaObj(NamedTuple):
             operation is None or aggregation is None
         ), "Only one `operation` or `aggregation` can be set, not both!"
 
-        if type(base) == dict:
+        if isinstance(base, dict):
             base = FormulaObj.from_dict(base, prev_channels=prev_channels)
-        elif type(base) != int:
+        elif not isinstance(base, (float, np.floating, int, np.integer)):
             raise ValueError("Base must be `float` or `object`.")
 
         if operation is not None:
-            if type(operation) == dict:
+            if isinstance(operation, dict):
                 return FormulaObj(
                     base=base,
                     prev_channels=prev_channels,
@@ -163,7 +163,7 @@ class FormulaObj(NamedTuple):
             else:
                 raise ValueError("The Operation has to be an `object`.")
         elif aggregation is not None:
-            if type(aggregation) == dict:
+            if isinstance(aggregation, dict):
                 return FormulaObj(
                     base=base,
                     prev_channels=prev_channels,

@@ -17,7 +17,7 @@ from ..utils.global_variables import (
 
 
 class GutenTAGParseError(BaseException):
-    def __init__(self, prefix: str = "", msg: Optional[str] = None):
+    def __init__(self, prefix: str = "", msg: Optional[str] = None) -> None:
         if msg is None:
             msg = prefix
             prefix = ""
@@ -29,17 +29,17 @@ class GutenTAGParseError(BaseException):
 
 
 class ConfigValidator:
-    def __init__(self):
+    def __init__(self) -> None:
         loader: ConfigSchemaLoader = FileSystemConfigSchemaLoader.from_packaged_schema()
         # load base schema
         base_schema_name = CONFIG_SCHEMA.schema_name(CONFIG_SCHEMA.BASE_ID)
         base_schema = loader.load_schema_file(CONFIG_SCHEMA.BASE_ID)
 
         # load schema parts
-        schema_parts = {}
+        schema_parts: dict[str, str] = {}
         for schema_part_id in CONFIG_SCHEMA.SCHEMA_PART_IDS:
             name = CONFIG_SCHEMA.schema_name(schema_part_id)
-            schema_parts[name] = loader.load_schema_file(schema_part_id)
+            schema_parts[name] = loader.load_schema_file(schema_part_id)  # type: ignore
 
         # create resolver containing all schema parts
         self.base_schema = base_schema
