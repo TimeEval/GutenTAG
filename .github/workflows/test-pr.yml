@@ -18,11 +18,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Setup Miniconda
-        uses: conda-incubator/setup-miniconda@v3.0.4
+        uses: conda-incubator/setup-miniconda@v3.1.1
         with:
           use-mamba: true
           auto-update-conda: true
           python-version: "3.9"
+          channels:
+            - defaults
       - name: Install dependencies
         run: |
           pip install ".[dev]"
@@ -46,11 +48,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Setup Miniconda
-      uses: conda-incubator/setup-miniconda@v3.0.4
+      uses: conda-incubator/setup-miniconda@v3.1.1
       with:
         use-mamba: true
         auto-update-conda: true
         python-version: ${{ matrix.python_version }}
+        channels:
+          - defaults
     - name: Install dependencies
       run: |
         pip install ".[dev]"
