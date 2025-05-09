@@ -24,8 +24,7 @@ jobs:
           use-mamba: true
           auto-update-conda: true
           python-version: "3.9"
-          channels:
-            - defaults
+          channels: defaults
       - name: Install dependencies
         run: |
           pip install ".[dev]"
@@ -54,8 +53,7 @@ jobs:
         use-mamba: true
         auto-update-conda: true
         python-version: ${{ matrix.python_version }}
-        channels:
-          - defaults
+        channels: defaults
     - name: Install dependencies
       run: |
         pip install ".[dev]"
@@ -109,8 +107,7 @@ jobs:
         use-mamba: true
         auto-update-conda: true
         python-version: 3.9
-        channels:
-          - defaults
+        channels: defaults
     - name: Build source distribution
       run: |
         python setup.py sdist
