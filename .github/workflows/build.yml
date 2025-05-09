@@ -127,18 +127,23 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Build manylinux Python wheels
-        uses: RalfG/python-wheels-manylinux-build@v0.7.1-manylinux2014_x86_64
+      - name: Setup Miniconda
+        uses: conda-incubator/setup-miniconda@v3.1.1
         with:
-          # our wheel is purely python, so this creates a *-none-any.wheel and other versions are not required for now
-          python-versions: 'cp39-cp39m'
+          use-mamba: true
+          auto-update-conda: true
+          python-version: 3.9
+          channels: defaults
+      - name: Build pure-Python wheel
+        run: |
+          python -m pip wheel --no-deps --wheel-dir dist/ .
       - name: List packages
         run: |
           ls -alh dist
       - name: Upload packages
         uses: actions/upload-artifact@v4
         with:
-          name: packages-manylinux
+          name: packages-wheel
           path: dist/*.whl
 
   publish:
