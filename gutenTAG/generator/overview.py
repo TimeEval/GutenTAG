@@ -71,13 +71,14 @@ class Overview:
     def __init__(self) -> None:
         self.datasets: List[Dict] = []
         self.seed: Optional[int] = None
+        self.git_commit_sha: Optional[str] = None
 
         try:
             self.git_commit_sha = git.Repo(
                 search_parent_directories=True
             ).head.object.hexsha
         except git.InvalidGitRepositoryError:
-            self.git_commit_sha = None
+            pass
 
     def add_seed(self, seed: Optional[int]) -> None:
         self.seed = seed
