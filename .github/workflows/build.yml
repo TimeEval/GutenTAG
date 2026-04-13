@@ -73,7 +73,7 @@ jobs:
         echo "Extracted branch name: $BRANCH_NAME"
     - name: Create coverage badge
       if: ${{ matrix.python_version == '3.13' && matrix.os == 'ubuntu-latest' }}
-      uses: schneegans/dynamic-badges-action@v1.7.0
+      uses: schneegans/dynamic-badges-action@v1.8.0
       with:
         auth: ${{ secrets.GIST_SECRET }}
         gistID: 6762bee806477c52e079f21d2f252688
@@ -84,7 +84,7 @@ jobs:
         namedLogo: pytest
     - name: Upload Coverage to Codecov
       if: ${{ matrix.python_version == '3.13' && matrix.os == 'ubuntu-latest' }}
-      uses: codecov/codecov-action@v5
+      uses: codecov/codecov-action@v6
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       with:
@@ -112,7 +112,7 @@ jobs:
       run: |
         python setup.py sdist
     - name: Upload packages
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: packages-source
         path: dist
@@ -141,7 +141,7 @@ jobs:
         run: |
           ls -alh dist
       - name: Upload packages
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: packages-wheel
           path: dist/*.whl
@@ -158,7 +158,7 @@ jobs:
 
     steps:
     - name: Download packages
-      uses: actions/download-artifact@v7
+      uses: actions/download-artifact@v8
       with:
         path: dist
     - name: Restore original folder structure of dist
