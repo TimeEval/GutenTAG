@@ -42,7 +42,7 @@ class Consolidator:
             if bo.timeseries is not None:
                 channels.append(bo.timeseries)
         self.timeseries = self._stack_channels(channels)
-        labels = np.zeros(self.timeseries.shape[0], dtype=np.int8)
+        labels = np.zeros((self.timeseries.shape[0], len(channels)), dtype=np.int8)
         self.labels = labels
         self.generate_anomalies(ctx)
 
@@ -99,4 +99,4 @@ class Consolidator:
                 "You need to call `generate` before applying anomalies!"
             )
         for label_range in label_ranges:
-            self.labels[label_range.start : label_range.start + label_range.length] = 1
+            self.labels[label_range.start : label_range.start + label_range.length, label_range.channel] = 1

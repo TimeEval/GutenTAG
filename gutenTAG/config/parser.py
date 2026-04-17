@@ -22,6 +22,7 @@ from ..utils.global_variables import (
 class GenerationOptions:
     semi_supervised: bool = False
     supervised: bool = False
+    per_feature_labels: bool = False
     dataset_name: Optional[str] = None
 
     def to_dict(self):
@@ -32,6 +33,7 @@ class GenerationOptions:
         return GenerationOptions(
             semi_supervised=d.get("semi-supervised", False),
             supervised=d.get("supervised", False),
+            per_feature_labels=d.get("per-feature-labels", False),
         )
 
 
