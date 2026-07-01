@@ -27,8 +27,8 @@ class AnomalyTrend(BaseAnomaly):
             return anomaly_protocol
 
         length = anomaly_protocol.end - anomaly_protocol.start
-        transition_length = int(length * 0.2)
-        plateau_length = int(length * 0.8)
+        transition_length = max(1, int(length * 0.2))
+        plateau_length = length - transition_length
         start_transition = norm.pdf(np.linspace(-3, 0, transition_length), scale=1.05)
         amplitude_bell = np.concatenate(
             [start_transition / start_transition.max(), np.ones(plateau_length)]
