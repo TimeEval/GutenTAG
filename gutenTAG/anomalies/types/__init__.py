@@ -12,6 +12,7 @@ from ...utils.types import AnomalyGenerationContext
 class LabelRange:
     start: int
     length: int
+    channel: int
 
 
 @dataclass

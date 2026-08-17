@@ -63,7 +63,7 @@ class Anomaly:
             start, end = self.exact_position, self.exact_position + self.anomaly_length
 
         length = end - start
-        label_range = LabelRange(start, length)
+        label_range = LabelRange(start, length, self.channel)
         protocol = AnomalyProtocol(
             start,
             end,
