@@ -29,6 +29,7 @@ class TimeSeries:
         dataset_name: str,
         semi_supervised: bool = False,
         supervised: bool = False,
+        per_feature_labels: bool = False,
     ):
         self.dataset_name = dataset_name
         self.base_oscillations = base_oscillations
@@ -41,6 +42,7 @@ class TimeSeries:
         self.semi_train_labels: Optional[np.ndarray] = None
         self.semi_supervised = semi_supervised
         self.supervised = supervised
+        self.per_feature_labels = per_feature_labels
         self._rng_counter = 0
 
     def generate(self, random_seed: Optional[int] = None) -> TimeSeries:
@@ -180,7 +182,10 @@ class TimeSeries:
         channel_names = list(map(lambda i: f"value-{i}", range(ts.shape[1])))
         df = pd.DataFrame(ts, columns=channel_names)
         df.index.name = INDEX_COLUMN_NAME
-        df[LABEL_COLUMN_NAME] = labels
+        df[LABEL_COLUMN_NAME] = labels.max(axis=1)
+        if len(labels.shape) > 1 and self.per_feature_labels:
+            for i, col in enumerate(channel_names):
+                df[f"{LABEL_COLUMN_NAME}-{col}"] = labels[:, i]
         return df
 
     def to_csv(
