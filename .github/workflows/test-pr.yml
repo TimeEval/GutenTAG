@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Setup Miniconda
-        uses: conda-incubator/setup-miniconda@v4.0.1
+        uses: conda-incubator/setup-miniconda@v4.1.0
         with:
           use-mamba: true
           auto-update-conda: true
@@ -47,7 +47,7 @@ jobs:
     steps:
     - uses: actions/checkout@v7
     - name: Setup Miniconda
-      uses: conda-incubator/setup-miniconda@v4.0.1
+      uses: conda-incubator/setup-miniconda@v4.1.0
       with:
         use-mamba: true
         auto-update-conda: true
